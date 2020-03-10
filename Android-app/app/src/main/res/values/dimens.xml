@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="floating_btn_h_margin">16dp</dimen>
+    <dimen name="floating_btn_v_margin">16dp</dimen>
+    <dimen name="drawer_height">200dp</dimen>
+    <dimen name="drawer_padding">16dp</dimen>
+    <dimen name="drawer_name_height">18sp</dimen>
+    <dimen name="drawer_image_dims">80dp</dimen>
+    <dimen name="drawer_left_margin">10dp</dimen>
+</resources>

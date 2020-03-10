@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Events</string>
+    <string name="splash_text">Events are loading...</string>
+
+    <string name="no_valid_email_message">Selected account doesn\'t have a valid email, please select another one.</string>
+    <string name="select_account_with_email_message">Please select an account with a valid email address.</string>
+    <string name="action_settings">Settings</string>
+    <string name="report">Report event</string>
+    <string name="nav_social">Social</string>
+    <string name="nav_item_create">Create Event</string>
+    <string name="nav_item_myEvents">My Events</string>
+    <string name="nav_item_interested">Interested</string>
+    <string name="nav_item_going">Going</string>
+    <string name="nav_item_invitations">Invitations</string>
+    <string name="nav_item_friends">Friends</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_item_logout">Logout</string>
+    <string name="nav_account">Account</string>
+
 </resources>

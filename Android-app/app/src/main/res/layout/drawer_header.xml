@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/drawer_height"
+    android:background="?attr/colorPrimaryDark"
+    android:padding="@dimen/drawer_padding"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:gravity="bottom">
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="@dimen/drawer_image_dims"
+        android:layout_height="@dimen/drawer_image_dims"
+        android:layout_marginLeft="@dimen/drawer_left_margin">
+
+        <ImageView
+            android:id="@+id/pic"
+            android:layout_width="@dimen/drawer_image_dims"
+            android:layout_height="@dimen/drawer_image_dims"
+            android:src="@drawable/ic_user_icon" />
+
+        <ImageView
+            android:id="@+id/circle_crop"
+            android:layout_width="@dimen/drawer_image_dims"
+            android:layout_height="@dimen/drawer_image_dims"
+            android:src="@drawable/ic_circle_crop" />
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="John Doe"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="@dimen/drawer_left_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/drawer_name_height" />
+
+</LinearLayout>
