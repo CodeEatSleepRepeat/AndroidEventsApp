@@ -1,16 +1,41 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.squareup.picasso.Picasso;
+
+import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.EventType;
 
 
 public class ShowEventDetailsActivity extends AppCompatActivity {
+
+    private static final String TAG = "ShowEventDetailsActivit";
+
+    private CollapsingToolbarLayout collapsingToolbar;
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        //load image from file system just for testing
+        String uri = "content://media/external/downloads/24";
+
+        ImageView imageView = findViewById(R.id.event_image);
+        Picasso.with(this).setLoggingEnabled(true);
+        Picasso.with(this).load(uri).into(imageView);
+        Log.d(TAG, "setViewPic2: " + imageView.toString());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +46,47 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("Second Activity");
+        //get all elements that are going to contain event information
+        collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+
+        setView(getIntent().getExtras());
+    }
+
+    private void setView(Bundle savedInstanceState) {
+        if (savedInstanceState!=null){
+            Long id = (Long) savedInstanceState.get("id");
+            String name = (String) savedInstanceState.get("name");
+            String description = (String) savedInstanceState.get("description");
+            String imageURI = (String) savedInstanceState.get("imageURI");
+            EventType type = (EventType) savedInstanceState.get("type");
+            Boolean open = (Boolean) savedInstanceState.get("open");
+            Date start = (Date) savedInstanceState.get("start");
+            Date end = (Date) savedInstanceState.get("end");
+            String location = (String) savedInstanceState.get("location");
+            Long longitude = (Long) savedInstanceState.get("longitude");
+            Long latitude = (Long) savedInstanceState.get("latitude");
+            Long userId = (Long) savedInstanceState.get("userId");
+
+
+
+
+            collapsingToolbar.setTitle(name);
+/*
+            //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
+            ImageView imageView = findViewById(R.id.imageViewasdf);
+            if (imageView == null) {
+                Log.d(TAG, "setView: Image view was null");
+                imageView = new ImageView(this);
+            }
+
+            Log.d(imageView.toString(), "setView1: " + imageURI);
+
+
+            Picasso.with(this).setLoggingEnabled(true);
+            Picasso.with(this).load(uri).into(imageView);
+            Log.d(TAG, "setView2: " + imageView.toString());
+*/
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import rs.ac.uns.ftn.eventsbackend.enums.EventTipe;
+import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 
 @Entity
 @Data
@@ -39,7 +39,7 @@ public class Event {
 	private String eventImageURI;
 	
 	@NotNull
-	private EventTipe eventType;
+	private EventType eventType;
 	
 	@NotNull
 	private Boolean openForAll;
@@ -77,7 +77,7 @@ public class Event {
 	
 
 	public Event(Long eventId, @NotNull String eventName, @NotNull String eventDescription, String eventImageURI,
-			@NotNull EventTipe eventType, @NotNull Boolean openForAll, @NotNull Date startTime, Date endTime, String location, Long latitude,
+			@NotNull EventType eventType, @NotNull Boolean openForAll, @NotNull Date startTime, Date endTime, String location, Long latitude,
 			Long longitude, @NotNull User author) {
 		super();
 		this.eventId = eventId;

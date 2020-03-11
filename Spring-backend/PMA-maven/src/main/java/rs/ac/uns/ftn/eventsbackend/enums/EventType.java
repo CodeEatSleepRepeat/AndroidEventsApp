@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.enums;
 
-public enum EventTipe {
+public enum EventType {
 	PARTY,
 	HANGING,
 	MUSIC,
