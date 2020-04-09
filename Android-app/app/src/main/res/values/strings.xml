@@ -18,5 +18,8 @@
     <string name="nav_account">Account</string>
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
+    <string name="filter_events">Filter</string>
+    <string name="setDistanceFilter">Set distance:</string>
+    <string name="setToFilter">Set to: </string>
 
 </resources>
