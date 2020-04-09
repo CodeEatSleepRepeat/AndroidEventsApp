@@ -31,13 +31,13 @@ public class EventListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //data goes here
+        // TODO: data goes here
         ArrayList<Event> items = TestMockup.getInstance().events;
 
         View v =  inflater.inflate(R.layout.fragment_list_view, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new EventListRecyclerView(items));
+        recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext()));
 
         return v;
     }

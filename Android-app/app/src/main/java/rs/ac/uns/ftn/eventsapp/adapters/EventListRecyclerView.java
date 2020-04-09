@@ -2,13 +2,18 @@ package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
@@ -18,9 +23,12 @@ import rs.ac.uns.ftn.eventsapp.models.Event;
 public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecyclerView.EventViewHolder> {
 
     private List<Event> mItems;
+    private Context context;
+    private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
-    public EventListRecyclerView(List<Event> items) {
+    public EventListRecyclerView(List<Event> items, Context context) {
         mItems = items;
+        this.context = context;
     }
 
     @Override
@@ -34,8 +42,21 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void onBindViewHolder(EventViewHolder viewHolder, final int i) {
         Event item = mItems.get(i);
         viewHolder.eventNameTextView.setText(item.getEventName());
+        viewHolder.eventAddressTextView.setText(item.getLocation());
+        viewHolder.eventStartDate.setText(formatter.format(item.getStartTime()));
+        try{
+            Picasso.with(context).
+                    load(item.getEventImageURI()).
+                    placeholder(R.drawable.ic_missing_event_icon).
+                    error(R.drawable.ic_missing_event_icon).
+                    into(viewHolder.eventImage);
+        } catch (Exception e){
+            Log.d(this.getClass().getName(), "onBindViewHolder: Picasso error\n" + e.getMessage());
+        }
 
-        viewHolder.eventNameTextView.setOnClickListener(new View.OnClickListener() {
+        //viewHolder.eventImage.setImageURI(Uri.parse(item.getEventImageURI()));
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
@@ -68,10 +89,16 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public class EventViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView eventNameTextView;
+        private final TextView eventAddressTextView;
+        private final TextView eventStartDate;
+        private final ImageView eventImage;
 
         EventViewHolder(View v) {
             super(v);
-            eventNameTextView = v.findViewById(R.id.list_item);
+            eventNameTextView = v.findViewById(R.id.event_list_name);
+            eventAddressTextView = v.findViewById(R.id.event_list_address);
+            eventStartDate = v.findViewById(R.id.event_list_start_date);
+            eventImage = v.findViewById(R.id.event_list_image);
         }
     }
 

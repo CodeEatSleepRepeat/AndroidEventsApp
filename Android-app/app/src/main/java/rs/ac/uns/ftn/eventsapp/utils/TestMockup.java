@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.Event;
@@ -37,8 +38,11 @@ public class TestMockup {
         ArrayList<Friendship> u2Send = new ArrayList<>();
         ArrayList<Friendship> u3Send = new ArrayList<>();
 
-        Date startDate = new Date(2020, 3, 11, 17, 0);
-        Date endDate = new Date(2020, 3, 11, 23, 30);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2020, 0, 11, 17, 0, 0);    //mesec pocinje od 0 -> januar!?
+        Date startDate = calendar.getTime();
+        calendar.set(2020, 9, 11, 23, 30, 0);
+        Date endDate = calendar.getTime();
 
         Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null);
         Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l,23454147l, u2, null, null, null);

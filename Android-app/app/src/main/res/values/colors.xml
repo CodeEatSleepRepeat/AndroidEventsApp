@@ -6,4 +6,5 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorLogo">#5F5D70</color>
+    <color name="colorNavIcons">#757575</color>
 </resources>
