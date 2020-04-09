@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.eventsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListPagerAdapter;
 
 
@@ -86,9 +89,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_settings:
                 return true;
+            case R.id.filterEventsBtn:
+                onClickFilterImg();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickFilterImg() {
+        Intent intent = new Intent(this, FilterEventsActivity.class);
+        startActivity(intent);
     }
 
 }
