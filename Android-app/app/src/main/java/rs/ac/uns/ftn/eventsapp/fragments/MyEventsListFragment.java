@@ -17,14 +17,14 @@ import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
-public class EventListFragment extends Fragment {
+public class MyEventsListFragment extends Fragment {
 
-    public EventListFragment() {
+    public MyEventsListFragment() {
 
     }
 
-    public static EventListFragment newInstance() {
-        EventListFragment fragment = new EventListFragment();
+    public static HomeEventListFragment newInstance() {
+        HomeEventListFragment fragment = new HomeEventListFragment();
         return fragment;
     }
 
@@ -33,6 +33,13 @@ public class EventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: data goes here
         ArrayList<Event> items = TestMockup.getInstance().events;
+        ArrayList<Event> temp = new ArrayList<>();
+        for (Event e : items){
+            if (e.getAuthor().getUserId()!=1l){
+                temp.add(e);
+            }
+        }
+        items = temp;
 
         View v =  inflater.inflate(R.layout.fragment_list_view, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);

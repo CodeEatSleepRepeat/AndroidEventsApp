@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import rs.ac.uns.ftn.eventsapp.fragments.EventListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 
 public class EventListPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -14,7 +14,7 @@ public class EventListPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return EventListFragment.newInstance();
+        return HomeEventListFragment.newInstance();
     }
 
     @Override

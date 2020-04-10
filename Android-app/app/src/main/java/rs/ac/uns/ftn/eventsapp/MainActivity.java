@@ -13,14 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
-import rs.ac.uns.ftn.eventsapp.adapters.EventListPagerAdapter;
+import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.InterestedEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //ActionBar actionBar = getSupportActionBar();
@@ -50,7 +54,26 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+
+                switch (menuItem.getItemId()){
+                    case R.id.navigation_item_myEvents:
+                        onClickNavItem(MyEventsListFragment.class);
+                        toolbar.setTitle(R.string.nav_item_myEvents);
+                        break;
+                    case R.id.navigation_item_going:
+                        onClickNavItem(GoingEventsListFragment.class);
+                        toolbar.setTitle(R.string.nav_item_going);
+                        break;
+                    case R.id.navigation_item_interested:
+                        onClickNavItem(InterestedEventsListFragment.class);
+                        toolbar.setTitle(R.string.nav_item_interested);
+                        break;
+
+                    default:
+                        Toast.makeText(MainActivity.this, menuItem.getItemId(), Toast.LENGTH_LONG).show();
+                        return false;
+                }
+
                 return true;
             }
         });
@@ -67,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
             }
         });
-
+/*
         EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(adapter);
+        ViewPager viewPager = findViewById(R.id.fragment_view);
+        viewPager.setAdapter(adapter);*/
+        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
     }
 
     @Override
@@ -108,9 +132,20 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-    public void onClickFilterImg() {
+
+    private void onClickFilterImg() {
         Intent intent = new Intent(this, FilterEventsActivity.class);
         startActivity(intent);
+    }
+
+    private void onClickNavItem(Class<?> intentClass){
+        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_view, intentClass).commit();
+        try {
+            FragmentTransition.to((Fragment) intentClass.newInstance(), this, true);
+        } catch (Exception e){
+            Log.d(this.getClass().getName(), "onClickNavItem: ");
+            e.printStackTrace();
+        }
     }
 
 }

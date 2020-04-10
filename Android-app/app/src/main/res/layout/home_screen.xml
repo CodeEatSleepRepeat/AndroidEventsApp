@@ -11,6 +11,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -25,12 +26,14 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpager"
+        <FrameLayout
+            android:id="@+id/fragment_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@id/AppBarLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_add_btn"

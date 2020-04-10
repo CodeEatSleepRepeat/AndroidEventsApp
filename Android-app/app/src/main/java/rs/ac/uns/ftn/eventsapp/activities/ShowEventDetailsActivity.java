@@ -20,7 +20,7 @@ import rs.ac.uns.ftn.eventsapp.models.EventType;
 
 public class ShowEventDetailsActivity extends AppCompatActivity {
 
-    private static final String TAG = "ShowEventDetailsActivit";
+    private static final String TAG = "ShowEventDetailsAct";
 
     private CollapsingToolbarLayout collapsingToolbar;
 

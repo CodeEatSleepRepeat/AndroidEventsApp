@@ -18,7 +18,6 @@ public class TestMockup {
     public static final ArrayList<User> users = new ArrayList<>();
 
 
-
     private static final TestMockup ourInstance = new TestMockup();
 
     public static TestMockup getInstance() {
@@ -45,7 +44,7 @@ public class TestMockup {
         Date endDate = calendar.getTime();
 
         Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null);
-        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l,23454147l, u2, null, null, null);
+        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null);
 
         Invitation i1 = new Invitation(1l, u1, u2, e1, InvitationStatus.ACCEPTED);
         Invitation i2 = new Invitation(1l, u2, u3, e1, InvitationStatus.ACCEPTED);
@@ -97,6 +96,14 @@ public class TestMockup {
         //final 2 lists that are accessible from this class
         events.add(e1);
         events.add(e2);
+
+        for (int i = 3; i < 50; i++) {
+            if (i % 3 == 0) {
+                events.add(new Event(new Long(i), "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null));
+            } else {
+                events.add(new Event(new Long(i), "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null));
+            }
+        }
         users.add(u1);
         users.add(u2);
         users.add(u3);
