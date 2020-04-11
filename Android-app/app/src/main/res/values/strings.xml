@@ -21,5 +21,16 @@
     <string name="filter_events">Filter</string>
     <string name="setDistanceFilter">Set distance:</string>
     <string name="setToFilter">Set to: </string>
+    <string name="sortByFilter">Sort by: </string>
+    <string name="forYouFilter">For you</string>
+    <string name="recentFilter">Recent</string>
+    <string name="popularFilter">Popular</string>
+    <string name="categoryFilter">Category:</string>
+    <string name="music">Music</string>
+    <string name="party">Party</string>
+    <string name="sports">Sports</string>
+    <string name="talks">Talks</string>
+    <string name="educational">Educational</string>
+    <string name="charity">Charity</string>
 
 </resources>

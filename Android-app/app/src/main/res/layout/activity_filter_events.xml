@@ -8,10 +8,12 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        app:layout_anchorGravity="center"
         tools:context=".activities.FilterEventsActivity">
 
         <TextView
@@ -24,7 +26,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.047" />
+            app:layout_constraintVertical_bias="0.022" />
 
         <SeekBar
             android:id="@+id/distanceFilterSeekBar"
@@ -54,6 +56,143 @@
             android:layout_marginTop="1dp"
             app:layout_constraintStart_toEndOf="@+id/setToFilterTextView"
             app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <TextView
+            android:id="@+id/sortByFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sortByFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setToFilterTextView"
+            app:layout_constraintVertical_bias="0.041" />
+
+        <Button
+            android:id="@+id/forYouFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorGray"
+            android:text="@string/forYouFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sortByFilterTextView" />
+
+        <Button
+            android:id="@+id/recentFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorGray"
+            android:text="@string/recentFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.052"
+            app:layout_constraintStart_toEndOf="@+id/forYouFilterBtn"
+            app:layout_constraintTop_toBottomOf="@+id/sortByFilterTextView" />
+
+        <Button
+            android:id="@+id/popularFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorGray"
+            android:text="@string/popularFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.12"
+            app:layout_constraintStart_toEndOf="@+id/recentFilterBtn"
+            app:layout_constraintTop_toBottomOf="@+id/sortByFilterTextView" />
+
+        <TextView
+            android:id="@+id/categoryFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/categoryFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forYouFilterBtn"
+            app:layout_constraintVertical_bias="0.041" />
+
+        <RadioGroup
+            android:layout_width="370dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryFilterTextView"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/charityFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/charity"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/educationalFilterRB"
+                    app:layout_constraintTop_toBottomOf="@+id/talksFilterRB" />
+
+                <RadioButton
+                    android:id="@+id/educationalFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/educational"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sportsFilterRB" />
+
+                <RadioButton
+                    android:id="@+id/talksFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/talks"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/sportsFilterRB"
+                    app:layout_constraintTop_toBottomOf="@+id/partyFilterRB" />
+
+                <RadioButton
+                    android:id="@+id/sportsFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/sports"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/musicFilterRB" />
+
+                <RadioButton
+                    android:id="@+id/musicFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/music"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/partyFilterRB"
+                    android:layout_width="185dp"
+                    android:layout_height="40dp"
+                    android:text="@string/party"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/musicFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </RadioGroup>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
