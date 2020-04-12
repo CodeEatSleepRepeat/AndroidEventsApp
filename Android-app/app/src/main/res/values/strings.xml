@@ -32,5 +32,11 @@
     <string name="talks">Talks</string>
     <string name="educational">Educational</string>
     <string name="charity">Charity</string>
+    <string name="startingDateFilter">Starting date</string>
+    <string name="startingTimeFilter">Starting time</string>
+    <string name="endingDateFilter">Ending date</string>
+    <string name="endingTimeFilter">Ending time</string>
+    <string name="saveFilters">Save filters</string>
+    <string name="privateEventFilter">Private events</string>
 
 </resources>
