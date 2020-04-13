@@ -16,9 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="fsdfsfsfsfsf"/>
-        <activity android:name=".activities.CreateEventActivity"
-            android:label="@string/createEvent"></activity>
+        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.SignInActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="fsdfsfsfsfsf" />
+
+        <activity
+            android:name=".activities.CreateEventActivity"
+            android:label="@string/createEvent" />
         <activity
             android:name=".activities.FilterEventsActivity"
             android:label="@string/filter_events" />

@@ -8,4 +8,5 @@
     <color name="colorLogo">#5F5D70</color>
     <color name="colorNavIcons">#757575</color>
     <color name="colorGray">#cccccc</color>
+    <color name="colorEditTextFieldWhite">#E2FFFFFF</color>
 </resources>

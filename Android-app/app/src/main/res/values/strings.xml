@@ -42,5 +42,19 @@
     <string name="selectALocation">Select a location</string>
     <string name="eventName">Event name</string>
     <string name="eventDescription">Event description</string>
+    <string name="action_login">Login</string>
+    <string name="action_register">Register</string>
+    <string name="sign_in_continue_as_anonymous">Continue As Anonymous</string>
+    <string name="login_registration_email_hint">Email</string>
+    <string name="login_registration_password_hint">Password</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_continue_with_social_media">Continue with social media</string>
+    <string name="title_facebook_logo">Facebook</string>
+    <string name="title_google_logo">Google Gmail</string>
+    <string name="login_back_to_register">Back to Register</string>
+    <string name="register_select_photo">SELECT&#10;PHOTO</string>
+    <string name="register_repeat_password">Repeat password</string>
+    <string name="register_already_have_account">Already have an account?</string>
+    <string name="register_register_with_social_media">Register with social media</string>
 
 </resources>

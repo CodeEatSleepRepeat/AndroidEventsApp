@@ -31,4 +31,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    //circle image view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
