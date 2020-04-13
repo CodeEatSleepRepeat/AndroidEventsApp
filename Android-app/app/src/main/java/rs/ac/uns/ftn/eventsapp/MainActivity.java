@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()){
+                    case R.id.navigation_item_create:
+                        onClickCreateEvent();
+                        break;
                     case R.id.navigation_item_myEvents:
                         onClickNavItem(MyEventsListFragment.class);
                         toolbar.setTitle(R.string.nav_item_myEvents);
@@ -119,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.filterEventsBtn:
                 onClickFilterImg();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -135,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void onClickFilterImg() {
         Intent intent = new Intent(this, FilterEventsActivity.class);
+        startActivity(intent);
+    }
+
+    private void onClickCreateEvent() {
+        Intent intent = new Intent(this, CreateEventActivity.class);
         startActivity(intent);
     }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CreateEventActivity">
+
+    <TextView
+        android:id="@+id/selectLocationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="Select a location"
+        android:textSize="25dp" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/createEventMapView"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_below="@id/selectLocationTextView"/>
+
+    <EditText
+        android:id="@+id/eventNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/createEventMapView"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:hint="@string/eventName"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/eventDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eventNameEditText"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/eventDescription"
+        android:inputType="textMultiLine"
+        android:backgroundTint="@color/colorPrimary"/>
+</RelativeLayout>

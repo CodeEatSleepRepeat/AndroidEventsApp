@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layout_anchorGravity="center"
+        tools:context=".activities.FilterEventsActivity">
+
+        <TextView
+            android:id="@+id/setDistanceFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setDistanceFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.022" />
+
+        <SeekBar
+            android:id="@+id/distanceFilterSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setDistanceFilterTextView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/setToFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setToFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <TextView
+            android:id="@+id/kmFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintStart_toEndOf="@+id/setToFilterTextView"
+            app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <TextView
+            android:id="@+id/sortByFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sortByFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setToFilterTextView"
+            app:layout_constraintVertical_bias="0.041" />
+
+        <Button
+            android:id="@+id/forYouFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="31dp"
+            android:background="@color/colorGray"
+            android:text="@string/forYouFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintStart_toEndOf="@+id/sortByFilterTextView"
+            app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <Button
+            android:id="@+id/recentFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="31dp"
+            android:background="@color/colorGray"
+            android:text="@string/recentFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintStart_toEndOf="@+id/forYouFilterBtn"
+            app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <Button
+            android:id="@+id/popularFilterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="31dp"
+            android:background="@color/colorGray"
+            android:text="@string/popularFilter"
+            android:textColor="@color/colorBlack"
+            app:layout_constraintStart_toEndOf="@+id/recentFilterBtn"
+            app:layout_constraintTop_toBottomOf="@+id/distanceFilterSeekBar" />
+
+        <TextView
+            android:id="@+id/categoryFilterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/categoryFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forYouFilterBtn" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="584dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/distanceFilterSeekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/categoryFilterTextView"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/educationalFilterRB"
+                    android:layout_width="123dp"
+                    android:layout_height="40dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/educational"
+                    app:layout_constraintStart_toEndOf="@+id/talksFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/talksFilterRB"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/talks"
+                    app:layout_constraintStart_toEndOf="@+id/sportsFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/sportsFilterRB"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/sports"
+                    app:layout_constraintStart_toEndOf="@+id/partyFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/musicFilterRB"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/music"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/partyFilterRB"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/party"
+                    app:layout_constraintStart_toEndOf="@+id/musicFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/charityFilterRB"
+                    android:layout_width="121dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="1dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:text="@string/charity"
+                    app:layout_constraintStart_toEndOf="@+id/educationalFilterRB"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/startingDateFilterImgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/startingDateFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:srcCompat="@drawable/ic_calendar" />
+
+        <EditText
+            android:id="@+id/startingDateFilterEditText"
+            android:layout_width="148dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/startingDateFilter"
+            android:inputType="date"
+            app:layout_constraintStart_toEndOf="@+id/startingDateFilterImgView"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <EditText
+            android:id="@+id/startingTimeFilterEditText"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/startingTimeFilter"
+            android:inputType="time"
+            app:layout_constraintStart_toEndOf="@+id/startingDateFilterEditText"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/saveFilters"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/endingDateFilterImgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/endingDateFilter"
+            app:layout_constraintStart_toEndOf="@+id/startingTimeFilterEditText"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:srcCompat="@drawable/ic_calendar" />
+
+        <EditText
+            android:id="@+id/endingDateFilterEditText"
+            android:layout_width="148dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="21dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/endingDateFilter"
+            android:inputType="date"
+            app:layout_constraintStart_toEndOf="@+id/endingDateFilterImgView"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <EditText
+            android:id="@+id/endingTimeFilterEditText"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="21dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/endingTimeFilter"
+            android:inputType="time"
+            app:layout_constraintStart_toEndOf="@+id/endingDateFilterEditText"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <CheckBox
+            android:id="@+id/privateEventFilterCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/privateEventFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/endingDateFilterImgView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

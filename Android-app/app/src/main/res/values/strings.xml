@@ -38,5 +38,9 @@
     <string name="endingTimeFilter">Ending time</string>
     <string name="saveFilters">Save filters</string>
     <string name="privateEventFilter">Private events</string>
+    <string name="createEvent">Create event</string>
+    <string name="selectALocation">Select a location</string>
+    <string name="eventName">Event name</string>
+    <string name="eventDescription">Event description</string>
 
 </resources>
