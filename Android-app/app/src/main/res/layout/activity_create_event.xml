@@ -6,37 +6,237 @@
     android:layout_height="match_parent"
     tools:context=".activities.CreateEventActivity">
 
-    <TextView
-        android:id="@+id/selectLocationTextView"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:text="Select a location"
-        android:textSize="25dp" />
+        android:layout_height="match_parent"
+        android:id="@+id/scrollViewCreateEvent">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/createEventMapView"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_below="@id/selectLocationTextView"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-    <EditText
-        android:id="@+id/eventNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createEventMapView"
-        android:backgroundTint="@color/colorPrimary"
-        android:ems="10"
-        android:hint="@string/eventName"
-        android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/endingDateCreateEventEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startingDateCreateEventEditText"
+                android:layout_marginStart="11dp"
+                android:layout_marginTop="12dp"
+                android:layout_toEndOf="@+id/endingDateCreateEventImgView"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="@string/endingDateFilter"
+                android:inputType="date" />
 
-    <EditText
-        android:id="@+id/eventDescriptionEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/eventNameEditText"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="@string/eventDescription"
-        android:inputType="textMultiLine"
-        android:backgroundTint="@color/colorPrimary"/>
+            <CheckBox
+                android:id="@+id/privateEventCreateEventCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/privateEventFilter"
+                android:layout_below="@id/endingDateCreateEventImgView"/>
+
+            <ImageView
+                android:id="@+id/endingDateCreateEventImgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="33dp"
+                app:srcCompat="@drawable/ic_calendar"
+                android:layout_below="@id/startingDateCreateEventImgView"/>
+
+            <EditText
+                android:id="@+id/startingTimeCreateEventEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/categoryCreateEventTextView"
+                android:layout_marginStart="-1dp"
+                android:layout_marginTop="72dp"
+                android:layout_toEndOf="@+id/startingDateCreateEventEditText"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="@string/startingTimeFilter"
+                android:inputType="time" />
+
+            <EditText
+                android:id="@+id/endingTimeCreateEventEditText"
+                android:layout_width="155dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startingTimeCreateEventEditText"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="13dp"
+                android:layout_toEndOf="@+id/endingDateCreateEventEditText"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="@string/endingTimeFilter"
+                android:inputType="time" />
+
+            <EditText
+                android:id="@+id/startingDateCreateEventEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/categoryCreateEventTextView"
+                android:layout_marginStart="11dp"
+                android:layout_marginTop="72dp"
+                android:layout_toEndOf="@+id/startingDateCreateEventImgView"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="@string/startingDateFilter"
+                android:inputType="date" />
+
+            <ImageView
+                android:id="@+id/startingDateCreateEventImgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="90dp"
+                app:srcCompat="@drawable/ic_calendar"
+                android:layout_below="@id/categoryCreateEventTextView"/>
+
+            <TextView
+                android:id="@+id/selectLocationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Select a location"
+                android:textSize="25dp" />
+
+            <rs.ac.uns.ftn.eventsapp.fragments.CustomMapView
+                android:id="@+id/createEventMapView"
+                android:layout_width="match_parent"
+                android:layout_height="340dp"
+                android:layout_below="@id/selectLocationTextView" />
+
+            <EditText
+                android:id="@+id/eventNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:hint="@string/eventName"
+                android:inputType="textPersonName"
+                android:layout_below="@id/createEventMapView"/>
+
+            <EditText
+                android:id="@+id/eventDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/eventDescription"
+                android:inputType="textMultiLine"
+                android:layout_below="@id/eventNameEditText"/>
+
+            <TextView
+                android:id="@+id/categoryCreateEventTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/eventDescriptionEditText"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/categoryFilter" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/categoryCreateEventTextView">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RadioButton
+                        android:id="@+id/educationalCreateEventRB"
+                        android:layout_width="135dp"
+                        android:layout_height="35dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/educational"
+                        app:layout_constraintStart_toEndOf="@+id/talksCreateEventRB"
+                        app:layout_constraintTop_toBottomOf="@+id/partyCreateEventRB" />
+
+                    <RadioButton
+                        android:id="@+id/talksCreateEventRB"
+                        android:layout_width="135dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="16dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/talks"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/musicCreateEventRB" />
+
+                    <RadioButton
+                        android:id="@+id/sportsCreateEventRB"
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/sports"
+                        app:layout_constraintStart_toEndOf="@+id/partyCreateEventRB"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioButton
+                        android:id="@+id/musicCreateEventRB"
+                        android:layout_width="135dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="16dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/music"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioButton
+                        android:id="@+id/partyCreateEventRB"
+                        android:layout_width="135dp"
+                        android:layout_height="35dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/party"
+                        app:layout_constraintStart_toEndOf="@+id/musicCreateEventRB"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioButton
+                        android:id="@+id/charityCreateEventRB"
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="@string/charity"
+                        app:layout_constraintStart_toEndOf="@+id/educationalCreateEventRB"
+                        app:layout_constraintTop_toBottomOf="@+id/sportsCreateEventRB" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/createEventBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/eventImageCreateEventImgView"
+                android:layout_marginTop="50dp"
+                android:text="@string/createEvent"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/colorWhite"/>
+
+            <ImageView
+                android:id="@+id/eventImageCreateEventImgView"
+                android:layout_width="217dp"
+                android:layout_height="177dp"
+                android:layout_marginStart="100dp"
+                android:background="@color/colorGray"
+                android:layout_below="@id/privateEventCreateEventCB"
+                android:layout_marginTop="30dp"
+                app:srcCompat="@drawable/ic_add_photo_camera" />
+
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>
