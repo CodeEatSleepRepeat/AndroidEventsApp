@@ -20,15 +20,15 @@
 
             <EditText
                 android:id="@+id/endingDateCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/startingDateCreateEventEditText"
-                android:layout_marginStart="11dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginTop="-47dp"
                 android:layout_toEndOf="@+id/endingDateCreateEventImgView"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/endingDateFilter"
                 android:inputType="date" />
@@ -38,60 +38,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/endingDateCreateEventImgView"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="42dp"
                 android:text="@string/privateEventCreateEvent" />
 
             <ImageView
                 android:id="@+id/endingDateCreateEventImgView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="33dp"
-                app:srcCompat="@drawable/ic_calendar"
-                android:layout_below="@id/startingDateCreateEventImgView"/>
+                android:layout_below="@id/categoryCreateEventTextView"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="120dp"
+                android:layout_toEndOf="@+id/startingTimeCreateEventEditText"
+                app:srcCompat="@drawable/ic_calendar" />
 
             <EditText
                 android:id="@+id/startingTimeCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView"
-                android:layout_marginStart="-1dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="107dp"
                 android:layout_toEndOf="@+id/startingDateCreateEventEditText"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/startingTimeFilter"
                 android:inputType="time" />
 
             <EditText
                 android:id="@+id/endingTimeCreateEventEditText"
-                android:layout_width="155dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/startingTimeCreateEventEditText"
                 android:layout_marginStart="1dp"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="-47dp"
                 android:layout_toEndOf="@+id/endingDateCreateEventEditText"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/endingTimeFilter"
                 android:inputType="time" />
 
             <EditText
                 android:id="@+id/startingDateCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView"
                 android:layout_marginStart="11dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="107dp"
                 android:layout_toEndOf="@+id/startingDateCreateEventImgView"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/startingDateFilter"
                 android:inputType="date" />
@@ -100,10 +101,10 @@
                 android:id="@+id/startingDateCreateEventImgView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/categoryCreateEventTextView"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="90dp"
-                app:srcCompat="@drawable/ic_calendar"
-                android:layout_below="@id/categoryCreateEventTextView"/>
+                android:layout_marginTop="120dp"
+                app:srcCompat="@drawable/ic_calendar" />
 
             <TextView
                 android:id="@+id/selectLocationTextView"
@@ -115,7 +116,7 @@
             <rs.ac.uns.ftn.eventsapp.fragments.CustomMapView
                 android:id="@+id/createEventMapView"
                 android:layout_width="match_parent"
-                android:layout_height="340dp"
+                android:layout_height="232dp"
                 android:layout_below="@id/selectLocationTextView" />
 
             <EditText
@@ -151,11 +152,15 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/categoryCreateEventTextView">
+                android:layout_below="@id/categoryCreateEventTextView"
+                android:layout_marginStart="95dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <RadioButton
                         android:id="@+id/educationalCreateEventRB"
@@ -230,10 +235,10 @@
                 android:id="@+id/eventImageCreateEventImgView"
                 android:layout_width="217dp"
                 android:layout_height="177dp"
-                android:layout_marginStart="100dp"
-                android:background="@color/colorGray"
                 android:layout_below="@id/privateEventCreateEventCB"
+                android:layout_marginStart="250dp"
                 android:layout_marginTop="30dp"
+                android:background="@color/colorGray"
                 app:srcCompat="@drawable/ic_add_photo_camera" />
 
         </RelativeLayout>
