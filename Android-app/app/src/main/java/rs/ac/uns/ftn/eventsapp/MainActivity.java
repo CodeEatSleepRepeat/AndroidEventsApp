@@ -21,9 +21,12 @@ import com.google.android.material.snackbar.Snackbar;
 
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.InterestedEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
@@ -71,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_item_interested:
                         onClickNavItem(InterestedEventsListFragment.class);
                         toolbar.setTitle(R.string.nav_item_interested);
+                        break;
+                    case R.id.navigation_item_friends:
+                        onClickNavItem(ListOfUsersFragment.class);
+                        toolbar.setTitle("Veljko's friends");
+                        break;
+                    case R.id.navigation_item_messages:
+                        onClickNavItem(LatestMessagesFragment.class);
+                        toolbar.setTitle("Messages");
+                        break;
+                    case R.id.navigation_item_logout:
+                        logout();
                         break;
 
                     default:
@@ -156,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d(this.getClass().getName(), "onClickNavItem: ");
             e.printStackTrace();
         }
+    }
+
+    private void logout(){
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
     }
 
 }

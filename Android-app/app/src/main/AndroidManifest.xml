@@ -16,7 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.UserDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ListOfFriendsActivity" />
+        </activity>
+        <activity android:name=".activities.ChatLogActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.LatestMessagesActivity" />
+        </activity>
+        <activity android:name=".activities.LatestMessagesActivity" />
+        <activity android:name=".activities.ListOfFriendsActivity" >
+
+        </activity>
+        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.SignInActivity" />
 

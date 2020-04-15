@@ -31,7 +31,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         //load image from file system just for testing
         String uri = "content://media/external/downloads/24";
 
-        ImageView imageView = findViewById(R.id.event_image);
+        ImageView imageView = findViewById(R.id.image_user_user_detail);
         Picasso.with(this).setLoggingEnabled(true);
         Picasso.with(this).load(uri).into(imageView);
         Log.d(TAG, "setViewPic2: " + imageView.toString());
@@ -47,7 +47,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //get all elements that are going to contain event information
-        collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
         setView(getIntent().getExtras());
     }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <fragment
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_latest_messages"
+        android:name="rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment"
+        tools:layout="@layout/fragment_latest_messages"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <fragment
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_chat_log"
+        android:name="rs.ac.uns.ftn.eventsapp.fragments.ChatLogFragment"
+        tools:layout="@layout/fragment_chat_log"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fragment_latest_messages"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="10dp"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

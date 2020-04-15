@@ -2,12 +2,18 @@ package rs.ac.uns.ftn.eventsapp.models;
 
 import java.util.List;
 
+/*
+* Dodat je konstruktor koji zahteva userId, username, profileImageUrl
+*
+* Dodato je polje profileImageUrl: String
+* */
 public class User {
 
     private Long userId;
     private String userName;
     private String email;
     private String password;
+    private String profileImageUrl;
     private String facebookToken;
     private List<Friendship> sendRequests;
     private List<Friendship> receivedRequests;
@@ -32,6 +38,20 @@ public class User {
         this.interestedEvents = interestedEvents;
         this.goingEvents = goingEvents;
         this.activatedAccount = activatedAccount;
+    }
+
+    public User(Long userId, String userName, String profileImageUrl){
+        this.userId = userId;
+        this.userName = userName;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     public Long getUserId() {
