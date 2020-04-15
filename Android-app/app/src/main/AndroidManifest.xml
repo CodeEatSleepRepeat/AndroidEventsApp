@@ -36,7 +36,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="fsdfsfsfsfsf" />
+            android:value="ffgjgjhghjgt8" />
 
         <activity
             android:name=".activities.CreateEventActivity"
