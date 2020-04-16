@@ -46,6 +46,17 @@
             android:tint="@color/colorWhite"
             app:backgroundTint="@color/colorPrimary" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_map_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/floating_btn_h_margin"
+            android:layout_marginBottom="90dp"
+            android:src="@android:drawable/ic_dialog_map"
+            android:tint="@color/colorWhite"
+            app:backgroundTint="@color/colorPrimary" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView

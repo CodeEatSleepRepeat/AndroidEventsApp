@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.MapActivity"
+            android:label="@string/map"></activity>
         <activity android:name=".activities.UserDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -27,16 +29,14 @@
                 android:value=".activities.LatestMessagesActivity" />
         </activity>
         <activity android:name=".activities.LatestMessagesActivity" />
-        <activity android:name=".activities.ListOfFriendsActivity" >
-
-        </activity>
+        <activity android:name=".activities.ListOfFriendsActivity"></activity>
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.SignInActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="ffgjgjhghjgt8" />
+            android:value="dsgfgdsfdgr" />
 
         <activity
             android:name=".activities.CreateEventActivity"

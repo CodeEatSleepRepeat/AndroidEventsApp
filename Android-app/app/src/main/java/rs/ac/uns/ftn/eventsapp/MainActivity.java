@@ -1,26 +1,40 @@
 package rs.ac.uns.ftn.eventsapp;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
@@ -118,7 +132,17 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.fragment_view);
         viewPager.setAdapter(adapter);*/
         FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+
+        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,6 +186,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void onClickMap() {
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+    }
+
     private void onClickCreateEvent() {
         Intent intent = new Intent(this, CreateEventActivity.class);
         startActivity(intent);
@@ -181,5 +210,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
+
 
 }
