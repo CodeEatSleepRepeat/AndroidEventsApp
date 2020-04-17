@@ -19,6 +19,8 @@ import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class HomeEventListFragment extends Fragment {
 
+    ArrayList<Event> items;
+
     public HomeEventListFragment() {
 
     }
@@ -32,7 +34,7 @@ public class HomeEventListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: data goes here
-        ArrayList<Event> items = TestMockup.getInstance().events;
+        items = TestMockup.getInstance().events;
 
         View v =  inflater.inflate(R.layout.fragment_list_view, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
@@ -40,5 +42,9 @@ public class HomeEventListFragment extends Fragment {
         recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext()));
 
         return v;
+    }
+
+    public ArrayList<Event> getItems(){
+        return items;
     }
 }

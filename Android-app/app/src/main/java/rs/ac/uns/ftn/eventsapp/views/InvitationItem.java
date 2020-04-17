@@ -30,7 +30,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         TextView eventDate = viewHolder.itemView.findViewById(R.id.text_event_date_item_invitation);
 
         // TODO: Ovde postaviti pravi url lol :D
-        Picasso.with(viewHolder.itemView.getContext())
+        Picasso.get()
                 .load(R.drawable.ic_facebook_logo)
                 .placeholder(R.drawable.ic_facebook_logo)
                 .error(R.drawable.ic_facebook_logo)

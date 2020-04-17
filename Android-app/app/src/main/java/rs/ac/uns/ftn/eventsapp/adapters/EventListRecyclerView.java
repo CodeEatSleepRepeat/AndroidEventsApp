@@ -45,7 +45,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventAddressTextView.setText(item.getLocation());
         viewHolder.eventStartDate.setText(formatter.format(item.getStartTime()));
         try{
-            Picasso.with(context).
+            Picasso.get().
                     load(item.getEventImageURI()).
                     placeholder(R.drawable.ic_missing_event_icon).
                     error(R.drawable.ic_missing_event_icon).

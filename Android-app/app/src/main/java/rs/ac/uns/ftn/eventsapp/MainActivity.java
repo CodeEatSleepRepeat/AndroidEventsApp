@@ -1,41 +1,33 @@
 package rs.ac.uns.ftn.eventsapp;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.InterestedEventsListFragment;
@@ -43,6 +35,7 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
 
@@ -187,8 +180,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickMap() {
+        ArrayList<Event> items = new ArrayList<>();
+        ArrayList<EventForMapDTO> eventsForMap = new ArrayList<>();
+        FragmentManager fm = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fm.getFragments();
+        if(fragments!=null){
+            for(Fragment f : fragments){
+                if(f!=null && f.isVisible()){
+                    if(f instanceof GoingEventsListFragment){
+                        items = ((GoingEventsListFragment) f).getItems();
+                    }else if(f instanceof HomeEventListFragment){
+                        items = ((HomeEventListFragment) f).getItems();
+                    }else if(f instanceof InterestedEventsListFragment){
+                        items = ((InterestedEventsListFragment) f).getItems();
+                    }else if(f instanceof MyEventsListFragment){
+                        items = ((MyEventsListFragment) f).getItems();
+                    }
+                }
+            }
+        }
+        for(Event item : items){
+            eventsForMap.add(new EventForMapDTO(item.getEventId(), item.getEventName(), item.getLatitude(), item.getLongitude(), item.getEventImageURI()));
+        }
         Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("EVENTS", eventsForMap);
         startActivity(intent);
+
     }
 
     private void onClickCreateEvent() {

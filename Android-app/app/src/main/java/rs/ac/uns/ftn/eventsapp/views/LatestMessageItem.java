@@ -34,7 +34,7 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
         textUserUsername.setText(chatPartnerUser.getUserName());
         textMessage.setText(chatMessage.getText());
 
-        Picasso.with(viewHolder.itemView.getContext())
+        Picasso.get()
                 .load(R.drawable.ic_veljko)
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_veljko)

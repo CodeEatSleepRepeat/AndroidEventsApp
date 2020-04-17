@@ -32,8 +32,8 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         String uri = "content://media/external/downloads/24";
 
         ImageView imageView = findViewById(R.id.image_user_user_detail);
-        Picasso.with(this).setLoggingEnabled(true);
-        Picasso.with(this).load(uri).into(imageView);
+        Picasso.get().setLoggingEnabled(true);
+        Picasso.get().load(uri).into(imageView);
         Log.d(TAG, "setViewPic2: " + imageView.toString());
     }
 

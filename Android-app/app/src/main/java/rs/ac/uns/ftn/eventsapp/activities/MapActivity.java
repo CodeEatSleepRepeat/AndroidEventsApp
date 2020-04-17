@@ -22,19 +22,21 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.clustering.ClusterManager;
 
-import rs.ac.uns.ftn.eventsapp.MainActivity;
+import java.util.ArrayList;
+
+import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
+import rs.ac.uns.ftn.eventsapp.utils.ClusterMarker;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -45,11 +47,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Location currentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private MapView mMapView;
+    private ArrayList<EventForMapDTO> events = new ArrayList<>();
+    private ClusterManager mClusterManager;
+    private ClusterManagerRenderer mClusterManagerRenderer;
+    private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        events = (ArrayList<EventForMapDTO>) getIntent().getSerializableExtra("EVENTS");
 
         mMapView = findViewById(R.id.mainMapView);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -166,16 +174,46 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    private void addEventsOnMap(GoogleMap googleMap, ArrayList<EventForMapDTO> events){
+        if(googleMap!=null){
+            if(mClusterManager == null){
+                mClusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), googleMap);
+            }
+            if(mClusterManagerRenderer == null){
+                mClusterManagerRenderer = new ClusterManagerRenderer(
+                        this, googleMap, mClusterManager
+                );
+            }
+            mClusterManager.setRenderer(mClusterManagerRenderer);
+        }
 
+        for(EventForMapDTO e : events){
+            ClusterMarker newClusterMarker = new ClusterMarker(
+                    new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), e.getEventName(), e.getEventImageURI()
+            );
+            Log.d("Podaci: ", " " + newClusterMarker.getPosition());
+            mClusterManager.addItem(newClusterMarker);
+            mClusterMarkers.add(newClusterMarker);
+        }
+        mClusterManager.cluster();
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("onMapReady", "called" + currentLocation.getLatitude() + " : " + currentLocation.getLatitude());
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-        googleMap.addMarker(markerOptions);
+        MarkerOptions currentLocationMarker = new MarkerOptions().position(latLng).title("You");
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
+        googleMap.addMarker(currentLocationMarker);
+
+        addEventsOnMap(googleMap, events);
+       /* MarkerOptions eventMarker = new MarkerOptions();
+        for(EventForMapDTO e : events){
+            eventMarker.position(new LatLng(e.getLatitude(), e.getLongitude())).title(e.getEventName());
+            googleMap.addMarker(eventMarker);
+        }*/
     }
 
     @Override

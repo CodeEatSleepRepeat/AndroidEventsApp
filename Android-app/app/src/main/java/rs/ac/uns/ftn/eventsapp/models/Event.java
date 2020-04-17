@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 

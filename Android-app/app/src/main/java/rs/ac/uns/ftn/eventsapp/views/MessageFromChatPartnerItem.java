@@ -25,7 +25,7 @@ public class MessageFromChatPartnerItem extends Item<GroupieViewHolder> {
 
         textMessage.setText(chatMessage);
         // TODO: Ovde treba sliak usera da se izvuce
-        Picasso.with(viewHolder.itemView.getContext())
+        Picasso.get()
                 .load(R.drawable.ic_veljko)
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_veljko)

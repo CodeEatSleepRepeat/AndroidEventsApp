@@ -28,7 +28,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
         textUsername.setText(user.getUserName());
 
-        Picasso.with(itemViewContext)
+        Picasso.get()
                 .load(R.drawable.ic_veljko)
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_user_icon)
