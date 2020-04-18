@@ -91,16 +91,14 @@
                 android:id="@+id/text_back_to_register_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
                 android:text="@string/login_back_to_register"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/btn_login_login"
-                app:layout_constraintStart_toStartOf="@+id/btn_login_login"
-                app:layout_constraintTop_toBottomOf="@+id/image_gmail_logo_login"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"/>
+                app:layout_constraintStart_toStartOf="@+id/btn_login_login" />
 
             <TextView
                 android:id="@+id/text_forgot_password_login"
@@ -131,24 +129,12 @@
                 android:id="@+id/image_facebook_logo_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:contentDescription="@string/title_facebook_logo"
+                app:layout_constraintEnd_toEndOf="@+id/text_continue_with_social_media_login"
                 app:layout_constraintStart_toStartOf="@+id/text_continue_with_social_media_login"
                 app:layout_constraintTop_toBottomOf="@+id/text_continue_with_social_media_login"
-                android:layout_marginBottom="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="8dp"
                 app:srcCompat="@drawable/ic_facebook_logo" />
-
-            <ImageView
-                android:id="@+id/image_gmail_logo_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/title_google_logo"
-                app:layout_constraintBottom_toBottomOf="@+id/image_facebook_logo_login"
-                app:layout_constraintEnd_toEndOf="@+id/text_continue_with_social_media_login"
-                app:layout_constraintStart_toEndOf="@+id/image_facebook_logo_login"
-                app:layout_constraintTop_toTopOf="@+id/image_facebook_logo_login"
-                app:srcCompat="@drawable/ic_gmail_logo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

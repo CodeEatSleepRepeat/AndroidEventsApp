@@ -21,7 +21,6 @@ public class RegisterActivity extends AppCompatActivity {
         Button btnSelectImage = findViewById(R.id.btn_select_photo_register);
         TextView textAlreadyHaveAccount = findViewById(R.id.text_already_have_an_account_register);
         ImageView imageFacebookLogin = findViewById(R.id.image_facebook_login_register);
-        ImageView imageGmailLogin = findViewById(R.id.image_gmail_login_register);
 
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -52,16 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        imageGmailLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerWithGoogle();
-            }
-        });
-    }
-
-    private void registerWithGoogle() {
-        // TODO: Registration with google token
     }
 
     private void registerWithFacebook() {

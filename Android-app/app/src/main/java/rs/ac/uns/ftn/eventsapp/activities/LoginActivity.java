@@ -21,7 +21,6 @@ public class LoginActivity extends AppCompatActivity {
         TextView textForgotPassword = findViewById(R.id.text_forgot_password_login);
         TextView textBackToRegister = findViewById(R.id.text_back_to_register_login);
         ImageView imageFacebookLogin = findViewById(R.id.image_facebook_logo_login);
-        ImageView imageGmailLogin = findViewById(R.id.image_gmail_logo_login);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,13 +50,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        imageGmailLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logInWithGmail();
-            }
-        });
-
     }
 
     private void loginUser(){
@@ -77,7 +69,5 @@ public class LoginActivity extends AppCompatActivity {
         // TODO: Log in with facebook token
     }
 
-    private void logInWithGmail(){
-        // TODO: Log in with gmail token
-    }
+
 }
