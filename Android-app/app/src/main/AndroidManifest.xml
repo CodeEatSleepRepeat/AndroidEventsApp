@@ -15,6 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:theme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activities.MapActivity"
             android:label="@string/map"></activity>
@@ -46,7 +47,8 @@
             android:label="@string/createEvent" />
         <activity
             android:name=".activities.FilterEventsActivity"
-            android:label="@string/filter_events" />
+            android:label="@string/filter_events"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -59,13 +61,18 @@
             android:name=".activities.SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.NoInternetActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

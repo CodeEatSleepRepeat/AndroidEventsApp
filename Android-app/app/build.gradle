@@ -33,15 +33,20 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    //Google dependancy for maps
+    //No internet connection gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
+
+    //No internet connection dialog
+    implementation 'am.appwise.components:NoInternetDialog:1.1.3'
+
+    //Google dependency for maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
-    //Google dependancy for getting current device location
+    //Google dependency for getting current device location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
-    //Google dependancy for custom markers
+    //Google dependency for custom markers
     implementation 'com.google.maps.android:android-maps-utils:1.0.2'
-
 
     //circle image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
