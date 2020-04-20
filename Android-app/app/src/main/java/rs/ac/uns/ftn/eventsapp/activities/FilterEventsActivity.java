@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,12 +17,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
+import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
@@ -49,8 +57,7 @@ public class FilterEventsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: ovde zatvori filter activity
-                Toast.makeText(getApplicationContext(), "Close Filter Activity", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -59,6 +66,8 @@ public class FilterEventsActivity extends AppCompatActivity {
                 if (item.getItemId()==R.id.resetFilter){
                     //TODO: ovde resetuj filtere na pocetne vrednosti
                     Toast.makeText(getApplicationContext(), "Reset All Filters", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
                 }
                 return false;
             }
@@ -195,6 +204,15 @@ public class FilterEventsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: Ovde se vade podaci koje je korisnik izabrao i proverava se validnost unetih podataka
                 Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("DISTANCE", 12);
+                returnIntent.putExtra("SORT", "FOR_YOU");
+                returnIntent.putExtra("CATEGORY", new String[]{"Music","Party","Sports"});
+                returnIntent.putExtra("PRIVATE",true);
+
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
         });
 

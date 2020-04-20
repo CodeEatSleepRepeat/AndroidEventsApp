@@ -95,38 +95,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sortByFilterTextView">
 
-                <RadioButton
-                    android:id="@+id/forYouFilterBtn"
-                    android:layout_width="120dp"
-                    android:layout_height="40dp"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:checked="true"
-                    android:layout_marginRight="-2dp"
-                    android:background="@drawable/filter_radio_btn"
-                    android:text="@string/forYouFilter"
-                    android:textColor="@drawable/filter_radio_btn_text" />
+            <RadioButton
+                android:id="@+id/forYouFilterBtn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:button="@null"
+                android:gravity="center"
+                android:checked="true"
+                android:layout_marginRight="-2dp"
+                android:background="@drawable/filter_radio_btn"
+                android:text="@string/forYouFilter"
+                android:textColor="@drawable/filter_radio_btn_text" />
 
-                <RadioButton
-                    android:id="@+id/recentFilterBtn"
-                    android:layout_width="120dp"
-                    android:layout_height="40dp"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:layout_marginRight="-2dp"
-                    android:background="@drawable/filter_radio_btn"
-                    android:text="@string/recentFilter"
-                    android:textColor="@drawable/filter_radio_btn_text" />
+            <RadioButton
+                android:id="@+id/recentFilterBtn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:button="@null"
+                android:gravity="center"
+                android:layout_marginRight="-2dp"
+                android:background="@drawable/filter_radio_btn"
+                android:text="@string/recentFilter"
+                android:textColor="@drawable/filter_radio_btn_text" />
 
-                <RadioButton
-                    android:id="@+id/popularFilterBtn"
-                    android:layout_width="120dp"
-                    android:layout_height="40dp"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:background="@drawable/filter_radio_btn"
-                    android:text="@string/popularFilter"
-                    android:textColor="@drawable/filter_radio_btn_text" />
+            <RadioButton
+                android:id="@+id/popularFilterBtn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/filter_radio_btn"
+                android:text="@string/popularFilter"
+                android:textColor="@drawable/filter_radio_btn_text" />
         </RadioGroup>
 
         <TextView

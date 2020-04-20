@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
         EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.fragment_view);
         viewPager.setAdapter(adapter);*/
-        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+        if (savedInstanceState==null) {
+            FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+        }
 
         FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
         fabMap.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onClickFilterImg() {
         Intent intent = new Intent(this, FilterEventsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1001);
     }
 
     private void onClickMap() {
