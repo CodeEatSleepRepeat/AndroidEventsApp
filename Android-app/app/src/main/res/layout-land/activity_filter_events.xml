@@ -132,7 +132,7 @@
                 android:id="@+id/categoryFilterTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/categoryFilter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroupSort" />
@@ -222,8 +222,7 @@
                 android:id="@+id/startingDateFilterImgView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="32dp"
                 android:contentDescription="@string/startingDateFilter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup"
@@ -232,7 +231,7 @@
             <EditText
                 android:id="@+id/startingDateFilterEditText"
                 android:layout_width="148dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimary"
@@ -247,7 +246,7 @@
             <EditText
                 android:id="@+id/startingTimeFilterEditText"
                 android:layout_width="140dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:clickable="true"
@@ -263,7 +262,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="32dp"
                 android:contentDescription="@string/endingDateFilter"
                 app:layout_constraintStart_toEndOf="@+id/startingTimeFilterEditText"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup"
@@ -271,8 +270,8 @@
 
             <EditText
                 android:id="@+id/endingDateFilterEditText"
-                android:layout_width="148dp"
-                android:layout_height="40dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="21dp"
                 android:backgroundTint="@color/colorPrimary"
@@ -287,7 +286,7 @@
             <EditText
                 android:id="@+id/endingTimeFilterEditText"
                 android:layout_width="140dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="21dp"
                 android:backgroundTint="@color/colorPrimary"
@@ -311,8 +310,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/endingDateFilterImgView"
                 app:layout_constraintVertical_bias="0.083" />
 
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -320,10 +317,10 @@
         android:id="@+id/saveFilterBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="-40dp"
         android:background="@color/colorPrimary"
         android:text="@string/saveFilters"
-        android:textColor="@color/colorWhite"
-        android:layout_marginTop="-40dp"
-        android:layout_alignParentBottom="true"/>
+        android:textColor="@color/colorWhite" />
 
 </LinearLayout>

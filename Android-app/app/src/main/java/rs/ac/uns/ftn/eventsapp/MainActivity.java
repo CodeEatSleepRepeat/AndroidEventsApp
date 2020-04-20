@@ -1,10 +1,19 @@
 package rs.ac.uns.ftn.eventsapp;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -15,6 +24,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,8 +50,11 @@ import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int LAUNCH_FILTER_ACTIVITY = 1001;
+
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
+    private ChipGroup chipGroup;
     //private NoInternetDialog noInternetDialog;
 
     @Override
@@ -73,13 +87,12 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
-        if(getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)){
+        if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
             navigationView.getHeaderView(0).setVisibility(View.GONE);
             setNavigationListenerUnauthorizedUser(navigationView, toolbar);
-        }
-        else {
+        } else {
             setNavigationListenerAuthorizedUser(navigationView, toolbar);
         }
 
@@ -90,11 +103,23 @@ public class MainActivity extends AppCompatActivity {
                 onClickCreateEvent();
             }
         });
-/*
+
+        /*
         EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.fragment_view);
         viewPager.setAdapter(adapter);*/
-        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+        if (savedInstanceState == null) {
+            FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+
+            try {
+                FrameLayout frameLayout = findViewById(R.id.fragment_view);
+                View fragmentView = frameLayout.getChildAt(0);
+                chipGroup = fragmentView.findViewById(R.id.chipsGroup);
+                chipGroup.setVisibility(View.GONE);
+            } catch (Exception e) {
+            }
+
+        }
 
         FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
         fabMap.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 onClickMap();
             }
         });
-
     }
-
 
     private void setNavigationListenerUnauthorizedUser(NavigationView navigationView,
                                                        final Toolbar toolbar) {
@@ -115,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.navigation_item_settings_unauth:
-                        Toast.makeText(MainActivity.this , "Ojsa", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Ojsa", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_item_sign_in:
                         logout();
@@ -133,14 +156,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setNavigationListenerAuthorizedUser(NavigationView navigationView,
-                                                     final Toolbar toolbar){
+                                                     final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.navigation_item_create:
                         onClickCreateEvent();
                         break;
@@ -180,30 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCreateEvent();
-            }
-        });
-/*
-        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.fragment_view);
-        viewPager.setAdapter(adapter);*/
-        if (savedInstanceState==null) {
-            FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
-        }
-
-        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickMap();
-            }
-        });
-
     }
 
 
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -246,7 +245,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void onClickFilterImg() {
         Intent intent = new Intent(this, FilterEventsActivity.class);
-        startActivityForResult(intent, 1001);
+        String[] chipTexts;
+
+        if (chipGroup != null) {
+            chipTexts = new String[chipGroup.getChildCount() + 1];
+
+            //dodaj postojece chip-ove
+            for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                Chip chip = (Chip) chipGroup.getChildAt(i);
+                chipTexts[i + 1] = String.valueOf(chip.getText());
+            }
+        } else {
+            chipTexts = new String[1];
+        }
+        chipTexts[0] = String.valueOf(((TextView) findViewById(R.id.sortFilterTextView)).getText());
+
+        intent.putExtra("currentChips", chipTexts);
+        startActivityForResult(intent, LAUNCH_FILTER_ACTIVITY);
     }
 
     private void onClickMap() {
@@ -254,22 +269,22 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<EventForMapDTO> eventsForMap = new ArrayList<>();
         FragmentManager fm = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fm.getFragments();
-        if(fragments!=null){
-            for(Fragment f : fragments){
-                if(f!=null && f.isVisible()){
-                    if(f instanceof GoingEventsListFragment){
+        if (fragments != null) {
+            for (Fragment f : fragments) {
+                if (f != null && f.isVisible()) {
+                    if (f instanceof GoingEventsListFragment) {
                         items = ((GoingEventsListFragment) f).getItems();
-                    }else if(f instanceof HomeEventListFragment){
+                    } else if (f instanceof HomeEventListFragment) {
                         items = ((HomeEventListFragment) f).getItems();
-                    }else if(f instanceof InterestedEventsListFragment){
+                    } else if (f instanceof InterestedEventsListFragment) {
                         items = ((InterestedEventsListFragment) f).getItems();
-                    }else if(f instanceof MyEventsListFragment){
+                    } else if (f instanceof MyEventsListFragment) {
                         items = ((MyEventsListFragment) f).getItems();
                     }
                 }
             }
         }
-        for(Event item : items){
+        for (Event item : items) {
             eventsForMap.add(new EventForMapDTO(item.getEventId(), item.getEventName(), item.getLatitude(), item.getLongitude(), item.getEventImageURI()));
         }
         Intent intent = new Intent(this, MapActivity.class);
@@ -283,20 +298,149 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void onClickNavItem(Class<?> intentClass){
+    private void onClickNavItem(Class<?> intentClass) {
         //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_view, intentClass).commit();
         try {
             FragmentTransition.to((Fragment) intentClass.newInstance(), this, true);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d(this.getClass().getName(), "onClickNavItem: ");
             e.printStackTrace();
         }
     }
 
-    private void logout(){
+    private void logout() {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LAUNCH_FILTER_ACTIVITY) {
+            //filter vraca odgovor
+            if (resultCode == Activity.RESULT_OK) {
+                //user je podesio neke filtere
+
+                int dist = data.getIntExtra("DISTANCE", 100);
+                String sort = data.getStringExtra("SORT");
+                String[] category = data.getStringArrayExtra("CATEGORY");
+                Boolean privateEvents = data.getBooleanExtra("PRIVATE", true);
+
+                //priprema teksta za chips
+                ArrayList<String> chipTexts = new ArrayList<>();
+
+                if (dist > 0) {
+                    chipTexts.add(Integer.toString(dist) + "km");
+                }
+
+                for (String categoryItem : category) {
+                    chipTexts.add(categoryItem);
+                }
+
+                if (privateEvents) {
+                    chipTexts.add("Private events");
+                }
+
+                //setovanje sort by
+                switch (sort) {
+                    case "For you":
+                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Events for you");
+                        break;
+                    case "Recent":
+                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Recent events");
+                        break;
+                    default:
+                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Popular events");
+                        break;
+                }
+
+                //uklanjanje prethodnih chips-a
+                removeFilterChips();
+                //dodavanje novih chips-a
+                setFilterChips(chipTexts);
+            } else if (resultCode == Activity.RESULT_FIRST_USER) {
+                //user je kliknuo na brisanje svih filtera
+                removeFilterChips();
+            }
+        }
+    }
+
+    private void setFilterChips(ArrayList<String> chipTexts) {
+        try {
+            FrameLayout frameLayout = findViewById(R.id.fragment_view);
+            View fragmentView = frameLayout.getChildAt(0);
+            chipGroup = fragmentView.findViewById(R.id.chipsGroup);
+
+            for (String text : chipTexts) {
+                Chip mChip = (Chip) this.getLayoutInflater().inflate(R.layout.chip_item, null, false);
+                mChip.setText(text);
+                mChip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                            Chip chip = (Chip) chipGroup.getChildAt(i);
+                            if (chip.getText().equals(((Chip) v).getText())) {
+                                removeChip(chip);
+                                return;
+                            }
+                        }
+                    }
+                });
+                mChip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                            Chip chip = (Chip) chipGroup.getChildAt(i);
+                            if (chip.getText().equals(((Chip) v).getText())) {
+                                removeChip(chip);
+                                return;
+                            }
+                        }
+                    }
+                });
+                chipGroup.addView(mChip);
+            }
+
+            chipGroup.setVisibility(View.VISIBLE);
+
+        } catch (Exception e) {
+        }
+    }
+
+    private void removeChip(final Chip chip) {
+        FrameLayout frameLayout = findViewById(R.id.fragment_view);
+        View fragmentView = frameLayout.getChildAt(0);
+        @SuppressWarnings("ConstantConditions") final ChipGroup optionsList = chipGroup = fragmentView.findViewById(R.id.chipsGroup);
+        // Remove the chip with an animation
+        if (chip == null) return;
+        AlphaAnimation anim = new AlphaAnimation(1f, 0f);
+        anim.setDuration(250);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                chipGroup.removeView(chip);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        chip.startAnimation(anim);
+    }
+
+    private void removeFilterChips() {
+        try {
+            chipGroup.setVisibility(View.GONE);
+            chipGroup.removeAllViews();
+        } catch (Exception e) {
+        }
     }
 
     @Override

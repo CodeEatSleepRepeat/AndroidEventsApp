@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -17,30 +19,43 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
-import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    final Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
+
+    //distance
+    private TextView showProgress;
+    private SeekBar seekbar;
+
+    //sort
+    private RadioButton forYouFilterBtn;
+    private RadioButton recentFilterBtn;
+    private RadioButton popularFilterBtn;
+
+    //category
+    private CheckBox charityFilterRB;
+    private CheckBox educationalFilterRB;
+    private CheckBox talksFilterRB;
+    private CheckBox musicFilterRB;
+    private CheckBox partyFilterRB;
+    private CheckBox sportsFilterRB;
+
+    private CheckBox privateEventFilterCheckBox;
+
+    //calendar
     private EditText startingDateEditText;
     private EditText startingTimeEditText;
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
-
-    private TextView showProgress;
-    private SeekBar seekbar;
 
     private Button saveFilterBtn;
 
@@ -57,16 +72,16 @@ public class FilterEventsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
             }
         });
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId()==R.id.resetFilter){
+                if (item.getItemId() == R.id.resetFilter) {
                     //TODO: ovde resetuj filtere na pocetne vrednosti
                     Toast.makeText(getApplicationContext(), "Reset All Filters", Toast.LENGTH_SHORT).show();
-                    setResult(Activity.RESULT_CANCELED);
+                    setResult(Activity.RESULT_FIRST_USER);
                     finish();
                 }
                 return false;
@@ -76,10 +91,23 @@ public class FilterEventsActivity extends AppCompatActivity {
         showProgress = findViewById(R.id.kmFilterTextView);
         seekbar = findViewById(R.id.distanceFilterSeekBar);
 
+        forYouFilterBtn = findViewById(R.id.forYouFilterBtn);
+        recentFilterBtn = findViewById(R.id.recentFilterBtn);
+        popularFilterBtn = findViewById(R.id.popularFilterBtn);
+
+        charityFilterRB = findViewById(R.id.charityFilterRB);
+        educationalFilterRB = findViewById(R.id.educationalFilterRB);
+        talksFilterRB = findViewById(R.id.talksFilterRB);
+        musicFilterRB = findViewById(R.id.musicFilterRB);
+        partyFilterRB = findViewById(R.id.partyFilterRB);
+        sportsFilterRB = findViewById(R.id.sportsFilterRB);
+
         startingDateEditText = findViewById(R.id.startingDateFilterEditText);
         startingTimeEditText = findViewById(R.id.startingTimeFilterEditText);
         endingDateEditText = findViewById(R.id.endingDateFilterEditText);
         endingTimeEditText = findViewById(R.id.endingTimeFilterEditText);
+
+        privateEventFilterCheckBox = findViewById(R.id.privateEventFilterCheckBox);
 
         /*
          * Listener koji se odnosi na kalendar
@@ -206,45 +234,109 @@ public class FilterEventsActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
 
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("DISTANCE", 12);
-                returnIntent.putExtra("SORT", "FOR_YOU");
-                returnIntent.putExtra("CATEGORY", new String[]{"Music","Party","Sports"});
-                returnIntent.putExtra("PRIVATE",true);
+                returnIntent.putExtra("DISTANCE", seekbar.getProgress());
+                returnIntent.putExtra("SORT", getSortValue());
+                returnIntent.putExtra("CATEGORY", getCategory());
+                //TODO: dodati i za datume isto ovo
+
+                returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
 
+        if (getIntent() != null)
+            setStateViaChips(getIntent());
+
     }
 
-    /*
-    private void onClickCategoryBtn(int id) {
-        switch (id) {
-            case R.id.forYouFilterBtn:
-                forYouBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                forYouBtn.setTextColor(getResources().getColor(R.color.colorWhite));
-                recentBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                recentBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                popularBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                popularBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                break;
-            case R.id.recentFilterBtn:
-                recentBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                recentBtn.setTextColor(getResources().getColor(R.color.colorWhite));
-                forYouBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                forYouBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                popularBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                popularBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                break;
-            case R.id.popularFilterBtn:
-                popularBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                popularBtn.setTextColor(getResources().getColor(R.color.colorWhite));
-                recentBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                recentBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                forYouBtn.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                forYouBtn.setTextColor(getResources().getColor(R.color.colorBlack));
-                break;
+    private void setStateViaChips(Intent savedIntent) {
+        String[] chips = savedIntent.getStringArrayExtra("currentChips");
+
+        charityFilterRB.setChecked(false);
+        educationalFilterRB.setChecked(false);
+        talksFilterRB.setChecked(false);
+        musicFilterRB.setChecked(false);
+        partyFilterRB.setChecked(false);
+        sportsFilterRB.setChecked(false);
+        privateEventFilterCheckBox.setChecked(false);
+
+        //TODO: dodati i za kalendar
+        for (String chipText : chips) {
+            if (chipText.endsWith("km")) {
+                //distance
+                seekbar.setProgress(Integer.parseInt(chipText.substring(0, chipText.length() - 2)));
+                continue;
+            } else {
+                switch (chipText) {
+                    case "Events for you":
+                        forYouFilterBtn.setChecked(true);
+                        recentFilterBtn.setChecked(false);
+                        popularFilterBtn.setChecked(false);
+                        break;
+                    case "Recent events":
+                        forYouFilterBtn.setChecked(false);
+                        recentFilterBtn.setChecked(true);
+                        popularFilterBtn.setChecked(false);
+                        break;
+                    case "Popular events":
+                        forYouFilterBtn.setChecked(false);
+                        recentFilterBtn.setChecked(false);
+                        popularFilterBtn.setChecked(true);
+                        break;
+                    case "Charity":
+                        charityFilterRB.setChecked(true);
+                        break;
+                    case "Educational":
+                        educationalFilterRB.setChecked(true);
+                        break;
+                    case "Talks":
+                        talksFilterRB.setChecked(true);
+                        break;
+                    case "Music":
+                        musicFilterRB.setChecked(true);
+                        break;
+                    case "Party":
+                        partyFilterRB.setChecked(true);
+                        break;
+                    case "Sports":
+                        sportsFilterRB.setChecked(true);
+                        break;
+                    case "Private events":
+                        privateEventFilterCheckBox.setChecked(true);
+                    default:
+                        break;
+                }//switch-case
+            }//if-else
+        }//for
+
+    }
+
+    private String getSortValue() {
+        if (forYouFilterBtn.isChecked()) {
+            return "For you";
         }
-    }*/
+        if (recentFilterBtn.isChecked()) {
+            return "Recent";
+        }
+        return "Popular";
+    }
+
+    private String[] getCategory() {
+        ArrayList<String> array = new ArrayList<>();
+
+        if (charityFilterRB.isChecked()) array.add("Charity");
+        if (educationalFilterRB.isChecked()) array.add("Educational");
+        if (talksFilterRB.isChecked()) array.add("Talks");
+        if (musicFilterRB.isChecked()) array.add("Music");
+        if (partyFilterRB.isChecked()) array.add("Party");
+        if (sportsFilterRB.isChecked()) array.add("Sports");
+
+        String[] list = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            list[i] = array.get(i);
+        }
+        return list;
+    }
 }
