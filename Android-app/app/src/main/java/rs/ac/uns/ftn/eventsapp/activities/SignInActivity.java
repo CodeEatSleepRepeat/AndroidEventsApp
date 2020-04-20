@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 
 import android.content.Intent;
@@ -10,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class SignInActivity extends AppCompatActivity {
+
+    public static String IS_ANONYMOUS = "IS_ANONYMOUS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,10 @@ public class SignInActivity extends AppCompatActivity {
 
     private void goToMainWindowAsUnauthorized(){
         //TODO: Go to main window.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(IS_ANONYMOUS, true);
+        startActivity(intent);
     }
 
 }

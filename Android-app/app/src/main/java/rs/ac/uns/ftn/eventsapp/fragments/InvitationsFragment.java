@@ -13,7 +13,11 @@ import android.view.ViewGroup;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 
+import java.util.ArrayList;
+
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.Invitation;
+import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
 
 
@@ -53,11 +57,10 @@ public class InvitationsFragment extends Fragment {
         RecyclerView recyclerView =
                 getActivity().findViewById(R.id.recyclerview_fragment_invitations);
 
-        adapter.add(new InvitationItem());
-        adapter.add(new InvitationItem());
-        adapter.add(new InvitationItem());
-        adapter.add(new InvitationItem());
-        adapter.add(new InvitationItem());
+        ArrayList<Invitation> invitations = TestMockup.invitations;
+        for(Invitation invitation : invitations){
+            adapter.add(new InvitationItem(invitation));
+        }
 
         recyclerView.setAdapter(adapter);
     }

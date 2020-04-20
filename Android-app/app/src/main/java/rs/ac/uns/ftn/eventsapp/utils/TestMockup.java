@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class TestMockup {
 
     public static final ArrayList<Event> events = new ArrayList<>();
     public static final ArrayList<User> users = new ArrayList<>();
+    public static final ArrayList<Invitation> invitations = new ArrayList<>();
 
 
     private static final TestMockup ourInstance = new TestMockup();
@@ -49,6 +51,9 @@ public class TestMockup {
         Invitation i1 = new Invitation(1l, u1, u2, e1, InvitationStatus.ACCEPTED);
         Invitation i2 = new Invitation(1l, u2, u3, e1, InvitationStatus.ACCEPTED);
         Invitation i3 = new Invitation(1l, u3, u1, e2, InvitationStatus.PENDING);
+        invitations.add(i1);
+        invitations.add(i2);
+        invitations.add(i3);
 
         ArrayList<Invitation> u1Inv = new ArrayList<>();
         ArrayList<Invitation> u2Inv = new ArrayList<>();

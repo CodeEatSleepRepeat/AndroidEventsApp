@@ -121,18 +121,19 @@
                 app:layout_constraintTop_toTopOf="@+id/btn_select_photo_register"
                 app:layout_constraintVertical_bias="1.0" />
 
-            <ImageView
-                android:id="@+id/image_facebook_login_register"
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="@string/title_facebook_logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/text_register_with_social_media_registration"
                 app:layout_constraintStart_toStartOf="@+id/text_register_with_social_media_registration"
-                app:layout_constraintTop_toBottomOf="@+id/text_register_with_social_media_registration"
-                app:srcCompat="@drawable/ic_facebook_logo" />
+                app:layout_constraintTop_toBottomOf="@+id/text_register_with_social_media_registration"/>
+
 
             <TextView
                 android:id="@+id/text_register_with_social_media_registration"
