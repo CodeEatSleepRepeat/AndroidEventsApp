@@ -1,5 +1,4 @@
 package rs.ac.uns.ftn.eventsapp;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +17,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +26,8 @@ import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
-import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.InterestedEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
@@ -42,14 +40,28 @@ import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    private Toolbar toolbar;
+    //private NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //ovo je super za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta -> etapa 3
+        /*noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                //.setBgGradientEnd(getResources().getColor(R.color.colorBlack)) // End color for background gradient
+                //.setButtonColor(R.color.colorWhite) // Set custom color for dialog buttons
+                //.setButtonTextColor(R.color.colorWhite) // Set custom text color for dialog buttons
+                //.setButtonIconsColor(R.color.colorWhite) // Set custom color for icons of dialog buttons
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(false)
+                .build();*/
 
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
@@ -61,6 +73,68 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        if(getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
+            navigationView.getHeaderView(0).setVisibility(View.GONE);
+            setNavigationListenerUnauthorizedUser(navigationView, toolbar);
+        }
+        else {
+            setNavigationListenerAuthorizedUser(navigationView, toolbar);
+        }
+
+        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickCreateEvent();
+            }
+        });
+/*
+        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.fragment_view);
+        viewPager.setAdapter(adapter);*/
+        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+
+        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
+
+    }
+
+
+    private void setNavigationListenerUnauthorizedUser(NavigationView navigationView,
+                                                       final Toolbar toolbar) {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()){
+                    case R.id.navigation_item_settings_unauth:
+                        Toast.makeText(MainActivity.this , "Ojsa", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.navigation_item_sign_in:
+                        logout();
+                        break;
+                    default:
+                        Toast.makeText(MainActivity.this, menuItem.getItemId(), Toast.LENGTH_LONG).show();
+                        return false;
+                }
+
+                return true;
+            }
+        });
+    }
+
+
+    private void setNavigationListenerAuthorizedUser(NavigationView navigationView,
+                                                     final Toolbar toolbar){
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -107,33 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(findViewById(R.id.coordinator), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
-                    }
-                }).show();
-            }
-        });
-/*
-        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.fragment_view);
-        viewPager.setAdapter(adapter);*/
-        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
-
-        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickMap();
-            }
-        });
-
     }
 
 
@@ -225,8 +272,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout(){
         Intent intent = new Intent(this, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //noInternetDialog.onDestroy();
+    }
 }
+
+
