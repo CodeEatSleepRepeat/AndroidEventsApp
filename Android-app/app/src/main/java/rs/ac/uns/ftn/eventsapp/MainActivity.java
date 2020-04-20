@@ -61,73 +61,6 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
-        if(getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)){
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
-            navigationView.getHeaderView(0).setVisibility(View.GONE);
-            setNavigationListenerUnauthorizedUser(navigationView, toolbar);
-        }
-        else {
-            setNavigationListenerAuthorizedUser(navigationView, toolbar);
-        }
-
-
-        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(findViewById(R.id.coordinator), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
-                    }
-                }).show();
-            }
-        });
-/*
-        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.fragment_view);
-        viewPager.setAdapter(adapter);*/
-        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
-
-        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickMap();
-            }
-        });
-
-    }
-
-    private void setNavigationListenerUnauthorizedUser(NavigationView navigationView,
-                                                       final Toolbar toolbar) {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-                mDrawerLayout.closeDrawers();
-
-                switch (menuItem.getItemId()){
-                    case R.id.navigation_item_settings_unauth:
-                        Toast.makeText(MainActivity.this , "Ojsa", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.navigation_item_sign_in:
-                        logout();
-                        break;
-                    default:
-                        Toast.makeText(MainActivity.this, menuItem.getItemId(), Toast.LENGTH_LONG).show();
-                        return false;
-                }
-
-                return true;
-            }
-        });
-    }
-
-
-    private void setNavigationListenerAuthorizedUser(NavigationView navigationView,
-                                                     final Toolbar toolbar){
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -174,6 +107,33 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(findViewById(R.id.coordinator), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
+                    }
+                }).show();
+            }
+        });
+/*
+        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.fragment_view);
+        viewPager.setAdapter(adapter);*/
+        FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
+
+        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
+
     }
 
 
@@ -265,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout(){
         Intent intent = new Intent(this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

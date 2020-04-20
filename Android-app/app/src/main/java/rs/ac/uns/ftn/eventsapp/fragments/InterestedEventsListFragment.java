@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,14 +37,14 @@ public class InterestedEventsListFragment extends Fragment {
         // TODO: data goes here
         items = TestMockup.getInstance().events;
         ArrayList<Event> temp = new ArrayList<>();
-        for (Event e : items){
-            if (e.getAuthor().getUserId()!=1l){
+        for (Event e : items) {
+            if (e.getAuthor().getUserId() != 1l) {
                 temp.add(e);
             }
         }
         items = temp;
 
-        View v =  inflater.inflate(R.layout.fragment_list_view, container, false);
+        View v = inflater.inflate(R.layout.fragment_list_view, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext()));
@@ -51,7 +52,13 @@ public class InterestedEventsListFragment extends Fragment {
         return v;
     }
 
-    public ArrayList<Event> getItems(){
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_interested);
+    }
+
+    public ArrayList<Event> getItems() {
         return items;
     }
 }

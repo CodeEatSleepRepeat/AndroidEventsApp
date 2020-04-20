@@ -9,14 +9,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:theme"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activities.MapActivity"
@@ -32,7 +31,7 @@
                 android:value=".activities.LatestMessagesActivity" />
         </activity>
         <activity android:name=".activities.LatestMessagesActivity" />
-        <activity android:name=".activities.ListOfFriendsActivity"/>
+        <activity android:name=".activities.ListOfFriendsActivity"></activity>
         <activity android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.RegisterActivity"
@@ -49,7 +48,8 @@
             android:label="@string/createEvent" />
         <activity
             android:name=".activities.FilterEventsActivity"
-            android:label="@string/filter_events" />
+            android:label="@string/filter_events"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -62,13 +62,19 @@
             android:name=".activities.SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.NoInternetActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 

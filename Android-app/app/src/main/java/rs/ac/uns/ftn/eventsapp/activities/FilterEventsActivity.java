@@ -1,10 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -12,6 +11,10 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,6 +24,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
     final Calendar calendar = Calendar.getInstance();
     private EditText startingDateEditText;
     private EditText startingTimeEditText;
@@ -30,15 +34,35 @@ public class FilterEventsActivity extends AppCompatActivity {
     private TextView showProgress;
     private SeekBar seekbar;
 
-    private Button forYouBtn;
-    private Button recentBtn;
-    private Button popularBtn;
+    private Button saveFilterBtn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_events);
+
+        toolbar = findViewById(R.id.toolbarFilter);
+        toolbar.setTitle(getString(R.string.filter_events));
+        toolbar.inflateMenu(R.menu.menu_filter);
+        toolbar.setNavigationIcon(R.drawable.ic_close_white);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: ovde zatvori filter activity
+                Toast.makeText(getApplicationContext(), "Close Filter Activity", Toast.LENGTH_SHORT).show();
+            }
+        });
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId()==R.id.resetFilter){
+                    //TODO: ovde resetuj filtere na pocetne vrednosti
+                    Toast.makeText(getApplicationContext(), "Reset All Filters", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
 
         showProgress = findViewById(R.id.kmFilterTextView);
         seekbar = findViewById(R.id.distanceFilterSeekBar);
@@ -49,9 +73,9 @@ public class FilterEventsActivity extends AppCompatActivity {
         endingTimeEditText = findViewById(R.id.endingTimeFilterEditText);
 
         /*
-        * Listener koji se odnosi na kalendar
-        * Postavlja izabrani pocetni datum u edit text
-        * */
+         * Listener koji se odnosi na kalendar
+         * Postavlja izabrani pocetni datum u edit text
+         * */
         final DatePickerDialog.OnDateSetListener startingDate = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -65,9 +89,9 @@ public class FilterEventsActivity extends AppCompatActivity {
         };
 
         /*
-        * Listener koji se odnosi na time picker
-        * Postavlja izabrano pocetno vreme u edit box
-        * */
+         * Listener koji se odnosi na time picker
+         * Postavlja izabrano pocetno vreme u edit box
+         * */
         final TimePickerDialog.OnTimeSetListener startingTime = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -148,32 +172,6 @@ public class FilterEventsActivity extends AppCompatActivity {
             }
         });
 
-        forYouBtn = findViewById(R.id.forYouFilterBtn);
-        recentBtn = findViewById(R.id.recentFilterBtn);
-        popularBtn = findViewById(R.id.popularFilterBtn);
-
-        forYouBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCategoryBtn(forYouBtn.getId());
-            }
-        });
-
-        recentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCategoryBtn(recentBtn.getId());
-            }
-        });
-
-        popularBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCategoryBtn(popularBtn.getId());
-            }
-        });
-
-
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -191,8 +189,18 @@ public class FilterEventsActivity extends AppCompatActivity {
             }
         });
 
+        saveFilterBtn = findViewById(R.id.saveFilterBtn);
+        saveFilterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Ovde se vade podaci koje je korisnik izabrao i proverava se validnost unetih podataka
+                Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
+    /*
     private void onClickCategoryBtn(int id) {
         switch (id) {
             case R.id.forYouFilterBtn:
@@ -220,5 +228,5 @@ public class FilterEventsActivity extends AppCompatActivity {
                 forYouBtn.setTextColor(getResources().getColor(R.color.colorBlack));
                 break;
         }
-    }
+    }*/
 }

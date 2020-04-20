@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -49,6 +50,12 @@ public class GoingEventsListFragment extends Fragment {
         recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext()));
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_going);
     }
 
     public ArrayList<Event> getItems(){
