@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/home_screen">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group_user_event_management" android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_create"
             android:icon="@drawable/ic_add_event"

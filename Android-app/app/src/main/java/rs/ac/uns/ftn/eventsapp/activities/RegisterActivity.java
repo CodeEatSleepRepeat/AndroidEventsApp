@@ -20,7 +20,6 @@ public class RegisterActivity extends AppCompatActivity {
         Button btnRegister = findViewById(R.id.btn_register_register);
         Button btnSelectImage = findViewById(R.id.btn_select_photo_register);
         TextView textAlreadyHaveAccount = findViewById(R.id.text_already_have_an_account_register);
-        ImageView imageFacebookLogin = findViewById(R.id.image_facebook_login_register);
 
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -44,18 +43,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        imageFacebookLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerWithFacebook();
-            }
-        });
 
     }
 
-    private void registerWithFacebook() {
-        // TODO: Registration with facebook token
-    }
 
     private void goToLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);

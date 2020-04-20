@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
@@ -25,10 +26,13 @@ import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 public class InvitationItem extends Item<GroupieViewHolder> {
 
     private Invitation invitation;
+    private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+
 
     // TODO: Na ulaz treba da ide invitacija objekat
-    public InvitationItem(){
-
+    public InvitationItem(Invitation invitation){
+        //postavljanje mockap objekta
+        this.invitation = invitation;
     }
 
     @Override
@@ -43,14 +47,15 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         setOnClickListeners(viewHolder);
         // TODO: Ovde postaviti pravi url lol :D
         Picasso.get()
-                .load(R.drawable.ic_facebook_logo)
+                .load(invitation.getEvent().getEventImageURI())
                 .placeholder(R.drawable.ic_facebook_logo)
                 .error(R.drawable.ic_facebook_logo)
                 .into(eventImage);
 
-        eventName.setText("Kobasicijada u Turiji");
-        userUsername.setText("Invited by: Nesa Sibirski Tigar");
-        eventDate.setText("29.02.2020");
+        eventName.setText(invitation.getEvent().getEventName());
+        userUsername.setText("Invited by: " + invitation.getInvitationSender().getUserName());
+        eventDate.setText(formatter.format(invitation.getEvent().getStartTime()));
+
     }
 
     @Override
@@ -112,8 +117,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     private void goToEventDetail(Context context){
         Intent detailsIntent = new Intent(context, ShowEventDetailsActivity.class);
 
-        //final Event e = invitation.getEvent();
-        final Event e = TestMockup.events.get(1);
+        final Event e = invitation.getEvent();
         detailsIntent.putExtra("id", e.getEventId());
         detailsIntent.putExtra("name", e.getEventName());
         detailsIntent.putExtra("description", e.getEventDescription());

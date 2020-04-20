@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/home_screen">
+
+
+    <item android:title="@string/nav_account">
+        <menu>
+            <item
+                android:id="@+id/navigation_item_settings_unauth"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/nav_settings" />
+            <item
+                android:id="@+id/navigation_item_sign_in"
+                android:icon="@drawable/ic_sign_in_black_24dp"
+                android:title="@string/nav_item_sign_in" />
+        </menu>
+    </item>
+
+</menu>
