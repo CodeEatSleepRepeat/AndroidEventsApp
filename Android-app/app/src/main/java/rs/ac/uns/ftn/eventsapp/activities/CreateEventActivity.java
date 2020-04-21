@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
 
@@ -40,8 +43,17 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
 
+    private CheckBox charityCB;
+    private CheckBox educationalCB;
+    private CheckBox talksCB;
+    private CheckBox musicCB;
+    private CheckBox partyCB;
+    private CheckBox sportsCB;
+
     private static final int GALLERY_REQUEST=123;
     private ImageView imgView;
+    private ImageView clearImage;
+    private FrameLayout imageHolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +65,76 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         startingTimeEditText = findViewById(R.id.startingTimeCreateEventEditText);
         endingDateEditText = findViewById(R.id.endingDateCreateEventEditText);
         endingTimeEditText = findViewById(R.id.endingTimeCreateEventEditText);
+
+        charityCB = findViewById(R.id.charityCreateEventRB);
+        educationalCB = findViewById(R.id.educationalCreateEventRB);
+        talksCB = findViewById(R.id.talksCreateEventRB);
+        musicCB = findViewById(R.id.musicCreateEventRB);
+        partyCB = findViewById(R.id.partyCreateEventRB);
+        sportsCB = findViewById(R.id.sportsCreateEventRB);
+
+        charityCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                educationalCB.setChecked(false);
+                talksCB.setChecked(false);
+                musicCB.setChecked(false);
+                partyCB.setChecked(false);
+                sportsCB.setChecked(false);
+            }
+        });
+        educationalCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                charityCB.setChecked(false);
+                talksCB.setChecked(false);
+                musicCB.setChecked(false);
+                partyCB.setChecked(false);
+                sportsCB.setChecked(false);
+            }
+        });
+        talksCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                educationalCB.setChecked(false);
+                charityCB.setChecked(false);
+                musicCB.setChecked(false);
+                partyCB.setChecked(false);
+                sportsCB.setChecked(false);
+            }
+        });
+        musicCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                educationalCB.setChecked(false);
+                talksCB.setChecked(false);
+                charityCB.setChecked(false);
+                partyCB.setChecked(false);
+                sportsCB.setChecked(false);
+            }
+        });
+        partyCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                educationalCB.setChecked(false);
+                talksCB.setChecked(false);
+                musicCB.setChecked(false);
+                charityCB.setChecked(false);
+                sportsCB.setChecked(false);
+            }
+        });
+        sportsCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                educationalCB.setChecked(false);
+                talksCB.setChecked(false);
+                musicCB.setChecked(false);
+                partyCB.setChecked(false);
+                charityCB.setChecked(false);
+            }
+        });
+
+
 
         /*
          * Listener koji se odnosi na kalendar
@@ -159,13 +241,24 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         * Klikom na sliku se salje intent(zahtev) za izbor slike
         * */
         imgView = findViewById(R.id.eventImageCreateEventImgView);
-        imgView.setOnClickListener(new View.OnClickListener() {
+        imageHolder = findViewById(R.id.imageHolderCreateEvent);
+        imageHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select an image"), GALLERY_REQUEST);
+            }
+        });
+
+        clearImage = findViewById(R.id.clearImageCreateEvent);
+        clearImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.cameraImageView).setVisibility(View.VISIBLE);
+                findViewById(R.id.addPhotoTextView).setVisibility(View.VISIBLE);
+                imgView.setImageURI(null);
             }
         });
     }
@@ -178,7 +271,10 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null){
             Uri imageData = data.getData();
+            findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
+            findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
             imgView.setImageURI(imageData);
+            clearImage.bringToFront();
         }
     }
 

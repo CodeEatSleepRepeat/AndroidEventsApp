@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -109,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.fragment_view);
         viewPager.setAdapter(adapter);*/
         if (savedInstanceState == null) {
-            FragmentTransition.to(HomeEventListFragment.newInstance(), this, false);
-
             try {
+                FragmentTransition.to(HomeEventListFragment.class.newInstance(), this, false);
+
                 FrameLayout frameLayout = findViewById(R.id.fragment_view);
                 View fragmentView = frameLayout.getChildAt(0);
                 chipGroup = fragmentView.findViewById(R.id.chipsGroup);
@@ -155,11 +156,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setNavigationListenerAuthorizedUser(NavigationView navigationView,
+    private void setNavigationListenerAuthorizedUser(final NavigationView navigationView,
                                                      final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                clearCheckedItems(navigationView.getMenu());
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
@@ -205,6 +207,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deselect all menu items in navigation drawer
+     * @param menu
+     */
+    private void clearCheckedItems(@NonNull final Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.hasSubMenu()) {
+                clearCheckedItems(item.getSubMenu());
+            } else {
+                item.setChecked(false);
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -238,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (chipGroup != null && chipGroup.getChildCount() != 0) {
+            //TODO: Dodati unistavanje filtera kad se klikne back
+            removeFilterChips();
         } else {
             super.onBackPressed();
         }

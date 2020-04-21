@@ -77,6 +77,6 @@ public class UserDetailActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_user_details);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new EventListRecyclerView(items, this));
+        recyclerView.setAdapter(new EventListRecyclerView(items, this, R.layout.event_list_row));
     }
 }

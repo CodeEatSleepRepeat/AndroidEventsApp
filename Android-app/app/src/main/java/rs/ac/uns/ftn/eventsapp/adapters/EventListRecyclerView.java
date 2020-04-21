@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -24,16 +25,18 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
     private List<Event> mItems;
     private Context context;
+    private int listRowResourceLayout;
     private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
-    public EventListRecyclerView(List<Event> items, Context context) {
+    public EventListRecyclerView(List<Event> items, Context context, @NonNull int listRowResourceLayout) {
         mItems = items;
         this.context = context;
+        this.listRowResourceLayout = listRowResourceLayout;
     }
 
     @Override
     public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.event_list_row, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(listRowResourceLayout, viewGroup, false);
 
         return new EventViewHolder(v);
     }

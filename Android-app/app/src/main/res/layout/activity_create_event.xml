@@ -7,28 +7,28 @@
     tools:context=".activities.CreateEventActivity">
 
     <ScrollView
+        android:id="@+id/scrollViewCreateEvent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollViewCreateEvent">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/endingDateCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/startingDateCreateEventEditText"
                 android:layout_marginStart="11dp"
                 android:layout_marginTop="12dp"
                 android:layout_toEndOf="@+id/endingDateCreateEventImgView"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/endingDateFilter"
                 android:inputType="date" />
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/endingDateCreateEventImgView"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="22dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/privateEventCreateEvent" />
 
@@ -46,70 +46,94 @@
                 android:id="@+id/endingDateCreateEventImgView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_below="@id/startingDateCreateEventImgView"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="33dp"
-                app:srcCompat="@drawable/ic_calendar"
-                android:layout_below="@id/startingDateCreateEventImgView"/>
+                app:srcCompat="@drawable/ic_calendar" />
 
             <EditText
                 android:id="@+id/startingTimeCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView"
-                android:layout_marginStart="-1dp"
-                android:layout_marginTop="72dp"
-                android:layout_toEndOf="@+id/startingDateCreateEventEditText"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="90dp"
+                android:layout_marginEnd="30dp"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/startingTimeFilter"
                 android:inputType="time" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/endingTimeCreateEventEditText"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toStartOf="@+id/endingTimeCreateEventEditText"
+                android:layout_toEndOf="@+id/endingDateCreateEventEditText"
+                android:gravity="center"
+                android:text="at"/>
+
             <EditText
                 android:id="@+id/endingTimeCreateEventEditText"
-                android:layout_width="155dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/startingTimeCreateEventEditText"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="13dp"
-                android:layout_toEndOf="@+id/endingDateCreateEventEditText"
+                android:layout_alignEnd="@+id/startingTimeCreateEventEditText"
+                android:layout_marginTop="12dp"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/endingTimeFilter"
                 android:inputType="time" />
 
             <EditText
                 android:id="@+id/startingDateCreateEventEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView"
                 android:layout_marginStart="11dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="90dp"
                 android:layout_toEndOf="@+id/startingDateCreateEventImgView"
                 android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
                 android:clickable="true"
+                android:ems="10"
                 android:focusable="false"
                 android:hint="@string/startingDateFilter"
                 android:inputType="date" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/startingTimeCreateEventEditText"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toStartOf="@+id/startingTimeCreateEventEditText"
+                android:layout_toEndOf="@+id/startingDateCreateEventEditText"
+                android:gravity="center"
+                android:text="at"/>
 
             <ImageView
                 android:id="@+id/startingDateCreateEventImgView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="90dp"
-                app:srcCompat="@drawable/ic_calendar"
-                android:layout_below="@id/categoryCreateEventTextView"/>
+                android:layout_below="@id/categoryCreateEventTextView"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="26dp"
+                android:layout_marginTop="102dp"
+                app:srcCompat="@drawable/ic_calendar" />
 
             <TextView
                 android:id="@+id/selectLocationTextView"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:text="Select a location"
+                android:textAlignment="center"
                 android:textSize="25dp" />
 
             <rs.ac.uns.ftn.eventsapp.fragments.CustomMapView
@@ -122,22 +146,28 @@
                 android:id="@+id/eventNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/createEventMapView"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:hint="@string/eventName"
-                android:inputType="textPersonName"
-                android:layout_below="@id/createEventMapView"/>
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/eventDescriptionEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/eventNameEditText"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="@string/eventDescription"
-                android:inputType="textMultiLine"
-                android:layout_below="@id/eventNameEditText"/>
+                android:inputType="textMultiLine" />
 
             <TextView
                 android:id="@+id/categoryCreateEventTextView"
@@ -146,6 +176,7 @@
                 android:layout_below="@id/eventDescriptionEditText"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="18dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/categoryFilter" />
 
             <RadioGroup
@@ -153,66 +184,101 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <RadioButton
-                        android:id="@+id/educationalCreateEventRB"
-                        android:layout_width="135dp"
-                        android:layout_height="35dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/educational"
-                        app:layout_constraintStart_toEndOf="@+id/talksCreateEventRB"
-                        app:layout_constraintTop_toBottomOf="@+id/partyCreateEventRB" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
-                    <RadioButton
-                        android:id="@+id/talksCreateEventRB"
-                        android:layout_width="135dp"
-                        android:layout_height="35dp"
-                        android:layout_marginStart="16dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/talks"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/musicCreateEventRB" />
+                        <CheckBox
+                            android:id="@+id/charityCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="-2dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/charity"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toEndOf="@+id/educationalCreateEventRB"
+                            app:layout_constraintTop_toBottomOf="@+id/sportsCreateEventRB" />
 
-                    <RadioButton
-                        android:id="@+id/sportsCreateEventRB"
-                        android:layout_width="120dp"
-                        android:layout_height="35dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/sports"
-                        app:layout_constraintStart_toEndOf="@+id/partyCreateEventRB"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        <CheckBox
+                            android:id="@+id/educationalCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="-2dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/educational"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toEndOf="@+id/talksCreateEventRB"
+                            app:layout_constraintTop_toBottomOf="@+id/partyCreateEventRB" />
 
-                    <RadioButton
-                        android:id="@+id/musicCreateEventRB"
-                        android:layout_width="135dp"
-                        android:layout_height="35dp"
-                        android:layout_marginStart="16dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/music"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        <CheckBox
+                            android:id="@+id/talksCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/talks"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/musicCreateEventRB" />
 
-                    <RadioButton
-                        android:id="@+id/partyCreateEventRB"
-                        android:layout_width="135dp"
-                        android:layout_height="35dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/party"
-                        app:layout_constraintStart_toEndOf="@+id/musicCreateEventRB"
-                        app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
 
-                    <RadioButton
-                        android:id="@+id/charityCreateEventRB"
-                        android:layout_width="120dp"
-                        android:layout_height="35dp"
-                        android:buttonTint="@color/colorPrimary"
-                        android:text="@string/charity"
-                        app:layout_constraintStart_toEndOf="@+id/educationalCreateEventRB"
-                        app:layout_constraintTop_toBottomOf="@+id/sportsCreateEventRB" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:gravity="center">
+
+                        <CheckBox
+                            android:id="@+id/musicCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="-2dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/music"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <CheckBox
+                            android:id="@+id/partyCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="-2dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/party"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toEndOf="@+id/musicCreateEventRB"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <CheckBox
+                            android:id="@+id/sportsCreateEventRB"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/filter_radio_btn"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="@string/sports"
+                            android:textColor="@drawable/filter_radio_btn_text"
+                            app:layout_constraintStart_toEndOf="@+id/partyCreateEventRB"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+                </LinearLayout>
 
             </RadioGroup>
 
@@ -220,21 +286,59 @@
                 android:id="@+id/createEventBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/eventImageCreateEventImgView"
+                android:layout_below="@id/imageHolderCreateEvent"
                 android:layout_marginTop="50dp"
-                android:text="@string/createEvent"
                 android:backgroundTint="@color/colorPrimary"
-                android:textColor="@color/colorWhite"/>
+                android:text="@string/createEvent"
+                android:textColor="@color/colorWhite" />
 
-            <ImageView
-                android:id="@+id/eventImageCreateEventImgView"
-                android:layout_width="217dp"
-                android:layout_height="177dp"
-                android:layout_marginStart="100dp"
-                android:background="@color/colorGray"
+            <FrameLayout
+                android:id="@+id/imageHolderCreateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
                 android:layout_below="@id/privateEventCreateEventCB"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="30dp"
-                app:srcCompat="@drawable/ic_add_photo_camera" />
+                android:layout_marginRight="16dp"
+                android:background="@color/colorGray"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/clearImageCreateEvent"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="5dp"
+                    android:layout_gravity="right"
+                    android:src="@drawable/ic_close_white"/>
+
+                <ImageView
+                    android:id="@+id/eventImageCreateEventImgView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:id="@+id/cameraImageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_add_photo_camera"/>
+
+                <TextView
+                    android:id="@+id/addPhotoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_gravity="center"
+                    android:text="ADD COVER PHOTO" />
+
+
+            </FrameLayout>
+
 
         </RelativeLayout>
     </ScrollView>

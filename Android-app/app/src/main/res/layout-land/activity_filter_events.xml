@@ -230,7 +230,7 @@
 
             <EditText
                 android:id="@+id/startingDateFilterEditText"
-                android:layout_width="148dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
@@ -245,7 +245,7 @@
 
             <EditText
                 android:id="@+id/startingTimeFilterEditText"
-                android:layout_width="140dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimary"
@@ -272,8 +272,8 @@
                 android:id="@+id/endingDateFilterEditText"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:clickable="true"
                 android:ems="10"
@@ -285,10 +285,9 @@
 
             <EditText
                 android:id="@+id/endingTimeFilterEditText"
-                android:layout_width="140dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:clickable="true"
                 android:ems="10"

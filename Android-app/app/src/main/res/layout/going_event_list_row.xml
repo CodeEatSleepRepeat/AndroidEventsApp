@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/event_invitation"
+    android:id="@+id/event_list_view"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:layout_marginEnd="8dp"
     android:orientation="vertical"
     android:padding="8dp">
 
     <LinearLayout
-        android:id="@+id/event_invitation_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/image_event_item_invitation"
+            android:id="@+id/event_list_image"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:padding="5dp"
@@ -27,7 +25,7 @@
             android:paddingTop="5dp">
 
             <TextView
-                android:id="@+id/text_event_name_item_invitation"
+                android:id="@+id/event_list_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
@@ -36,28 +34,27 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/text_invited_user_name_item_invitation"
+                android:id="@+id/event_list_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:text="Invited by: Veljko N95"
+                android:text="Event Address"
                 android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-
                 android:paddingLeft="3dp">
 
                 <ImageView
-                    android:id="@+id/image_calendar_item_invitation"
+                    android:id="@+id/event_list_calendar"
                     android:layout_width="20dp"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_calendar" />
 
                 <TextView
-                    android:id="@+id/text_event_date_item_invitation"
+                    android:id="@+id/event_list_start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -65,8 +62,6 @@
                     android:text="Event Start Date"
                     android:textSize="14sp" />
             </LinearLayout>
-
-
         </LinearLayout>
 
     </LinearLayout>
@@ -76,13 +71,6 @@
         android:layout_height="wrap_content"
         android:gravity="end|center_vertical"
         android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/image_goind_item_invitation"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_check" />
 
         <ImageView
             android:id="@+id/image_interested_item_invitation"
@@ -99,6 +87,4 @@
 
     </LinearLayout>
 
-
 </LinearLayout>
-
