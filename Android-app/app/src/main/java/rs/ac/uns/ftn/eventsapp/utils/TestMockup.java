@@ -1,10 +1,13 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
+import android.net.Uri;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.Friendship;
@@ -30,6 +33,7 @@ public class TestMockup {
         User u1 = new User(1l, "Borko Bakic", "baki9@example.com", "sdcsdc84sSA", "SD58s4dSD8s87sdfSf4sdf87sdf48SDFsd178", null, null, null, null, null, null, null, true);
         User u2 = new User(2l, "Martin Kovac", "kovac.m@example.com", "sdcsdcs8794", "1s4asSDF894FSDSDF478sd48fsdfsdf8s74ssd", null, null, null, null, null, null, null, true);
         User u3 = new User(3l, "Aleksej Stralic", "ftnstudent@example.com", "sdf984sd54", "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        addExtraUsers();
 
         Friendship f1 = new Friendship(1l, u1, u2, FriendshipStatus.ACCEPTED);
         Friendship f2 = new Friendship(2l, u3, u1, FriendshipStatus.ACCEPTED);
@@ -112,5 +116,46 @@ public class TestMockup {
         users.add(u1);
         users.add(u2);
         users.add(u3);
+    }
+
+    private void addExtraUsers(){
+        User u4 = new User(4l, "Branko", "branko_ftn@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u4.setProfileImageUrl("https://i1.rgstatic.net/ii/profile.image/277011466604544-1443056088013_Q512/Branko_Perisic.jpg");
+        User u5 = new User(5l, "Krilin", "krilin@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u5.setProfileImageUrl("https://i.ytimg.com/vi/sZlzNX0x-v8/maxresdefault.jpg");
+        User u6 = new User(6l, "Rick", "rick@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u6.setProfileImageUrl("https://pbs.twimg.com/profile_images/1150075184264691712/3VkPTord_400x400.png");
+        User u7 = new User(7l, "Karlos", "karlos_slagalica@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u7.setProfileImageUrl("https://xdn.tf.rs/2020/04/06/karlos-franko-slagalica-830x553.jpg");
+        User u8 = new User(8l, "Nole", "nole_srbin@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u8.setProfileImageUrl("https://www.politikaplus.com/img/s/810x500/upload/images/arhiva/N/novak-djokovic-100.jpg");
+        User u9 = new User(9l, "Vule", "vule_srbin@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u9.setProfileImageUrl("https://m.cdm.me/wp-content/uploads/2020/04/Aleksandar-Vu%C4%8Di%C4%87-foto-predsednilk.rs-min-340x204.jpg");
+        User u10 = new User(10l, "Tyrion", "tyrion@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u10.setProfileImageUrl("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/theory-1553634761.jpg?crop=0.501xw:1.00xh;0,0&resize=480:*");
+        User u11 = new User(11l, "L", "l@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u11.setProfileImageUrl("https://vignette.wikia.nocookie.net/deathnote/images/8/83/Lawliet-L-Cole.png/revision/latest?cb=20170907105910");
+        User u13 = new User(13l, "Tesa Tesanovic", "tesa_tesanovic" +
+                "@example.com", "123456",
+                "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        u13.setProfileImageUrl("https://www.balkaninfo.rs/wp-content/uploads/2018/01/Te%C5%A1a-1024x795.jpg");
+
+        users.add(u4);
+        users.add(u5);
+        users.add(u6);
+        users.add(u7);
+        users.add(u8);
+        users.add(u9);
+        users.add(u10);
+        users.add(u11);
+        users.add(u13);
     }
 }

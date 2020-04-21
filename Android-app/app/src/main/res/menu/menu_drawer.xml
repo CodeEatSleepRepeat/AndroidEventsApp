@@ -27,7 +27,7 @@
         <menu>
             <item android:id="@+id/navigation_item_messages"
                 android:icon="@drawable/ic_messages"
-                android:title="Messages" />
+                android:title="@string/nav_item_messages" />
             <item
                 android:id="@+id/navigation_item_invitations"
                 android:icon="@drawable/ic_invitations"

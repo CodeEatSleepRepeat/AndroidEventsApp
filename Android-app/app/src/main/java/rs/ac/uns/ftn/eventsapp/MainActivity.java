@@ -181,18 +181,18 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_item_friends:
                         onClickNavItem(ListOfUsersFragment.class);
-                        toolbar.setTitle("Veljko's friends");
+                        toolbar.setTitle(R.string.nav_item_friends);
                         break;
                     case R.id.navigation_item_messages:
                         onClickNavItem(LatestMessagesFragment.class);
-                        toolbar.setTitle("Messages");
+                        toolbar.setTitle(R.string.nav_item_messages);
                         break;
                     case R.id.navigation_item_logout:
                         logout();
                         break;
                     case R.id.navigation_item_invitations:
                         onClickNavItem(InvitationsFragment.class);
-                        toolbar.setTitle("Invitations");
+                        toolbar.setTitle(R.string.nav_item_invitations);
                         break;
 
                     default:
