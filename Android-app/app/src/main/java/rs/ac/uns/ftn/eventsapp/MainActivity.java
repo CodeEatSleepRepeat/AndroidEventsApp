@@ -346,6 +346,10 @@ public class MainActivity extends AppCompatActivity {
                 int dist = data.getIntExtra("DISTANCE", 100);
                 String sort = data.getStringExtra("SORT");
                 String[] category = data.getStringArrayExtra("CATEGORY");
+                String startDate = data.getStringExtra("START_DATE");
+                String startTime = data.getStringExtra("START_TIME");
+                String endDate = data.getStringExtra("END_DATE");
+                String endTime = data.getStringExtra("END_TIME");
                 Boolean privateEvents = data.getBooleanExtra("PRIVATE", true);
 
                 //priprema teksta za chips
@@ -353,6 +357,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (dist > 0) {
                     chipTexts.add(Integer.toString(dist) + "km");
+                }
+
+                if (!startDate.equals("") && !startTime.equals("")){
+                    chipTexts.add("Starts " + startDate + " " + startTime);
+                }
+
+                if (!endDate.equals("") && !endTime.equals("")){
+                    chipTexts.add("Ends " + endDate + " " + endTime);
                 }
 
                 for (String categoryItem : category) {
@@ -420,6 +432,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+                //Ne prikazuj date i time chip, ali ih cuvaj zbog setovanja filtera
+                if (text.startsWith("Starts") || text.startsWith("Ends")){
+                    mChip.setVisibility(View.GONE);
+                }
+
                 chipGroup.addView(mChip);
             }
 

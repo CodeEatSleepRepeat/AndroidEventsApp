@@ -24,7 +24,7 @@
         <activity android:name=".activities.UserDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.ListOfFriendsActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity android:name=".activities.ChatLogActivity">
             <meta-data
@@ -32,7 +32,6 @@
                 android:value=".activities.LatestMessagesActivity" />
         </activity>
         <activity android:name=".activities.LatestMessagesActivity" />
-        <activity android:name=".activities.ListOfFriendsActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />

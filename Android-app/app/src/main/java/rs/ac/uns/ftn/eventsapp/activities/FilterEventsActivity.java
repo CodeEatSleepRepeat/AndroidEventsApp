@@ -145,17 +145,33 @@ public class FilterEventsActivity extends AppCompatActivity {
         startingTimeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(FilterEventsActivity.this, startingTime,
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                if (startingTimeEditText.getText().toString().equals("")) {
+                    new TimePickerDialog(FilterEventsActivity.this, startingTime,
+                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                } else {
+                    //postavi ga na osnovu vrednosti iz polja
+                    final int date = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[0]);
+                    final int time = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[1]);
+                    new TimePickerDialog(FilterEventsActivity.this, startingTime,
+                            date, time, true).show();
+                }
             }
         });
 
         startingDateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(FilterEventsActivity.this, startingDate,
-                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                if (startingDateEditText.getText().toString().equals("")) {
+                    new DatePickerDialog(FilterEventsActivity.this, startingDate,
+                            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)).show();
+                } else {
+                    //postavi ga na osnovu vrednosti iz polja
+                    final int day = Integer.parseInt(startingDateEditText.getText().toString().split("/")[0]);
+                    final int month = Integer.parseInt(startingDateEditText.getText().toString().split("/")[1])-1;
+                    final int year = Integer.parseInt(startingDateEditText.getText().toString().split("/")[2]);
+                    new DatePickerDialog(FilterEventsActivity.this, startingDate, year, month, day).show();
+                }
             }
         });
 
@@ -195,17 +211,33 @@ public class FilterEventsActivity extends AppCompatActivity {
         endingTimeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(FilterEventsActivity.this, endingTime,
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                if (endingTimeEditText.getText().toString().equals("")) {
+                    new TimePickerDialog(FilterEventsActivity.this, endingTime,
+                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                } else {
+                    //postavi ga na osnovu vrednosti iz polja
+                    final int date = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[0]);
+                    final int time = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[1]);
+                    new TimePickerDialog(FilterEventsActivity.this, endingTime,
+                            date, time, true).show();
+                }
             }
         });
 
         endingDateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(FilterEventsActivity.this, endingDate,
-                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                if (endingDateEditText.getText().toString().equals("")){
+                    new DatePickerDialog(FilterEventsActivity.this, endingDate,
+                            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)).show();
+                } else {
+                    //postavi ga na osnovu vrednosti iz polja
+                    final int day = Integer.parseInt(endingDateEditText.getText().toString().split("/")[0]);
+                    final int month = Integer.parseInt(endingDateEditText.getText().toString().split("/")[1])-1;
+                    final int year = Integer.parseInt(endingDateEditText.getText().toString().split("/")[2]);
+                    new DatePickerDialog(FilterEventsActivity.this, endingDate, year, month, day).show();
+                }
             }
         });
 
@@ -237,8 +269,10 @@ public class FilterEventsActivity extends AppCompatActivity {
                 returnIntent.putExtra("DISTANCE", seekbar.getProgress());
                 returnIntent.putExtra("SORT", getSortValue());
                 returnIntent.putExtra("CATEGORY", getCategory());
-                //TODO: dodati i za datume isto ovo
-
+                returnIntent.putExtra("START_DATE", startingDateEditText.getText().toString());
+                returnIntent.putExtra("START_TIME", startingTimeEditText.getText().toString());
+                returnIntent.putExtra("END_DATE", endingDateEditText.getText().toString());
+                returnIntent.putExtra("END_TIME", endingTimeEditText.getText().toString());
                 returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
                 setResult(Activity.RESULT_OK, returnIntent);
@@ -251,6 +285,11 @@ public class FilterEventsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Sets Filter View with data collected from chips on Home screen
+     *
+     * @param savedIntent
+     */
     private void setStateViaChips(Intent savedIntent) {
         String[] chips = savedIntent.getStringArrayExtra("currentChips");
 
@@ -268,6 +307,12 @@ public class FilterEventsActivity extends AppCompatActivity {
                 //distance
                 seekbar.setProgress(Integer.parseInt(chipText.substring(0, chipText.length() - 2)));
                 continue;
+            } else if (chipText.startsWith("Starts")) {
+                startingDateEditText.setText(chipText.split(" ")[1]);
+                startingTimeEditText.setText(chipText.split(" ")[2]);
+            } else if (chipText.startsWith("Ends")) {
+                endingDateEditText.setText(chipText.split(" ")[1]);
+                endingTimeEditText.setText(chipText.split(" ")[2]);
             } else {
                 switch (chipText) {
                     case "Events for you":

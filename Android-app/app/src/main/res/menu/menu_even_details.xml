@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item android:id="@+id/inviteEventDetails"
+        android:title="@string/invite_friends"
+        android:icon="@drawable/ic_invitations_white"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/shareEventDetails"
+        android:title="@string/com_facebook_share_button_text"
+        android:icon="@drawable/ic_share_white"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/reportEventDetails"
+        android:title="@string/report"
+        app:showAsAction="collapseActionView"/>
+</menu>

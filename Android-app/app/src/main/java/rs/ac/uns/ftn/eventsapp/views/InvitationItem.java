@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,7 +100,8 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             }
         });
 
-        imageEvent.setOnClickListener(new View.OnClickListener() {
+        LinearLayout invitationBody = viewHolder.itemView.findViewById(R.id.event_invitation_body);
+        invitationBody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToEventDetail(viewHolder.itemView.getContext());

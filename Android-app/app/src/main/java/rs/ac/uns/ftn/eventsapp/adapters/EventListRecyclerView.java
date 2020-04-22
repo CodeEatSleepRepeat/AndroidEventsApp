@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,19 +49,21 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventNameTextView.setText(item.getEventName());
         viewHolder.eventAddressTextView.setText(item.getLocation());
         viewHolder.eventStartDate.setText(formatter.format(item.getStartTime()));
-        try{
+        try {
             Picasso.get().
                     load(item.getEventImageURI()).
                     placeholder(R.drawable.ic_missing_event_icon).
                     error(R.drawable.ic_missing_event_icon).
                     into(viewHolder.eventImage);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d(this.getClass().getName(), "onBindViewHolder: Picasso error\n" + e.getMessage());
         }
 
-        //viewHolder.eventImage.setImageURI(Uri.parse(item.getEventImageURI()));
+        //postavljanje listenera za going/interested/cancel dugmice
+        setOnClickListeners(viewHolder);
 
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        LinearLayout invitationBody = viewHolder.itemView.findViewById(R.id.event_row_body);
+        invitationBody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
@@ -82,6 +86,51 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 context.startActivity(detailsIntent);
             }
         });
+    }
+
+    /**
+     * Setovanje onClickListenera za dugmeice (KOJI MOZDA NE POSTOJE NA SVAKOM LAYOUTU koji se ovde prosledi - zato je if null
+     *
+     * @param viewHolder
+     */
+    private void setOnClickListeners(@NonNull final EventViewHolder viewHolder) {
+        ImageView imageInterestedAction =
+                viewHolder.itemView.findViewById(R.id.image_interested_item_invitation);
+        ImageView imageGoingAction =
+                viewHolder.itemView.findViewById(R.id.image_goind_item_invitation);
+        ImageView imageDeclineAction =
+                viewHolder.itemView.findViewById(R.id.image_not_interested_item_invitation);
+
+        if (imageInterestedAction != null) {
+            imageInterestedAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Zainteresovan si",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (imageGoingAction != null) {
+            imageGoingAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Oho ides a?",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (imageDeclineAction != null) {
+            imageDeclineAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "A jbga, nista onda drugi put",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
     }
 
     @Override
