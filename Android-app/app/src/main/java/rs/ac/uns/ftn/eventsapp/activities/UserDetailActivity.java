@@ -12,9 +12,12 @@ import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -78,5 +81,23 @@ public class UserDetailActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view_user_details);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new EventListRecyclerView(items, this, R.layout.event_list_row));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menu_remove_friend) {
+            Toast.makeText(this, "Oces, oces, kad na vrbi rodi grozdje", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
