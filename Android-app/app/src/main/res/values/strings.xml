@@ -63,11 +63,13 @@
     <string name="retry">Try again</string>
     <string name="close">Close</string>
     <string name="reset">Reset</string>
+<<<<<<< HEAD
     <string name="menu_remove_friend">Remove friend</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+=======
+>>>>>>> 3ab71559f68ad70bdaeafecb029bf1215dfca726
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="facebook_app_id">00000000000000</string>
     <string name="fb_login_protocol_scheme">999999999999999</string>
     <string name="oops">Oops!</string>

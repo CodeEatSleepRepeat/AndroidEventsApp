@@ -1,13 +1,16 @@
 package rs.ac.uns.ftn.eventsapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+<<<<<<< HEAD
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,16 +22,21 @@ import android.widget.Filterable;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+=======
+>>>>>>> 3ab71559f68ad70bdaeafecb029bf1215dfca726
 import com.xwray.groupie.GroupAdapter;
-import com.xwray.groupie.Item;
-import com.xwray.groupie.OnItemClickListener;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.AddFriendActivity;
+=======
+
+import rs.ac.uns.ftn.eventsapp.R;
+>>>>>>> 3ab71559f68ad70bdaeafecb029bf1215dfca726
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;

@@ -22,25 +22,16 @@ public class HomeEventListFragment extends Fragment {
 
     ArrayList<Event> items;
 
-    public HomeEventListFragment() {
-
-    }
-
-    public static HomeEventListFragment newInstance() {
-        HomeEventListFragment fragment = new HomeEventListFragment();
-        return fragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: data goes here
         items = TestMockup.getInstance().events;
 
-        View v =  inflater.inflate(R.layout.fragment_list_view, container, false);
+        View v =  inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext()));
+        recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row));
 
         return v;
     }

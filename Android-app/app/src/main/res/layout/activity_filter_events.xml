@@ -30,7 +30,7 @@
             android:layout_marginTop="32dp"
             android:text="at"
             app:layout_constraintEnd_toStartOf="@+id/endingTimeFilterEditText"
-            app:layout_constraintHorizontal_bias="0.636"
+            app:layout_constraintHorizontal_bias="0.681"
             app:layout_constraintStart_toEndOf="@+id/endingDateFilterEditText"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -242,8 +242,6 @@
                         android:gravity="center"
                         android:text="@string/sports"
                         android:textColor="@drawable/filter_radio_btn_text"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/partyFilterRB"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -363,10 +361,10 @@
             android:text="at"
             app:layout_constraintBottom_toTopOf="@+id/endingDateFilterEditText"
             app:layout_constraintEnd_toStartOf="@+id/startingTimeFilterEditText"
-            app:layout_constraintHorizontal_bias="0.59"
+            app:layout_constraintHorizontal_bias="0.681"
             app:layout_constraintStart_toEndOf="@+id/startingDateFilterEditText"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-            app:layout_constraintVertical_bias="0.672" />
+            app:layout_constraintVertical_bias="0.69" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
