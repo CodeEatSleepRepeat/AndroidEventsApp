@@ -21,7 +21,7 @@
         <activity android:name=".activities.AddFriendActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.ListOfFriendsActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".activities.MapActivity"
@@ -62,6 +62,10 @@
             android:name=".activities.FilterEventsActivity"
             android:label="@string/filter_events"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SendInvitationsActivity"
+            android:label="@string/invite_friends"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

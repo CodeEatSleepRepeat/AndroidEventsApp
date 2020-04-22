@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -112,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             try {
                 FragmentTransition.to(HomeEventListFragment.class.newInstance(), this, false);
-
                 FrameLayout frameLayout = findViewById(R.id.fragment_view);
                 View fragmentView = frameLayout.getChildAt(0);
                 chipGroup = fragmentView.findViewById(R.id.chipsGroup);
@@ -131,11 +127,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setNavigationListenerUnauthorizedUser(NavigationView navigationView,
+    private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView,
                                                        final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                clearCheckedItems(navigationView.getMenu());
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 

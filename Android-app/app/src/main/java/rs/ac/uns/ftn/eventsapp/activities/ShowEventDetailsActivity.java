@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
@@ -112,7 +109,6 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.inviteEventDetails) {
-            Toast.makeText(getApplicationContext(), "Send invitations", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, SendInvitationsActivity.class);
             intent.putExtra("eventId", idEvent);
             startActivityForResult(intent, LAUNCH_SEND_INVITATIONS_ACTIVITY);
