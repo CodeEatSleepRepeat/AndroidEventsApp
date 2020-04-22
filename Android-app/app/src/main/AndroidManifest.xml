@@ -18,14 +18,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
-<<<<<<< HEAD
         <activity android:name=".activities.AddFriendActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.ListOfFriendsActivity" />
         </activity>
-=======
->>>>>>> 3ab71559f68ad70bdaeafecb029bf1215dfca726
         <activity
             android:name=".activities.MapActivity"
             android:label="@string/map" />
