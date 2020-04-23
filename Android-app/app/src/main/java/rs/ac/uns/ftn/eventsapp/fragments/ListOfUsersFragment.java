@@ -32,9 +32,9 @@ import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class ListOfUsersFragment extends Fragment implements Filterable {
 
-    List<User> userList = new ArrayList<User>();
-    List<User> userListAll = new ArrayList<User>();
-    GroupAdapter adapter;
+    private List<User> userList = new ArrayList<User>();
+    private List<User> userListAll = new ArrayList<User>();
+    private GroupAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         userList.addAll(TestMockup.users);
         userListAll.addAll(TestMockup.users);
         for(User user : userList){
-            adapter.add(new UserSimpleItem(user));
+            adapter.add(new UserSimpleItem(user, false));
         }
 
         recyclerView.setAdapter(adapter);
@@ -155,7 +155,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             userList.addAll((Collection<? extends User>) results.values);
             adapter.clear();
             for(User user : userList){
-                adapter.add(new UserSimpleItem(user));
+                adapter.add(new UserSimpleItem(user, false));
             }
         }
     };

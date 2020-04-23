@@ -6,4 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".activities.AddFriendActivity">
 
+    <Button
+        android:id="@+id/btn_search_add_friend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_serach"
+        android:background="@drawable/rounded_btn_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"/>
+
+    <EditText
+        android:id="@+id/editText_username_search_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/msg_search_by_username"
+        app:layout_constraintEnd_toStartOf="@+id/btn_search_add_friend"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints="" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_list_user_add_friend"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_username_search_add_friend" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

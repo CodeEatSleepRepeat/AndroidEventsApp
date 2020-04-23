@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- APPLICATION LANGUAGE -->
+
+    <string-array name="updateLanguage">
+        <item>Srpski</item>
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Italiano</item>
+        <item>Dansk</item>
+        <item>日本人</item>
+        <item>中国人</item>
+        <item>русский</item>
+    </string-array>
+
+    <string-array name="updateLanguageValue">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <!-- DEFAULT EVENT SORT-->
+
+    <string-array name="updateDefaultEventSort">
+        <item>For you</item>
+        <item>Recent</item>
+        <item>Popular</item>
+    </string-array>
+
+    <string-array name="updateDefaultEventSortValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+
+    <!-- DEFAULT ZOOM OPTION -->
+    <string-array name="updateDefaultZoomOption">
+        <item>Stret</item>
+        <item>City</item>
+        <item>Country</item>
+    </string-array>
+
+    <string-array name="updateDefaultZoomOptionValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+</resources>

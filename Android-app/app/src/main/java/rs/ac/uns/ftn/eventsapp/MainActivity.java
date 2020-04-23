@@ -33,6 +33,7 @@ import java.util.List;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
@@ -193,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
                         onClickNavItem(InvitationsFragment.class);
                         toolbar.setTitle(R.string.nav_item_invitations);
                         break;
-
+                    case R.id.navigation_item_settings:
+                        openSettings();
+                        break;
                     default:
                         Toast.makeText(MainActivity.this, menuItem.getItemId(), Toast.LENGTH_LONG).show();
                         return false;
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Deselect all menu items in navigation drawer
@@ -238,7 +242,8 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.action_settings:
+            case R.id.action_settings_home:
+                openSettings();
                 return true;
             case R.id.filterEventsBtn:
                 onClickFilterImg();
@@ -482,6 +487,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //noInternetDialog.onDestroy();
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }
 

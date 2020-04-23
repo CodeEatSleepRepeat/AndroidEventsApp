@@ -64,6 +64,30 @@
     <string name="close">Close</string>
     <string name="reset">Reset</string>
     <string name="menu_remove_friend">Remove friend</string>
+    <string name="title_add_friend">Add friend</string>
+    <string name="msg_search_by_username">Search by username</string>
+    <string name="action_serach">Search</string>
+    <string name="title_pref_application">Application</string>
+    <string name="title_pref_language">Language</string>
+    <string name="msg_pref_language">Choose an application language</string>
+    <string name="title_pref_default_event_filter_sort">Default event filter sort</string>
+    <string name="msg_pref_default_event_filter_sort">Choose a default event filter
+        sort for event filttering</string>
+    <string name="title_pref_map">Map</string>
+    <string name="title_pref_default_distance_value">Default distance value</string>
+    <string name="msg_pref_set_default_radius_distance">Set the default radius distance
+        value</string>
+    <string name="title_pref_dialog_default_radius_distance">Default distance value</string>
+    <string name="msg_pref_dialog_default_radius_distance">Choose default radius distance
+        value</string>
+    <string name="title_pref_default_map_zoom">Default map zoom</string>
+    <string name="msg_pref_defauilt_map_zoom">Choose an default map zoom for map feature</string>
+    <string name="title_pref_facebook_events">Facebook events</string>
+    <string name="msg_pref_facebook_events">Update user events with users\'s facebook
+        events</string>
+    <string name="title_pref_sync_data_facebook">Sync your data from Facebook</string>
+    <string name="msg_pref__sync_data_facebook">Synchronization of your profile image, email and username</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -3,8 +3,10 @@ package rs.ac.uns.ftn.eventsapp.views;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -25,9 +27,13 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             ".EXTRA_USER_EMAIL";
 
     private User user;
+    private Boolean setAddButton;
 
-    public UserSimpleItem(User user){
+    public UserSimpleItem(User user, Boolean setAddButton){
+
         this.user = user;
+        this.setAddButton = setAddButton;
+
     }
 
     @Override
@@ -35,6 +41,18 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         TextView textUsername = viewHolder.itemView.findViewById(R.id.text_username_user_item);
         ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_item);
         Context itemViewContext = viewHolder.itemView.getContext();
+        Button addButton = viewHolder.itemView.findViewById(R.id.btn_add_simple_user_item);
+        if(!setAddButton){
+            addButton.setVisibility(View.GONE);
+        }
+        else {
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addFriendAction(viewHolder);
+                }
+            });
+        }
 
         textUsername.setText(user.getUserName());
 
@@ -59,6 +77,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         });
     }
 
+
     @Override
     public int getLayout() {
         return R.layout.item_user_simple;
@@ -71,6 +90,11 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getProfileImageUrl());
         intent.putExtra(EXTRA_USER_EMAIL, user.getEmail());
         viewHolder.itemView.getContext().startActivity(intent);
+    }
+
+    private void addFriendAction(GroupieViewHolder viewHolder) {
+        Toast.makeText(viewHolder.itemView.getContext(), "Hvala na prijateljstvu",
+                Toast.LENGTH_SHORT).show();
     }
 
     public User getUser() {
