@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ShowEventDetailsActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 
 public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecyclerView.EventViewHolder> {
@@ -70,19 +72,9 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 Intent detailsIntent = new Intent(context, ShowEventDetailsActivity.class);
 
                 final Event e = mItems.get(i);
-                detailsIntent.putExtra("id", e.getEventId());
-                detailsIntent.putExtra("name", e.getEventName());
-                detailsIntent.putExtra("description", e.getEventDescription());
-                detailsIntent.putExtra("imageURI", e.getEventImageURI());
-                detailsIntent.putExtra("type", e.getEventType());
-                detailsIntent.putExtra("open", e.getOpenForAll());
-                detailsIntent.putExtra("start", e.getStartTime());
-                detailsIntent.putExtra("end", e.getEndTime());
-                detailsIntent.putExtra("location", e.getLocation());
-                detailsIntent.putExtra("longitude", e.getLongitude());
-                detailsIntent.putExtra("latitude", e.getLatitude());
-                detailsIntent.putExtra("userId", e.getAuthor().getUserId());
-
+                EventDetailsDTO dto = new EventDetailsDTO(e.getEventId(), e.getEventName(), e.getEventDescription(), e.getEventImageURI(), e.getEventType(),
+                        e.getOpenForAll(), e.getStartTime(), e.getEndTime(), e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getUserId());
+                detailsIntent.putExtra("EVENT", dto);
                 context.startActivity(detailsIntent);
             }
         });
