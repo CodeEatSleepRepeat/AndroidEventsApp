@@ -2,11 +2,13 @@ package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 
 
@@ -28,18 +31,25 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
     private static Long idEvent;
 
     private CollapsingToolbarLayout collapsingToolbar;
+    private EventDetailsDTO dto;
+
+    private ImageView imageView;
+    private TextView eventNameEventDetailsTextView;
+    private TextView eventStartEventDetailsView;
+    private TextView eventDescriptionEventDetailsView;
+    private TextView eventLocationEventDetailsTextView;
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
 
         //load image from file system just for testing
-        String uri = "content://media/external/downloads/24";
+        /*String uri = "content://media/external/downloads/24";
 
         ImageView imageView = findViewById(R.id.image_user_user_detail);
         Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(uri).into(imageView);
-        Log.d(TAG, "setViewPic2: " + imageView.toString());
+        Log.d(TAG, "setViewPic2: " + imageView.toString());*/
     }
 
     @Override
@@ -52,29 +62,31 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
         //get all elements that are going to contain event information
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
-        setView(getIntent().getExtras());
+        EventDetailsDTO dto = (EventDetailsDTO) getIntent().getSerializableExtra("EVENT");
+        setView(dto);
+
     }
 
-    private void setView(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            Long id = (Long) savedInstanceState.get("id");
-            String name = (String) savedInstanceState.get("name");
-            String description = (String) savedInstanceState.get("description");
-            String imageURI = (String) savedInstanceState.get("imageURI");
-            EventType type = (EventType) savedInstanceState.get("type");
-            Boolean open = (Boolean) savedInstanceState.get("open");
-            Date start = (Date) savedInstanceState.get("start");
-            Date end = (Date) savedInstanceState.get("end");
-            String location = (String) savedInstanceState.get("location");
-            Long longitude = (Long) savedInstanceState.get("longitude");
-            Long latitude = (Long) savedInstanceState.get("latitude");
-            Long userId = (Long) savedInstanceState.get("userId");
+    private void setView(EventDetailsDTO dto) {
 
-            idEvent = id;
-            collapsingToolbar.setTitle(name);
+        imageView = findViewById(R.id.image_user_user_detail);
+        eventNameEventDetailsTextView = findViewById(R.id.eventNameEventDetailsTextView);
+        eventStartEventDetailsView = findViewById(R.id.eventStartEventDetailsTextView);
+        eventDescriptionEventDetailsView = findViewById(R.id.eventDescriptionEventDetailsTextView);
+        eventLocationEventDetailsTextView = findViewById(R.id.eventLocationEventDetailsTextView);
+
+        idEvent = dto.getEventId();
+        collapsingToolbar.setTitle(dto.getEventName());
+        Picasso.get().setLoggingEnabled(true);
+        Picasso.get().load(Uri.parse(dto.getEventImageURI())).into(imageView);
+        eventNameEventDetailsTextView.setText(dto.getEventName());
+        eventStartEventDetailsView.setText(dto.getStartTime() + "");
+        eventDescriptionEventDetailsView.setText(dto.getEventDescription());
+        eventLocationEventDetailsTextView.setText(dto.getLocation());
 /*
             //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
             ImageView imageView = findViewById(R.id.imageViewasdf);
@@ -90,7 +102,6 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
             Picasso.with(this).load(uri).into(imageView);
             Log.d(TAG, "setView2: " + imageView.toString());
 */
-        }
     }
 
     @Override
