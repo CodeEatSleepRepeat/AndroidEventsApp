@@ -88,6 +88,8 @@
     <string name="title_pref_sync_data_facebook">Sync your data from Facebook</string>
     <string name="msg_pref__sync_data_facebook">Synchronization of your profile image, email and username</string>
     <string name="see_on_map">See on map</string>
+    <string name="see_all">See all</string>
+    <string name="see_comments">See comments</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

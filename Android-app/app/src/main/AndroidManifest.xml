@@ -54,7 +54,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIjajajaja" />
+            android:value="AIzaSyBbn_QbMhHYxvDLuK3d2ysbde3U8TxYvc4" />
 
         <activity
             android:name=".activities.CreateEventActivity"

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,14 +23,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 
 
-public class ShowEventDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ShowEventDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "ShowEventDetailsAct";
     private static final int LAUNCH_SEND_INVITATIONS_ACTIVITY = 2001;
@@ -38,14 +41,12 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
     private CollapsingToolbarLayout collapsingToolbar;
     private EventDetailsDTO dto;
 
-    private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
-    private MapView mMapView;
-
     private ImageView imageView;
     private TextView eventNameEventDetailsTextView;
     private TextView eventStartEventDetailsView;
     private TextView eventDescriptionEventDetailsView;
     private TextView eventLocationEventDetailsTextView;
+    private TextView seeOnMapEventDetailsTextView;
 
     @Override
     protected void onPostResume() {
@@ -71,7 +72,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //mMapView = findViewById(R.id.mapViewEventDetails);
-        initGoogleMap(savedInstanceState);
+        //initGoogleMap(savedInstanceState);
         //get all elements that are going to contain event information
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
@@ -80,7 +81,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
 
     }
 
-    private void initGoogleMap(Bundle savedInstanceState){
+    /*private void initGoogleMap(Bundle savedInstanceState){
         Bundle mapViewBundle = null;
         if(savedInstanceState != null){
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -96,7 +97,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
         mo.position(new LatLng(dto.getLatitude(), dto.getLongitude()));
         //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
         googleMap.addMarker(mo);
-    }
+    }*/
 
     private void setView(EventDetailsDTO dto) {
 
@@ -105,6 +106,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
         eventStartEventDetailsView = findViewById(R.id.eventStartEventDetailsTextView);
         eventDescriptionEventDetailsView = findViewById(R.id.eventDescriptionEventDetailsTextView);
         eventLocationEventDetailsTextView = findViewById(R.id.eventLocationEventDetailsTextView);
+        seeOnMapEventDetailsTextView = findViewById(R.id.seeOnMapEventDetailsTextView);
 
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
@@ -114,6 +116,17 @@ public class ShowEventDetailsActivity extends AppCompatActivity implements OnMap
         eventStartEventDetailsView.setText(dto.getStartTime() + "");
         eventDescriptionEventDetailsView.setText(dto.getEventDescription());
         eventLocationEventDetailsTextView.setText(dto.getLocation());
+        final EventForMapDTO mapDto = new EventForMapDTO(dto.getEventId(), dto.getEventName(), dto.getLongitude(), dto.getLatitude(), dto.getEventImageURI());
+        final Intent intent = new Intent(this, MapActivity.class);
+        seeOnMapEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<EventForMapDTO> list = new ArrayList<>();
+                list.add(mapDto);
+                intent.putExtra("EVENTS", list);
+                startActivity(intent);
+            }
+        });
 /*
             //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
             ImageView imageView = findViewById(R.id.imageViewasdf);
