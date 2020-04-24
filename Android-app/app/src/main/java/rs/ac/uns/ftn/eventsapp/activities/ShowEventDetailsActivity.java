@@ -14,6 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
 
@@ -24,7 +29,7 @@ import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 
 
-public class ShowEventDetailsActivity extends AppCompatActivity {
+public class ShowEventDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "ShowEventDetailsAct";
     private static final int LAUNCH_SEND_INVITATIONS_ACTIVITY = 2001;
@@ -32,6 +37,9 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
 
     private CollapsingToolbarLayout collapsingToolbar;
     private EventDetailsDTO dto;
+
+    private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
+    private MapView mMapView;
 
     private ImageView imageView;
     private TextView eventNameEventDetailsTextView;
@@ -62,13 +70,32 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
+        //mMapView = findViewById(R.id.mapViewEventDetails);
+        initGoogleMap(savedInstanceState);
         //get all elements that are going to contain event information
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
-        EventDetailsDTO dto = (EventDetailsDTO) getIntent().getSerializableExtra("EVENT");
+        dto = (EventDetailsDTO) getIntent().getSerializableExtra("EVENT");
         setView(dto);
 
+    }
+
+    private void initGoogleMap(Bundle savedInstanceState){
+        Bundle mapViewBundle = null;
+        if(savedInstanceState != null){
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+        mMapView = findViewById(R.id.mapViewEventDetails);
+        mMapView.onCreate(mapViewBundle);
+        mMapView.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+        MarkerOptions mo = new MarkerOptions();
+        mo.position(new LatLng(dto.getLatitude(), dto.getLongitude()));
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+        googleMap.addMarker(mo);
     }
 
     private void setView(EventDetailsDTO dto) {
