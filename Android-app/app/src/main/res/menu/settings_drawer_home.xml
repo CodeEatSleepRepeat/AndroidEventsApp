@@ -13,4 +13,12 @@
         android:icon="@drawable/ic_filter"
         app:showAsAction="always"
         />
+    <item
+        android:title="SearchEvents"
+        android:orderInCategory="10"
+        android:id="@+id/searchEventsBtn"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        />
 </menu>
