@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.Comment;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.Friendship;
@@ -116,6 +117,7 @@ public class TestMockup {
         users.add(u1);
         users.add(u2);
         users.add(u3);
+
     }
 
     private void addExtraUsers(){
@@ -157,5 +159,6 @@ public class TestMockup {
         users.add(u10);
         users.add(u11);
         users.add(u13);
+
     }
 }

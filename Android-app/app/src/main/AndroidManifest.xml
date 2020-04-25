@@ -18,6 +18,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
+        <activity
+            android:name=".activities.CommentsActivity"
+            android:label="@string/comments">
+        </activity>
         <activity android:name=".activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,7 +58,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBbn_QbMhHYxvDLuK3d2ysbde3U8TxYvc4" />
+            android:value="AIdssdgsgsg" />
 
         <activity
             android:name=".activities.CreateEventActivity"

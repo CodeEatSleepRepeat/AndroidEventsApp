@@ -47,6 +47,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
     private TextView eventDescriptionEventDetailsView;
     private TextView eventLocationEventDetailsTextView;
     private TextView seeOnMapEventDetailsTextView;
+    private TextView seeCommentsEventDetailsTextView;
 
     @Override
     protected void onPostResume() {
@@ -81,24 +82,6 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
 
     }
 
-    /*private void initGoogleMap(Bundle savedInstanceState){
-        Bundle mapViewBundle = null;
-        if(savedInstanceState != null){
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
-        }
-        mMapView = findViewById(R.id.mapViewEventDetails);
-        mMapView.onCreate(mapViewBundle);
-        mMapView.getMapAsync(this);
-    }
-
-    @Override
-    public void onMapReady(final GoogleMap googleMap) {
-        MarkerOptions mo = new MarkerOptions();
-        mo.position(new LatLng(dto.getLatitude(), dto.getLongitude()));
-        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-        googleMap.addMarker(mo);
-    }*/
-
     private void setView(EventDetailsDTO dto) {
 
         imageView = findViewById(R.id.image_user_user_detail);
@@ -107,6 +90,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         eventDescriptionEventDetailsView = findViewById(R.id.eventDescriptionEventDetailsTextView);
         eventLocationEventDetailsTextView = findViewById(R.id.eventLocationEventDetailsTextView);
         seeOnMapEventDetailsTextView = findViewById(R.id.seeOnMapEventDetailsTextView);
+        seeCommentsEventDetailsTextView = findViewById(R.id.seeCommentsEventDetailsTextView);
 
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
@@ -127,6 +111,15 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        final Intent intent2 = new Intent(this, CommentsActivity.class);
+        seeCommentsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent2);
+            }
+        });
+
 /*
             //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
             ImageView imageView = findViewById(R.id.imageViewasdf);
