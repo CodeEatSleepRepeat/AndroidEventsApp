@@ -48,6 +48,10 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
     private TextView eventLocationEventDetailsTextView;
     private TextView seeOnMapEventDetailsTextView;
     private TextView seeCommentsEventDetailsTextView;
+    private TextView seeAllGoingEventDetailsTextView;
+    private TextView seeAllInterestedEventDetailsTextView;
+    private TextView seeAllAuthorsEventsEventDetailsTextView;
+    private TextView seeAllSimilarPostsEventDetailsTextView;
 
     @Override
     protected void onPostResume() {
@@ -91,6 +95,10 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         eventLocationEventDetailsTextView = findViewById(R.id.eventLocationEventDetailsTextView);
         seeOnMapEventDetailsTextView = findViewById(R.id.seeOnMapEventDetailsTextView);
         seeCommentsEventDetailsTextView = findViewById(R.id.seeCommentsEventDetailsTextView);
+        seeAllGoingEventDetailsTextView = findViewById(R.id.seeAllGoingEventDetailsTextView);
+        seeAllInterestedEventDetailsTextView = findViewById(R.id.seeAllInterestedEventDetailsTextView);
+        seeAllAuthorsEventsEventDetailsTextView = findViewById(R.id.seeAllOrganizedEventsEventDetailsTextView);
+        seeAllSimilarPostsEventDetailsTextView = findViewById(R.id.seeAllSimilarPostsEventDetailsTextView);
 
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
@@ -117,6 +125,38 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(intent2);
+            }
+        });
+
+        final Intent intent3 = new Intent(this, GoingToEventActivity.class);
+        seeAllGoingEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent3);
+            }
+        });
+
+        final Intent intent4 = new Intent(this, InterestedInEventActivity.class);
+        seeAllInterestedEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent4);
+            }
+        });
+
+        final Intent intent5 = new Intent(this, AuthorsEventsActivity.class);
+        seeAllAuthorsEventsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent5);
+            }
+        });
+
+        final Intent intent6 = new Intent(this, SimilarEventsActivity.class);
+        seeAllSimilarPostsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent6);
             }
         });
 

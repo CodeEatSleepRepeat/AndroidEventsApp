@@ -18,10 +18,20 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
+        <activity android:name=".activities.SimilarEventsActivity"
+            android:label="@string/similar_posts"></activity>
+        <activity
+            android:name=".activities.AuthorsEventsActivity"
+            android:label="@string/authors_events" />
+        <activity
+            android:name=".activities.InterestedInEventActivity"
+            android:label="@string/nav_item_interested" />
+        <activity
+            android:name=".activities.GoingToEventActivity"
+            android:label="@string/nav_item_going" />
         <activity
             android:name=".activities.CommentsActivity"
-            android:label="@string/comments">
-        </activity>
+            android:label="@string/comments" />
         <activity android:name=".activities.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
