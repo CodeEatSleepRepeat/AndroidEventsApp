@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +81,14 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
     /**
      * Setovanje onClickListenera za dugmeice (KOJI MOZDA NE POSTOJE NA SVAKOM LAYOUTU koji se ovde prosledi - zato je if null
+     *  
+     */
+    private void setOnClickListeners() {
+        setOnClickListeners();
+    }
+
+    /**
+     * Setovanje onClickListenera za dugmeice (KOJI MOZDA NE POSTOJE NA SVAKOM LAYOUTU koji se ovde prosledi - zato je if null
      *
      * @param viewHolder
      */
@@ -130,7 +137,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         return mItems.size();
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView eventNameTextView;
         private final TextView eventAddressTextView;

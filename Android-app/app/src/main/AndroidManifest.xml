@@ -18,33 +18,17 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
+
         <activity
             android:name=".activities.CommentsActivity"
-            android:label="@string/comments">
-        </activity>
-        <activity android:name=".activities.SettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity android:name=".activities.AddFriendActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+            android:label="@string/comments" />
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.AddFriendActivity" />
         <activity
             android:name=".activities.MapActivity"
             android:label="@string/map" />
-        <activity android:name=".activities.UserDetailActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity android:name=".activities.ChatLogActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.LatestMessagesActivity" />
-        </activity>
+        <activity android:name=".activities.UserDetailActivity" />
+        <activity android:name=".activities.ChatLogActivity" />
         <activity android:name=".activities.LatestMessagesActivity" />
         <activity
             android:name=".activities.LoginActivity"
@@ -55,18 +39,9 @@
         <activity
             android:name=".activities.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIdssdgsgsg" />
-
         <activity
             android:name=".activities.CreateEventActivity"
-            android:label="@string/createEvent">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+            android:label="@string/createEvent" />
         <activity
             android:name=".activities.FilterEventsActivity"
             android:label="@string/filter_events"
@@ -101,6 +76,10 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIdssdgsgsg" />
 
         <activity
             android:name="com.facebook.FacebookActivity"

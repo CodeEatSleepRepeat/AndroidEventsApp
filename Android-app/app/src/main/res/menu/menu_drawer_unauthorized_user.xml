@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/home_screen">
 
+    <item
+        android:id="@+id/navigation_item_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_item_home" />
 
     <item android:title="@string/nav_account">
         <menu>

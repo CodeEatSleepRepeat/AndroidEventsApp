@@ -1,23 +1,22 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.models.User;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
-import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
-
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.xwray.groupie.GroupAdapter;
 
 import java.util.List;
 import java.util.Objects;
+
+import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class AddFriendActivity extends AppCompatActivity {
 

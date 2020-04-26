@@ -1,5 +1,4 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -27,7 +26,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -59,25 +58,25 @@
                         android:id="@+id/eventNameEventDetailsTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/privateEventCreateEvent"
                         android:textAllCaps="true"
-                        android:textStyle="bold"
                         android:textSize="18dp"
-                        android:text="@string/privateEventCreateEvent"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/eventStartEventDetailsTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:layout_marginTop="5dp"
-                        android:text="@string/privateEventCreateEvent" />
+                        android:text="@string/privateEventCreateEvent"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/eventDescriptionEventDetailsTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="@string/privateEventCreateEvent"/>
+                        android:text="@string/privateEventCreateEvent" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -96,37 +95,37 @@
                             android:id="@+id/eventLocationEventDetailsTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
                             android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
                             android:layout_weight="1"
                             android:text="TextView" />
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/goingEventDetailsBtn"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginEnd="10dp"
-                        android:textColor="@color/colorWhite"
-                        android:text="@string/nav_item_going" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/interestedEventDetailsBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/colorWhite"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:text="@string/nav_item_interested" />
-                </LinearLayout>
+                        <Button
+                            android:id="@+id/goingEventDetailsBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:text="@string/nav_item_going"
+                            android:textColor="@color/colorWhite" />
+
+                        <Button
+                            android:id="@+id/interestedEventDetailsBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:text="@string/nav_item_interested"
+                            android:textColor="@color/colorWhite" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -135,9 +134,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -161,12 +160,12 @@
                             android:id="@+id/seeOnMapEventDetailsTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:textSize="16dp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="20dp"
                             android:layout_marginStart="10dp"
-                            android:text="@string/see_on_map" />
+                            android:layout_marginTop="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/see_on_map"
+                            android:textAllCaps="true"
+                            android:textSize="16dp" />
 
                     </LinearLayout>
 
@@ -177,9 +176,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -203,12 +202,12 @@
                             android:id="@+id/seeCommentsEventDetailsTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:textSize="16dp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="20dp"
                             android:layout_marginStart="10dp"
-                            android:text="@string/see_comments" />
+                            android:layout_marginTop="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/see_comments"
+                            android:textAllCaps="true"
+                            android:textSize="16dp" />
 
                     </LinearLayout>
 
@@ -219,9 +218,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -241,30 +240,30 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/goingUserEventDetailsImgView1"
-                        android:layout_width="50dp"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="15dp"
-                        android:src="@drawable/ic_veljko"
-                        app:civ_border_width="2dp" />
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/goingUserEventDetailsImgView1"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/goingUserEventDetailsImgView2"
-                        android:layout_width="50dp"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="15dp"
-                        android:src="@drawable/ic_veljko"
-                        app:civ_border_width="2dp" />
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/goingUserEventDetailsImgView2"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/goingUserEventDetailsImgView3"
                             android:layout_width="50dp"
                             android:layout_height="60dp"
-                            android:layout_marginTop="5dp"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="5dp"
                             android:src="@drawable/ic_veljko"
                             app:civ_border_width="2dp" />
 
@@ -272,8 +271,8 @@
                             android:id="@+id/goingUserEventDetailsImgView4"
                             android:layout_width="50dp"
                             android:layout_height="60dp"
-                            android:layout_marginTop="5dp"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="5dp"
                             android:src="@drawable/ic_veljko"
                             app:civ_border_width="2dp" />
 
@@ -281,12 +280,12 @@
                             android:id="@+id/seeAllGoingEventDetailsTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="22dp"
                             android:layout_weight="1"
                             android:text="@string/see_all"
                             android:textAllCaps="true"
-                            android:textSize="16dp"
-                            android:layout_marginTop="22dp"
-                            android:layout_marginStart="20dp"/>
+                            android:textSize="16dp" />
                     </LinearLayout>
 
 
@@ -297,9 +296,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -308,64 +307,64 @@
                     android:padding="16dp">
 
 
+                    <TextView
+                        android:id="@+id/interestedEventDetailsTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nav_item_interested" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/interestedUserEventDetailsImgView1"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/interestedUserEventDetailsImgView2"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/interestedUserEventDetailsImgView3"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/interestedUserEventDetailsImgView4"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_veljko"
+                            app:civ_border_width="2dp" />
+
                         <TextView
-                            android:id="@+id/interestedEventDetailsTextView"
-                            android:layout_width="match_parent"
+                            android:id="@+id/seeAllInterestedEventDetailsTextView"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/nav_item_interested" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/interestedUserEventDetailsImgView1"
-                                android:layout_width="50dp"
-                                android:layout_height="60dp"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginStart="15dp"
-                                android:src="@drawable/ic_veljko"
-                                app:civ_border_width="2dp" />
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/interestedUserEventDetailsImgView2"
-                                android:layout_width="50dp"
-                                android:layout_height="60dp"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginStart="15dp"
-                                android:src="@drawable/ic_veljko"
-                                app:civ_border_width="2dp" />
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/interestedUserEventDetailsImgView3"
-                                android:layout_width="50dp"
-                                android:layout_height="60dp"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginStart="16dp"
-                                android:src="@drawable/ic_veljko"
-                                app:civ_border_width="2dp" />
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/interestedUserEventDetailsImgView4"
-                                android:layout_width="50dp"
-                                android:layout_height="60dp"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginStart="16dp"
-                                android:src="@drawable/ic_veljko"
-                                app:civ_border_width="2dp" />
-
-                            <TextView
-                                android:id="@+id/seeAllInterestedEventDetailsTextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/see_all"
-                                android:textAllCaps="true"
-                                android:textSize="16dp"
-                                android:layout_marginTop="22dp"
-                                android:layout_marginStart="20dp"/>
-                        </LinearLayout>
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="22dp"
+                            android:layout_weight="1"
+                            android:text="@string/see_all"
+                            android:textAllCaps="true"
+                            android:textSize="16dp" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -374,9 +373,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -393,7 +392,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
@@ -403,14 +402,14 @@
                             android:layout_marginStart="15dp"
                             android:text="Ime i prezime"
                             android:textSize="16dp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/userInfoEventDetailsTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
                             android:layout_marginStart="15dp"
+                            android:layout_marginTop="10dp"
                             android:text="Ovde idu informacije o korisniku" />
 
                         <View
@@ -418,12 +417,11 @@
                             android:layout_height="2dp"
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="10dp"
-                            android:background="@color/colorGray"
-                            />
+                            android:background="@color/colorGray" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:orientation="horizontal">
 
@@ -439,8 +437,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textAllCaps="true"
-                                android:text="@string/see_all" />
+                                android:text="@string/see_all"
+                                android:textAllCaps="true" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -452,98 +450,103 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/similarPostsEventDetailTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/similar_posts" />
-
-                    <TextView
-                        android:id="@+id/seeAllSimilarPostsEventDetailsTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="15dp"
-                        android:textAllCaps="true"
-                        android:textAlignment="textEnd"
-                        android:text="@string/see_all" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="100dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_veljko" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/similarPostsEventDetailTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-15dp"
-                            android:text="basket kod veljka"/>
-                </LinearLayout>
+                            android:layout_weight="1"
+                            android:text="@string/similar_posts" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="100dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_veljko" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-15dp"
-                        android:text="basket kod veljka"/>
+                        <TextView
+                            android:id="@+id/seeAllSimilarPostsEventDetailsTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="15dp"
+                            android:layout_weight="1"
+                            android:text="@string/see_all"
+                            android:textAlignment="textEnd"
+                            android:textAllCaps="true" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_veljko" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="15dp"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-15dp"
-                        android:text="basket kod veljka"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView2"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                app:srcCompat="@drawable/ic_veljko" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-15dp"
+                                android:text="basket kod veljka" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView3"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                app:srcCompat="@drawable/ic_veljko" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-15dp"
+                                android:text="basket kod veljka" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView4"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/ic_veljko" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-15dp"
+                                android:text="basket kod veljka" />
+                        </LinearLayout>
+
+
                     </LinearLayout>
-
-
-                </LinearLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

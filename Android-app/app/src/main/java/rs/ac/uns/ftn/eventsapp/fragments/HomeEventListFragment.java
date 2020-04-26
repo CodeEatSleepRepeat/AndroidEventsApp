@@ -39,7 +39,7 @@ public class HomeEventListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.app_name);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_home);
     }
 
     public ArrayList<Event> getItems(){

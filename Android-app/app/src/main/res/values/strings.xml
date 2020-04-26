@@ -93,9 +93,8 @@
     <string name="similar_posts">Similar posts</string>
     <string name="comments">Comments</string>
     <string name="comment">Comment</string>
+    <string name="nav_item_home">Home</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">00000000000000</string>
     <string name="fb_login_protocol_scheme">999999999999999</string>

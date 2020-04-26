@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.eventsapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.CommentsArrayAdapter;
 import rs.ac.uns.ftn.eventsapp.models.Comment;
 import rs.ac.uns.ftn.eventsapp.models.User;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class CommentsActivity extends AppCompatActivity {
 

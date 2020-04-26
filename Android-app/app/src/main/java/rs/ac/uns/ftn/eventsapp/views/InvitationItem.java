@@ -15,14 +15,11 @@ import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ShowEventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.models.Event;
-import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class InvitationItem extends Item<GroupieViewHolder> {
 

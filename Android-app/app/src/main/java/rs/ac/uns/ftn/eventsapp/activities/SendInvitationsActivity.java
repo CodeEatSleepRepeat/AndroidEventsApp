@@ -180,6 +180,15 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Toast.makeText(getApplicationContext(), "Invitation canceled!", Toast.LENGTH_SHORT).show();
+        setResult(Activity.RESULT_CANCELED);
+        finish();
+        return;
+    }
 
     /**
      * Kod za pamcenje trenutnog stanja liste pri okretanju ekrana

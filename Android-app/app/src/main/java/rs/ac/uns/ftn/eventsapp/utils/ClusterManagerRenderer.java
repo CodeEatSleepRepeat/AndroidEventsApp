@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.eventsapp.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -38,7 +37,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     @Override
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {
 
-        Picasso.get().load(item.getImgUri()).into(imageView); ;
+        Picasso.get().load(item.getImgUri()).into(imageView);
         Bitmap icon = iconGenerator.makeIcon();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle());
 

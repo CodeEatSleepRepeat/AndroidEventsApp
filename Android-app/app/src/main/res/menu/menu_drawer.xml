@@ -3,11 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/home_screen">
 
-    <group android:id="@+id/group_user_event_management" android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_home"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home"
+            android:title="@string/nav_item_home" />
+    </group>
+
+    <group
+        android:id="@+id/group_user_event_management"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_create"
             android:icon="@drawable/ic_add_event"
-            android:title="@string/nav_item_create" />
+            android:title="@string/nav_item_create"
+            android:checkable="false"/>
         <item
             android:id="@+id/navigation_item_myEvents"
             android:icon="@drawable/ic_my_events"
@@ -25,7 +38,8 @@
 
     <item android:title="@string/nav_social">
         <menu>
-            <item android:id="@+id/navigation_item_messages"
+            <item
+                android:id="@+id/navigation_item_messages"
                 android:icon="@drawable/ic_messages"
                 android:title="@string/nav_item_messages" />
             <item

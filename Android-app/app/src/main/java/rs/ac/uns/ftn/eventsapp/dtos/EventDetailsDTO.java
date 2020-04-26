@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
-import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class EventDetailsDTO implements Serializable {
 

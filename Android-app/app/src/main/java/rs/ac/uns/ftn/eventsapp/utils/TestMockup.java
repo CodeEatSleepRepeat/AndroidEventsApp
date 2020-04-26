@@ -1,14 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
-import android.net.Uri;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.models.Comment;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.Friendship;

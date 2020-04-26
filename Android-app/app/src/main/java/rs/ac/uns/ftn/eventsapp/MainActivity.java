@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
-            navigationView.getMenu().clear();
+            //navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
             navigationView.getHeaderView(0).setVisibility(View.GONE);
             setNavigationListenerUnauthorizedUser(navigationView, toolbar);
@@ -112,11 +112,27 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransition.to(HomeEventListFragment.class.newInstance(), this, false);
                 FrameLayout frameLayout = findViewById(R.id.fragment_view);
                 View fragmentView = frameLayout.getChildAt(0);
-                chipGroup = fragmentView.findViewById(R.id.chipsGroup);
-                chipGroup.setVisibility(View.GONE);
+
+                //check if there was chip-group
+                if (chipGroup == null) {
+                    chipGroup = fragmentView.findViewById(R.id.chipsGroup);
+                    chipGroup.setVisibility(View.GONE);
+                }
+
+
             } catch (Exception e) {
             }
+        } else {
+            int selectedNavItem = savedInstanceState.getInt("SELECTED_NAV_ITEM");
+            if (selectedNavItem != -1) {
+                clearCheckedItems(navigationView.getMenu());
 
+                if (selectedNavItem / 10 > 0) {
+                    navigationView.getMenu().getItem(selectedNavItem / 10).getSubMenu().getItem(selectedNavItem % 10).setChecked(true);
+                } else {
+                    navigationView.getMenu().getItem(selectedNavItem % 10).setChecked(true);
+                }
+            }
         }
 
         FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
@@ -128,16 +144,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView,
-                                                       final Toolbar toolbar) {
+    private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                clearCheckedItems(navigationView.getMenu());
-                menuItem.setChecked(true);
+                //clearCheckedItems(navigationView.getMenu());
+                //menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()) {
+                    case R.id.navigation_item_home:
+                        onClickNavItem(HomeEventListFragment.class);
+                        break;
                     case R.id.navigation_item_settings_unauth:
                         Toast.makeText(MainActivity.this, "Ojsa", Toast.LENGTH_SHORT).show();
                         break;
@@ -154,45 +172,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setNavigationListenerAuthorizedUser(final NavigationView navigationView,
-                                                     final Toolbar toolbar) {
+    private void setNavigationListenerAuthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                clearCheckedItems(navigationView.getMenu());
-                menuItem.setChecked(true);
+                //clearCheckedItems(navigationView.getMenu());
+                //menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()) {
+                    case R.id.navigation_item_home:
+                        onClickNavItem(HomeEventListFragment.class);
+                        break;
                     case R.id.navigation_item_create:
                         onClickCreateEvent();
                         break;
                     case R.id.navigation_item_myEvents:
                         onClickNavItem(MyEventsListFragment.class);
-                        toolbar.setTitle(R.string.nav_item_myEvents);
                         break;
                     case R.id.navigation_item_going:
                         onClickNavItem(GoingEventsListFragment.class);
-                        toolbar.setTitle(R.string.nav_item_going);
                         break;
                     case R.id.navigation_item_interested:
                         onClickNavItem(InterestedEventsListFragment.class);
-                        toolbar.setTitle(R.string.nav_item_interested);
                         break;
                     case R.id.navigation_item_friends:
                         onClickNavItem(ListOfUsersFragment.class);
-                        toolbar.setTitle(R.string.nav_item_friends);
                         break;
                     case R.id.navigation_item_messages:
                         onClickNavItem(LatestMessagesFragment.class);
-                        toolbar.setTitle(R.string.nav_item_messages);
                         break;
                     case R.id.navigation_item_logout:
                         logout();
                         break;
                     case R.id.navigation_item_invitations:
                         onClickNavItem(InvitationsFragment.class);
-                        toolbar.setTitle(R.string.nav_item_invitations);
                         break;
                     case R.id.navigation_item_settings:
                         openSettings();
@@ -210,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Deselect all menu items in navigation drawer
+     *
      * @param menu
      */
     private void clearCheckedItems(@NonNull final Menu menu) {
@@ -262,6 +277,9 @@ public class MainActivity extends AppCompatActivity {
             removeFilterChips();
         } else {
             super.onBackPressed();
+
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+            onAttachFragment(currentFragment);
         }
     }
 
@@ -358,14 +376,14 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> chipTexts = new ArrayList<>();
 
                 if (dist > 0) {
-                    chipTexts.add(Integer.toString(dist) + "km");
+                    chipTexts.add(dist + "km");
                 }
 
-                if (!startDate.equals("") && !startTime.equals("")){
+                if (!startDate.equals("") && !startTime.equals("")) {
                     chipTexts.add("Starts " + startDate + " " + startTime);
                 }
 
-                if (!endDate.equals("") && !endTime.equals("")){
+                if (!endDate.equals("") && !endTime.equals("")) {
                     chipTexts.add("Ends " + endDate + " " + endTime);
                 }
 
@@ -436,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 //Ne prikazuj date i time chip, ali ih cuvaj zbog setovanja filtera
-                if (text.startsWith("Starts") || text.startsWith("Ends")){
+                if (text.startsWith("Starts") || text.startsWith("Ends")) {
                     mChip.setVisibility(View.GONE);
                 }
 
@@ -483,10 +501,111 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Setovanje toolbar naslova i navigation drawer is
+     *
+     * @param fragment
+     */
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //noInternetDialog.onDestroy();
+    public void onAttachFragment(Fragment fragment) {
+        //TODO: proveriti korisnost ovog koda
+        super.onAttachFragment(fragment);
+
+        toolbar = findViewById(R.id.toolbar);
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+
+        if (fragment == null) {
+            return;
+        }
+
+        if (navigationView != null) clearCheckedItems(navigationView.getMenu());
+
+        if (fragment instanceof HomeEventListFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_home);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_home).setChecked(true);
+        } else if (fragment instanceof MyEventsListFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_myEvents);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_myEvents).setChecked(true);
+        } else if (fragment instanceof InterestedEventsListFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_interested);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_interested).setChecked(true);
+        } else if (fragment instanceof GoingEventsListFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_going);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_going).setChecked(true);
+        } else if (fragment instanceof LatestMessagesFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_messages);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_messages).setChecked(true);
+        } else if (fragment instanceof InvitationsFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_invitations);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_invitations).setChecked(true);
+        } else if (fragment instanceof ListOfUsersFragment) {
+            if (toolbar != null) toolbar.setTitle(R.string.nav_item_friends);
+            if (navigationView != null)
+                navigationView.getMenu().findItem(R.id.navigation_item_friends).setChecked(true);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("SELECTED_NAV_ITEM", getCheckedItem((NavigationView) findViewById(R.id.navigation_view)));
+
+        //setovanje sort by ako je na home fragmentu, ako nije puca
+        if (findViewById(R.id.sortFilterTextView) != null) {
+            outState.putString("SORT", (((TextView) findViewById(R.id.sortFilterTextView)).getText()).toString());
+        }
+
+        if (chipGroup != null) {
+            ArrayList<String> chipsText = new ArrayList<>();
+            for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                Chip chip = (Chip) chipGroup.getChildAt(i);
+                chipsText.add(chip.getText().toString());
+            }
+            outState.putStringArrayList("CHIPS", chipsText);
+        }
+    }
+
+    private int getCheckedItem(NavigationView navigationView) {
+        if (navigationView == null) {
+            return -1;
+        }
+
+        Menu menu = navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.hasSubMenu()) {
+                Menu subMenu = item.getSubMenu();
+                for (int j = 0; j < subMenu.size(); j++) {
+                    if (subMenu.getItem(j).isChecked()) {
+                        return i * 10 + j;
+                    }
+                }
+            } else {
+                if (item.isChecked()) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        ArrayList<String> chipsText = savedInstanceState.getStringArrayList("CHIPS");
+        setFilterChips(chipsText);
+        //set sort text
+        String sort = savedInstanceState.getString("SORT");
+        if (sort != null) {
+            ((TextView) findViewById(R.id.sortFilterTextView)).setText(sort);
+        }
     }
 
     private void openSettings() {

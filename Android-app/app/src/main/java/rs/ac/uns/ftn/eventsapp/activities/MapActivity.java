@@ -91,7 +91,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
         return false;
-    };
+    }
 
     /*
      * Provera da li je google play instaliran na uredjaju
