@@ -38,6 +38,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private EditText startingTimeEditText;
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
+    private Double lat = 300.0;
+    private Double lng = 300.0;
 
     private CheckBox charityCB;
     private CheckBox educationalCB;
@@ -55,6 +57,11 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        mMapView = findViewById(R.id.createEventMapView);
+        if(savedInstanceState!=null) {
+            lat = savedInstanceState.getDouble("lat");
+            lng = savedInstanceState.getDouble("lng");
+        }
         initGoogleMap(savedInstanceState);
 
         startingDateEditText = findViewById(R.id.startingDateCreateEventEditText);
@@ -257,6 +264,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 imgView.setImageURI(null);
             }
         });
+
     }
 
     /*
@@ -279,18 +287,24 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         if(savedInstanceState != null){
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-        mMapView = findViewById(R.id.createEventMapView);
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-
+        if(!lat.equals(300.0) && !lng.equals(300.0)){
+            MarkerOptions mo = new MarkerOptions();
+            mo.position(new LatLng(lat, lng));
+            mo.title(lat + " : " + lng);
+            googleMap.addMarker(mo);
+        }
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 MarkerOptions mo = new MarkerOptions();
+                lat = latLng.latitude;
+                lng = latLng.longitude;
                 mo.position(latLng);
                 mo.title(latLng.latitude + " : " + latLng.longitude);
                 googleMap.clear();
@@ -300,18 +314,26 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
         if(mapViewBundle==null){
             mapViewBundle = new Bundle();
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
         }
-
+        outState.putDouble("lat", lat);
+        outState.putDouble("lng", lng);
         mMapView.onSaveInstanceState(mapViewBundle);
     }
+
+    /*@Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onRestoreInstanceState(savedInstanceState);
+        mMapView=savedInstanceState.getParcelable(MAPVIEW_BUNDLE_KEY);
+    }*/
 
     @Override
     public void onResume(){
