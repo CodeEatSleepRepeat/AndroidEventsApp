@@ -30,7 +30,7 @@
             android:layout_marginTop="32dp"
             android:text="at"
             app:layout_constraintEnd_toStartOf="@+id/endingTimeFilterEditText"
-            app:layout_constraintHorizontal_bias="0.681"
+            app:layout_constraintHorizontal_bias="0.047"
             app:layout_constraintStart_toEndOf="@+id/endingDateFilterEditText"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -263,7 +263,7 @@
 
         <EditText
             android:id="@+id/startingDateFilterEditText"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
@@ -281,7 +281,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="48dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:ems="10"
@@ -316,7 +316,7 @@
 
         <EditText
             android:id="@+id/endingDateFilterEditText"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
@@ -334,7 +334,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="48dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:ems="10"
@@ -361,10 +361,30 @@
             android:text="at"
             app:layout_constraintBottom_toTopOf="@+id/endingDateFilterEditText"
             app:layout_constraintEnd_toStartOf="@+id/startingTimeFilterEditText"
-            app:layout_constraintHorizontal_bias="0.681"
+            app:layout_constraintHorizontal_bias="0.166"
             app:layout_constraintStart_toEndOf="@+id/startingDateFilterEditText"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
             app:layout_constraintVertical_bias="0.69" />
+
+        <ImageButton
+            android:id="@+id/resetStartDateTimeFilterImgBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            app:layout_constraintStart_toEndOf="@+id/startingTimeFilterEditText"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:srcCompat="@drawable/ic_x" />
+
+        <ImageButton
+            android:id="@+id/resetEndDateTimeFilterImgBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/colorPrimary"
+            app:layout_constraintStart_toEndOf="@+id/endingTimeFilterEditText"
+            app:layout_constraintTop_toBottomOf="@+id/resetStartDateTimeFilterImgBtn"
+            app:srcCompat="@drawable/ic_x" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

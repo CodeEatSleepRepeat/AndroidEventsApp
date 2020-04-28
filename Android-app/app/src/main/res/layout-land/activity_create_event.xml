@@ -48,8 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/radioGroup"
-                android:layout_marginStart="36dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginStart="71dp"
+                android:layout_marginTop="29dp"
                 android:layout_toEndOf="@+id/startingTimeCreateEventEditText"
                 app:srcCompat="@drawable/ic_calendar" />
 

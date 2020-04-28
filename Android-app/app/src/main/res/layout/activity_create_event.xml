@@ -54,7 +54,7 @@
 
             <EditText
                 android:id="@+id/startingTimeCreateEventEditText"
-                android:layout_width="120dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryCreateEventTextView"
                 android:layout_alignParentEnd="true"
@@ -80,7 +80,7 @@
 
             <EditText
                 android:id="@+id/endingTimeCreateEventEditText"
-                android:layout_width="120dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/startingTimeCreateEventEditText"
                 android:layout_alignEnd="@+id/startingTimeCreateEventEditText"
@@ -111,12 +111,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/startingTimeCreateEventEditText"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="1dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="11dp"
                 android:layout_toStartOf="@+id/startingTimeCreateEventEditText"
                 android:layout_toEndOf="@+id/startingDateCreateEventEditText"
                 android:gravity="center"
-                android:text="at"/>
+                android:text="at" />
 
             <ImageView
                 android:id="@+id/startingDateCreateEventImgView"

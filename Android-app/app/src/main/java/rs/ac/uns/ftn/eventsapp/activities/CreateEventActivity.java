@@ -38,8 +38,9 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private EditText startingTimeEditText;
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
-    private Double lat = 300.0;
-    private Double lng = 300.0;
+    private Double lat = null;
+    private Double lng = null;
+    private String imgUri = null;
 
     private CheckBox charityCB;
     private CheckBox educationalCB;
@@ -54,13 +55,14 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private FrameLayout imageHolder;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         mMapView = findViewById(R.id.createEventMapView);
         if(savedInstanceState!=null) {
             lat = savedInstanceState.getDouble("lat");
             lng = savedInstanceState.getDouble("lng");
+            imgUri = savedInstanceState.getString("uri");
         }
         initGoogleMap(savedInstanceState);
 
@@ -244,6 +246,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         * Klikom na sliku se salje intent(zahtev) za izbor slike
         * */
         imgView = findViewById(R.id.eventImageCreateEventImgView);
+
         imageHolder = findViewById(R.id.imageHolderCreateEvent);
         imageHolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,10 +264,19 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             public void onClick(View v) {
                 findViewById(R.id.cameraImageView).setVisibility(View.VISIBLE);
                 findViewById(R.id.addPhotoTextView).setVisibility(View.VISIBLE);
+                imgUri = null;
                 imgView.setImageURI(null);
             }
         });
 
+        if(savedInstanceState!=null){
+            String s = savedInstanceState.getString("uri");
+            if(s!=null) {
+                imgView.setImageURI(Uri.parse(s));
+                findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
+                findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     /*
@@ -275,6 +287,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null){
             Uri imageData = data.getData();
+            imgUri = imageData.toString();
             findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
             findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
             imgView.setImageURI(imageData);
@@ -293,7 +306,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-        if(!lat.equals(300.0) && !lng.equals(300.0)){
+        if(lat!=null && lng!=null){
             MarkerOptions mo = new MarkerOptions();
             mo.position(new LatLng(lat, lng));
             mo.title(lat + " : " + lng);
@@ -325,6 +338,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
         outState.putDouble("lat", lat);
         outState.putDouble("lng", lng);
+        outState.putString("uri", imgUri);
         mMapView.onSaveInstanceState(mapViewBundle);
     }
 

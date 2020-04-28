@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,9 +30,8 @@ import rs.ac.uns.ftn.eventsapp.R;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private final Calendar calendar = Calendar.getInstance();
-
+    private Toolbar toolbar;
     //distance
     private TextView showProgress;
     private SeekBar seekbar;
@@ -56,6 +56,8 @@ public class FilterEventsActivity extends AppCompatActivity {
     private EditText startingTimeEditText;
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
+    private ImageButton resetStartDateTime;
+    private ImageButton resetEndingDateTime;
 
     private Button saveFilterBtn;
 
@@ -107,7 +109,26 @@ public class FilterEventsActivity extends AppCompatActivity {
         endingDateEditText = findViewById(R.id.endingDateFilterEditText);
         endingTimeEditText = findViewById(R.id.endingTimeFilterEditText);
 
+        resetStartDateTime = findViewById(R.id.resetStartDateTimeFilterImgBtn);
+        resetEndingDateTime = findViewById(R.id.resetEndDateTimeFilterImgBtn);
+
         privateEventFilterCheckBox = findViewById(R.id.privateEventFilterCheckBox);
+
+        resetStartDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startingDateEditText.getText().clear();
+                startingTimeEditText.getText().clear();
+            }
+        });
+
+        resetEndingDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endingDateEditText.getText().clear();
+                endingTimeEditText.getText().clear();
+            }
+        });
 
         /*
          * Listener koji se odnosi na kalendar
@@ -168,7 +189,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 } else {
                     //postavi ga na osnovu vrednosti iz polja
                     final int day = Integer.parseInt(startingDateEditText.getText().toString().split("/")[0]);
-                    final int month = Integer.parseInt(startingDateEditText.getText().toString().split("/")[1])-1;
+                    final int month = Integer.parseInt(startingDateEditText.getText().toString().split("/")[1]) - 1;
                     final int year = Integer.parseInt(startingDateEditText.getText().toString().split("/")[2]);
                     new DatePickerDialog(FilterEventsActivity.this, startingDate, year, month, day).show();
                 }
@@ -227,14 +248,14 @@ public class FilterEventsActivity extends AppCompatActivity {
         endingDateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (endingDateEditText.getText().toString().equals("")){
+                if (endingDateEditText.getText().toString().equals("")) {
                     new DatePickerDialog(FilterEventsActivity.this, endingDate,
                             calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                             calendar.get(Calendar.DAY_OF_MONTH)).show();
                 } else {
                     //postavi ga na osnovu vrednosti iz polja
                     final int day = Integer.parseInt(endingDateEditText.getText().toString().split("/")[0]);
-                    final int month = Integer.parseInt(endingDateEditText.getText().toString().split("/")[1])-1;
+                    final int month = Integer.parseInt(endingDateEditText.getText().toString().split("/")[1]) - 1;
                     final int year = Integer.parseInt(endingDateEditText.getText().toString().split("/")[2]);
                     new DatePickerDialog(FilterEventsActivity.this, endingDate, year, month, day).show();
                 }
