@@ -9,14 +9,14 @@
             android:entryValues="@array/updateLanguageValue"
             android:key="pref_language"
             android:title="@string/title_pref_language"
-            android:summary="@string/msg_pref_language"/>
+            android:summary="%s"/>
         <ListPreference
             android:defaultValue="2"
             android:entries="@array/updateDefaultEventSort"
             android:entryValues="@array/updateDefaultEventSortValues"
             android:key="pref_default_event_sort"
             android:title="@string/title_pref_default_event_filter_sort"
-            android:summary="@string/msg_pref_default_event_filter_sort"/>
+            android:summary="%s"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/map">
         <EditTextPreference
@@ -35,7 +35,7 @@
             android:entryValues="@array/updateDefaultZoomOptionValues"
             android:key="pref_default_map_zoom"
             android:title="@string/title_pref_default_map_zoom"
-            android:summary="@string/msg_pref_defauilt_map_zoom"/>
+            android:summary="%s"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_facebook_logo">
 

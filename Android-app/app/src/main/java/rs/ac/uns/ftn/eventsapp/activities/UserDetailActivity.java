@@ -33,6 +33,9 @@ public class UserDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         //setting username
         String intentExtraUsername = getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_NAME);
         if(intentExtraUsername != null){
@@ -96,6 +99,9 @@ public class UserDetailActivity extends AppCompatActivity {
         if (id == R.id.menu_remove_friend) {
             Toast.makeText(this, "Oces, oces, kad na vrbi rodi grozdje", Toast.LENGTH_LONG).show();
             return true;
+        }
+        else {
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -32,8 +33,12 @@ import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class ListOfUsersFragment extends Fragment implements Filterable {
 
+    public static String SEARCH_TEXT_LIST_OF_USERS = "rs.ac.uns.ftn.eventsapp.fragments" +
+            ".ListOfUsersFragment.SEARCH_TEXT_LIST_OF_USERS";
+
     private List<User> userList = new ArrayList<User>();
     private List<User> userListAll = new ArrayList<User>();
+    private String searchText;
     private GroupAdapter adapter;
 
     @Override
@@ -54,6 +59,19 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
 
         getAllFriendUsers();
 
+        // ukoliko korisnik npr rotira telefon, prehodno stanje mu ucitavam
+        if(savedInstanceState != null){
+            if(savedInstanceState.getString(SEARCH_TEXT_LIST_OF_USERS) != null){
+                searchText = savedInstanceState.getString(SEARCH_TEXT_LIST_OF_USERS);
+                getFilter().filter(searchText);
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +84,20 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         fabMap.hide();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
+        fabMap.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SEARCH_TEXT_LIST_OF_USERS, searchText);
+    }
+
     private void getAllFriendUsers(){
 
         adapter = new GroupAdapter<>();
@@ -74,7 +106,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         userList.addAll(TestMockup.users);
         userListAll.addAll(TestMockup.users);
         for(User user : userList){
-            adapter.add(new UserSimpleItem(user, false));
+            adapter.add(new UserSimpleItem(user, false, false));
         }
 
         recyclerView.setAdapter(adapter);
@@ -100,6 +132,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchText = newText;
                 getFilter().filter(newText);
                 return false;
             }
@@ -155,7 +188,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             userList.addAll((Collection<? extends User>) results.values);
             adapter.clear();
             for(User user : userList){
-                adapter.add(new UserSimpleItem(user, false));
+                adapter.add(new UserSimpleItem(user, false, false));
             }
         }
     };

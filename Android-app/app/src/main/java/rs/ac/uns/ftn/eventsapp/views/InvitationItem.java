@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ShowEventDetailsActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 
@@ -117,18 +118,24 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         Intent detailsIntent = new Intent(context, ShowEventDetailsActivity.class);
 
         final Event e = invitation.getEvent();
-        detailsIntent.putExtra("id", e.getEventId());
-        detailsIntent.putExtra("name", e.getEventName());
-        detailsIntent.putExtra("description", e.getEventDescription());
-        detailsIntent.putExtra("imageURI", e.getEventImageURI());
-        detailsIntent.putExtra("type", e.getEventType());
-        detailsIntent.putExtra("open", e.getOpenForAll());
-        detailsIntent.putExtra("start", e.getStartTime());
-        detailsIntent.putExtra("end", e.getEndTime());
-        detailsIntent.putExtra("location", e.getLocation());
-        detailsIntent.putExtra("longitude", e.getLongitude());
-        detailsIntent.putExtra("latitude", e.getLatitude());
-        detailsIntent.putExtra("userId", e.getAuthor().getUserId());
+        EventDetailsDTO transferObject = new EventDetailsDTO(e.getEventId(), e.getEventName(),
+                e.getEventDescription(), e.getEventImageURI(),
+                e.getEventType(), e.getOpenForAll(), e.getStartTime(), e.getEndTime(),
+                e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getUserId());
+
+//        detailsIntent.putExtra("id", e.getEventId());
+//        detailsIntent.putExtra("name", e.getEventName());
+//        detailsIntent.putExtra("description", e.getEventDescription());
+//        detailsIntent.putExtra("imageURI", e.getEventImageURI());
+//        detailsIntent.putExtra("type", e.getEventType());
+//        detailsIntent.putExtra("open", e.getOpenForAll());
+//        detailsIntent.putExtra("start", e.getStartTime());
+//        detailsIntent.putExtra("end", e.getEndTime());
+//        detailsIntent.putExtra("location", e.getLocation());
+//        detailsIntent.putExtra("longitude", e.getLongitude());
+//        detailsIntent.putExtra("latitude", e.getLatitude());
+//        detailsIntent.putExtra("userId", e.getAuthor().getUserId());
+        detailsIntent.putExtra("EVENT", transferObject);
 
         context.startActivity(detailsIntent);
 

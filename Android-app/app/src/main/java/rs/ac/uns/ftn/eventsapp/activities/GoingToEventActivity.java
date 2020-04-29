@@ -34,7 +34,7 @@ public class GoingToEventActivity extends AppCompatActivity {
         userList.addAll(TestMockup.users);
         userListAll.addAll(TestMockup.users);
         for(User user : userList){
-            adapter.add(new UserSimpleItem(user, false));
+            adapter.add(new UserSimpleItem(user, false, false));
         }
 
         recyclerView.setAdapter(adapter);

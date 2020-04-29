@@ -1,21 +1,30 @@
 package rs.ac.uns.ftn.eventsapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
@@ -36,6 +45,7 @@ public class InvitationsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -52,6 +62,22 @@ public class InvitationsFragment extends Fragment {
         getAllInvitations();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        fab.hide();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        fab.show();
+    }
+
     private void getAllInvitations() {
         GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<GroupieViewHolder>();
         RecyclerView recyclerView =
@@ -63,5 +89,28 @@ public class InvitationsFragment extends Fragment {
         }
 
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.menu_settings_item_only, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings_only_menu_item) {
+            openSettings();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(intent);
     }
 }

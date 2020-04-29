@@ -15,6 +15,7 @@ import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserDetailActivity;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
@@ -28,11 +29,13 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
     private User user;
     private Boolean setAddButton;
+    private Boolean onClickGoToChatRoom;
 
-    public UserSimpleItem(User user, Boolean setAddButton){
+    public UserSimpleItem(User user, Boolean setAddButton, Boolean onClickGoToChatRoom){
 
         this.user = user;
         this.setAddButton = setAddButton;
+        this.onClickGoToChatRoom = onClickGoToChatRoom;
 
     }
 
@@ -65,14 +68,25 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         textUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToUserDetails(viewHolder);
+                if(onClickGoToChatRoom){
+                    goToChatRoom(viewHolder);
+                }
+                else{
+                    goToUserDetails(viewHolder);
+                }
+
             }
         });
 
         imageUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToUserDetails(viewHolder);
+                if(onClickGoToChatRoom){
+                    goToChatRoom(viewHolder);
+                }
+                else{
+                    goToUserDetails(viewHolder);
+                }
             }
         });
     }
@@ -89,6 +103,11 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         intent.putExtra(EXTRA_USER_NAME, user.getUserName());
         intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getProfileImageUrl());
         intent.putExtra(EXTRA_USER_EMAIL, user.getEmail());
+        viewHolder.itemView.getContext().startActivity(intent);
+    }
+
+    private void goToChatRoom(GroupieViewHolder viewHolder){
+        Intent intent = new Intent(viewHolder.itemView.getContext(), ChatLogActivity.class);
         viewHolder.itemView.getContext().startActivity(intent);
     }
 
