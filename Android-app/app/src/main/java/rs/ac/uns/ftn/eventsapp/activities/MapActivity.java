@@ -33,6 +33,7 @@ import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
@@ -126,7 +127,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void buildAlertMessageNoGps(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage("This application requires GPS to work properly, do you want to enable it?").setCancelable(true).setNegativeButton("No", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intentMA);
+            }
+        }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
