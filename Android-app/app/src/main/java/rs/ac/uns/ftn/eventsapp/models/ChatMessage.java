@@ -7,13 +7,23 @@ public class ChatMessage {
     private Long fromId;
     private Long toId;
     private Long timestamp;
+    private Boolean seen;
 
-    public ChatMessage(Long id, String text, Long fromId, Long toId, Long timestamp){
+    public ChatMessage(Long id, String text, Long fromId, Long toId, Long timestamp, Boolean seen){
         this.id = id;
         this.text = text;
         this.fromId = fromId;
         this.toId = toId;
         this.timestamp = timestamp;
+        this.seen = seen;
+    }
+
+    public Boolean getSeen() {
+        return seen;
+    }
+
+    public void setSeen(Boolean seen) {
+        this.seen = seen;
     }
 
     public Long getId() {

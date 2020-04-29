@@ -133,29 +133,32 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         RecyclerView recyclerViewLatestMessages =
                 getActivity().findViewById(R.id.recyclerview_list_of_latest_messages);
 
-        recyclerViewLatestMessages.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL));
+//        recyclerViewLatestMessages.addItemDecoration(new DividerItemDecoration(getActivity(),
+//                DividerItemDecoration.VERTICAL));
 
         adapter.add(new LatestMessageItem(new ChatMessage(
                 1l,
-                "Pa ja ovo prvi put vidim",
+                "Pa ja ovo prvi put vidim!",
                 2l,
                 4l,
-                System.currentTimeMillis()/1000
+                System.currentTimeMillis()/1000,
+                false
                 )));
         adapter.add(new LatestMessageItem(new ChatMessage(
                 2l,
-                "Pa ja ovo prvi put vidim",
+                "Pa ja ovo drugi put vidim!",
                 54l,
                 43l,
-                System.currentTimeMillis()/1000
+                System.currentTimeMillis()/1000,
+                true
         )));
         adapter.add(new LatestMessageItem(new ChatMessage(
                 4l,
-                "Pa ja ovo prvi put vidim",
+                "Pa ja ovo treci put vidim!",
                 22l,
                 43l,
-                System.currentTimeMillis()/1000
+                System.currentTimeMillis()/1000,
+                true
         )));
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
