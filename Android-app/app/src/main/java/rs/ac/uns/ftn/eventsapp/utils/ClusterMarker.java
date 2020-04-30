@@ -51,4 +51,5 @@ public class ClusterMarker implements ClusterItem {
     public void setImgUri(String imgUri) {
         this.imgUri = imgUri;
     }
+
 }

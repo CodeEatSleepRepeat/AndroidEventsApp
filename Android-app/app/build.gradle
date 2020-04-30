@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     //Google dependency for custom markers
-    implementation 'com.google.maps.android:android-maps-utils:1.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:1.1.0'
 
     //circle image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'

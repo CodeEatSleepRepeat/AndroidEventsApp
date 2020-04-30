@@ -18,7 +18,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
-
+        <activity android:name=".activities.GoogleMapActivity"
+            android:label="@string/map"></activity>
         <activity
             android:name=".activities.CommentsActivity"
             android:label="@string/comments" />
@@ -50,7 +51,8 @@
             android:name=".activities.SendInvitationsActivity"
             android:label="@string/invite_friends"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.SimilarEventsActivity"
+        <activity
+            android:name=".activities.SimilarEventsActivity"
             android:label="@string/similar_posts" />
         <activity
             android:name=".activities.AuthorsEventsActivity"
@@ -87,7 +89,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="sdgmpodomfdfm" />

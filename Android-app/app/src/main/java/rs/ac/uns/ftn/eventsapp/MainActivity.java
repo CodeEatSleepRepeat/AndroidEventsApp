@@ -32,6 +32,7 @@ import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         for (Event item : items) {
             eventsForMap.add(new EventForMapDTO(item.getEventId(), item.getEventName(), item.getLatitude(), item.getLongitude(), item.getEventImageURI()));
         }
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, GoogleMapActivity.class);
         intent.putExtra("EVENTS", eventsForMap);
         startActivity(intent);
 

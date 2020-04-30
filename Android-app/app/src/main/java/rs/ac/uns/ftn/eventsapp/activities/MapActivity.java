@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,6 +51,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
     private Location currentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private final static long UPDATE_INTERVAL = 5000;
     private MapView mMapView;
     private ArrayList<EventForMapDTO> events = new ArrayList<>();
     private ClusterManager mClusterManager;
@@ -83,6 +88,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(UPDATE_INTERVAL);
+        mFusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback(){
+           @Override
+           public void onLocationResult(LocationResult locationResult){
+               currentLocation = locationResult.getLastLocation();
+               if(currentLocation!=null){
+                   Log.d("Trenutna lokacija:", " "+currentLocation.getLatitude() + " "+currentLocation.getLongitude());
+                   mMapView.getMapAsync(MapActivity.this);
+               }
+           }
+        }, Looper.myLooper());
     }
 
     private boolean checkMapServices(){
