@@ -31,5 +31,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	 * 
 	 */
 	@Query(value = "SELECT new rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO(e, (6371 * acos (cos(radians(lat))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(lng))+sin(radians(lat))*sin(radians(e.latitude)))) AS distance) FROM Event e WHERE distance < dist ORDER BY distance")
-	Page<EventDistanceDTO> getOpenEventsNearCoordinates(Long lat, Long lng, Long dist, Pageable pageable);
+	Page<EventDistanceDTO> getOpenEventsNearCoordinates(float lat, float lng, float dist, Pageable pageable);
+	
+	/**
+	 * Event that has this facebookId is returned from DB
+	 * @param fbId
+	 * @return
+	 */
+	@Query(value = "SELECT e FROM Event e WHERE e.facebookId = ?1")
+	Event findByFacebookId(String facebookId);
 }

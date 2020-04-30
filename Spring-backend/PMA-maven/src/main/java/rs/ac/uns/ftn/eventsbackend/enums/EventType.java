@@ -4,5 +4,6 @@ public enum EventType {
 	PARTY,
 	HANGING,
 	MUSIC,
+	FACEBOOK,
 	OTHER
 }

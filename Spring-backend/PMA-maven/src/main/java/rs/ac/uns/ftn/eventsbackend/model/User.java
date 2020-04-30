@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -26,18 +27,24 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
 	
+	private String facebookId;
+	
 	@NotNull
+	@Size(min = 1, max = 64)
 	private String userName;
+
+	private String userImageURI;
+	
+	private Integer imageHeight;
+	
+	private Integer imageWidth;
 	
 	@NotNull
 	@Email
 	private String email;
 	
 	@NotNull
-	private String password;
-	
-	@SuppressWarnings("unused")
-	private String facebookToken;
+	private String password;	//TODO: add password validation annotation
 	
 	@OneToMany(mappedBy="requestSender", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Friendship> sendRequests;
@@ -51,8 +58,11 @@ public class User {
 	@OneToMany(mappedBy="invitationReceiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Invitation> receivedInvitations;
 	
-	@OneToMany(mappedBy="author", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Event> userEvents;
+	@OneToMany(mappedBy="sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+	private List<ChatMessage> chatMessagesSent;
+	
+	@OneToMany(mappedBy="recipient", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+	private List<ChatMessage> chatMessagesReceived;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
     @JoinTable (
@@ -70,27 +80,38 @@ public class User {
     )
 	private List<Event> goingEvents;
 	
-	@SuppressWarnings("unused")
 	private Boolean activatedAccount;
 	
-
-	public User(Long userId, @NotNull String userName, @NotNull @Email String email, @NotNull String password,
-			String facebookToken, Boolean activatedAccount) {
+	private Boolean useFacebookProfile;
+	
+	/**
+	 * Za register preko emaila i passworda
+	 * @param userName
+	 * @param email
+	 * @param password
+	 */
+	public User(@NotNull String userName, @NotNull @Email String email, @NotNull String password) {
 		super();
-		this.userId = userId;
+		this.userId = null;
+		this.facebookId = "";
 		this.userName = userName;
+		this.userImageURI = "";
+		this.imageHeight = null;
+		this.imageWidth = null;
 		this.email = email;
 		this.password = password;
-		this.facebookToken = facebookToken;
-		this.activatedAccount = activatedAccount;
+		this.sendRequests = new ArrayList<Friendship>();
+		this.receivedRequests = new ArrayList<Friendship>();
+		this.sendInvitations = new ArrayList<Invitation>();
+		this.receivedInvitations = new ArrayList<Invitation>();
+		this.interestedEvents = new ArrayList<Event>();
+		this.goingEvents = new ArrayList<Event>();
+		this.activatedAccount = false;
+		this.useFacebookProfile = false;
+	}
+	
+	public User() {
 		
-		this.sendRequests = new ArrayList<>();
-		this.receivedRequests = new ArrayList<>();
-		this.sendInvitations = new ArrayList<>();
-		this.receivedInvitations = new ArrayList<>();
-		this.userEvents = new ArrayList<>();
-		this.interestedEvents = new ArrayList<>();
-		this.goingEvents = new ArrayList<>();
 	}
 	
 }

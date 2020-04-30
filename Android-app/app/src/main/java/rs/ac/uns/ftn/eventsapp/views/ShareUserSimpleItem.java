@@ -61,6 +61,15 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
                 parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getUserId());
             }
         });
+
+        selectedCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                user.setChecked(cb.isChecked());
+                parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getUserId());
+            }
+        });
     }
 
     @Override

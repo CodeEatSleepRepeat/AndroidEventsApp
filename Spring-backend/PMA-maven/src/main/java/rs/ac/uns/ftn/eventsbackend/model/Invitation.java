@@ -45,5 +45,9 @@ public class Invitation {
 		this.status = status;
 	}
 	
+	public Invitation() {
+	
+	}
+	
 	
 }

@@ -13,17 +13,29 @@ public class EventDistanceDTO {
 	
 	private double distance;
 	
-	public EventDistanceDTO() {
-	
-	}
 	
 	public EventDistanceDTO(Event e, double distance) {
 		super();
 		this.e = e;
 		this.distance = distance;
 	}
+	
+	public EventDistanceDTO() {
+	}
+	
+	public float getDistanceFloat() {
+		return (float)distance;
+	}
 
-	public Event getEvent() {
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	
+	public void setDistance(float distance) {
+		this.distance = distance;
+	}
+
+	public Event getE() {
 		return e;
 	}
 
@@ -31,13 +43,10 @@ public class EventDistanceDTO {
 		return distance;
 	}
 
-	public void setEvent(Event e) {
+	public void setE(Event e) {
 		this.e = e;
 	}
-
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
-
 	
+	
+		
 }

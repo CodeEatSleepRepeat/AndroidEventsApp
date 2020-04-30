@@ -4,18 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.eventsbackend.service.EventService;
+import rs.ac.uns.ftn.eventsbackend.service.ChatMessageService;
 
-@RequestMapping("/event")
+@RequestMapping("/message")
 @RestController
-public class EventController {
+public class ChatMessageController {
 	
 	@Autowired
-	private EventService eventService;
+	private ChatMessageService messageService;
 	
-	public String uploadEventImage() {
-		//TODO: upload server controller
-		return "uri path";
-	}
 
 }

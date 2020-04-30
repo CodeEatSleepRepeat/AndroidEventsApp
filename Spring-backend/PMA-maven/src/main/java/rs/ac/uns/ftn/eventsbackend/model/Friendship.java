@@ -29,14 +29,17 @@ public class Friendship {
 	@NotNull
 	private FriendshipStatus status;
 
-	
-	public Friendship(Long friendshipId, @NotNull User requestSender, @NotNull User requestAccepter,
+	public Friendship(Long friendshipId, @NotNull User requestSender, @NotNull User requestReceiver,
 			@NotNull FriendshipStatus status) {
 		super();
 		this.friendshipId = friendshipId;
 		this.requestSender = requestSender;
-		this.requestReceiver = requestAccepter;
+		this.requestReceiver = requestReceiver;
 		this.status = status;
+	}
+
+	public Friendship() {
+	
 	}
 	
 }
