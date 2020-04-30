@@ -88,17 +88,18 @@
                 android:layout_marginTop="32dp"/>
 
             <TextView
-                android:id="@+id/text_back_to_register_login"
+                android:id="@+id/text_continue_as_anonymous_sign_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
                 android:text="@string/login_back_to_register"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="@+id/btn_login_login"
-                app:layout_constraintStart_toStartOf="@+id/btn_login_login" />
+                app:layout_constraintStart_toStartOf="@+id/btn_login_login"
+                app:layout_constraintTop_toBottomOf="@+id/btn_login_login" />
+
 
             <TextView
                 android:id="@+id/text_forgot_password_login"
@@ -120,22 +121,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_continue_with_social_media"
+                android:layout_marginTop="22dp"
                 app:layout_constraintEnd_toEndOf="@+id/btn_login_login"
                 app:layout_constraintStart_toStartOf="@+id/btn_login_login"
-                app:layout_constraintTop_toBottomOf="@+id/btn_login_login"
-                android:layout_marginTop="32dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/text_continue_as_anonymous_sign_in" />
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 app:layout_constraintEnd_toEndOf="@+id/text_continue_with_social_media_login"
                 app:layout_constraintStart_toStartOf="@+id/text_continue_with_social_media_login"
                 app:layout_constraintTop_toBottomOf="@+id/text_continue_with_social_media_login"/>
 
+            <TextView
+                android:id="@+id/text_continue_as_anonymous_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in_continue_as_anonymous"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/login_button_login"
+                app:layout_constraintStart_toStartOf="@+id/login_button_login" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

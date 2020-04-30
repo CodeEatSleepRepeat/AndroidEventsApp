@@ -122,6 +122,18 @@
                 app:layout_constraintVertical_bias="1.0" />
 
 
+            <TextView
+                android:id="@+id/text_register_with_social_media_registration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_register_with_social_media"
+                android:textColor="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_already_have_an_account_register"
+                android:layout_marginTop="22dp"
+                />
+
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button_register"
                 android:layout_width="wrap_content"
@@ -132,20 +144,23 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/text_register_with_social_media_registration"
                 app:layout_constraintStart_toStartOf="@+id/text_register_with_social_media_registration"
-                app:layout_constraintTop_toBottomOf="@+id/text_register_with_social_media_registration"/>
-
+                app:layout_constraintTop_toBottomOf="@+id/text_register_with_social_media_registration"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/text_register_with_social_media_registration"
+                android:id="@+id/text_continue_as_anonymous_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/register_register_with_social_media"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:text="@string/sign_in_continue_as_anonymous"
                 android:textColor="@android:color/darker_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_already_have_an_account_register"
-                android:layout_marginTop="44dp"
-                />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/login_button_register"
+                app:layout_constraintTop_toBottomOf="@+id/login_button_register" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

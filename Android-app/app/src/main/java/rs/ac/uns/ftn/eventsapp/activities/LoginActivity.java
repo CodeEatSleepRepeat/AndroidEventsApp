@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 
 import android.content.Intent;
@@ -41,7 +43,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Button btnLogin = findViewById(R.id.btn_login_login);
         TextView textForgotPassword = findViewById(R.id.text_forgot_password_login);
-        TextView textBackToRegister = findViewById(R.id.text_back_to_register_login);
+        TextView textBackToRegister = findViewById(R.id.text_continue_as_anonymous_sign_in);
+        TextView textContinueAsAnnoymous = findViewById(R.id.text_continue_as_anonymous_login);
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +68,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+        textContinueAsAnnoymous.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                goToMainWindowAsUnauthorized();
+            }
+        });
 
     }
 
@@ -139,6 +148,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToRegisterActivity(){
         Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToMainWindowAsUnauthorized(){
+        //TODO: Go to main window.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(SignInActivity.IS_ANONYMOUS, true);
         startActivity(intent);
     }
 

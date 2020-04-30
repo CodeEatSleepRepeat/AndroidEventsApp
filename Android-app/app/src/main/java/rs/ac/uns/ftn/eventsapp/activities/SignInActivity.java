@@ -22,7 +22,7 @@ public class SignInActivity extends AppCompatActivity {
 
         Button btnLogin = findViewById(R.id.btn_login_sign_in);
         Button btnRegister =findViewById(R.id.btn_register_sign_in);
-        TextView textContinueAsAnnoymous = findViewById(R.id.text_back_to_register_login);
+        TextView textContinueAsAnnoymous = findViewById(R.id.text_continue_as_anonymous_sign_in);
 
         btnLogin.setOnClickListener(new View.OnClickListener(){
             @Override

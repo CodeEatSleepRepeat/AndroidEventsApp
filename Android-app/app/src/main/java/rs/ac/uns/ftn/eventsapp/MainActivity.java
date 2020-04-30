@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
-            //navigationView.getMenu().clear();
+            navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
             navigationView.getHeaderView(0).setVisibility(View.GONE);
             setNavigationListenerUnauthorizedUser(navigationView, toolbar);
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         onClickNavItem(HomeEventListFragment.class);
                         break;
                     case R.id.navigation_item_settings_unauth:
-                        Toast.makeText(MainActivity.this, "Ojsa", Toast.LENGTH_SHORT).show();
+                        openSettings();
                         break;
                     case R.id.navigation_item_sign_in:
                         logout();
