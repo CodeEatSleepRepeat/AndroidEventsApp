@@ -22,13 +22,18 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
+import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
 
 
 public class InvitationsFragment extends Fragment {
+
+    private ArrayList<Invitation> invitations;
 
     public InvitationsFragment() {
         // Required empty public constructor
@@ -64,16 +69,59 @@ public class InvitationsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        //sakrij map dugme
+        FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
+        fabMap.hide();
+
+        //pretvori add dugme u map dugme
         FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-        fab.hide();
+
+        fab.setImageResource(android.R.drawable.ic_dialog_map);
+        fab.hide(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.show(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
+    }
+
+    private void onClickCreateEvent() {
+        Intent intent = new Intent(getContext(), CreateEventActivity.class);
+        startActivity(intent);
+    }
+
+    private void onClickMap() {
+        ArrayList<EventForMapDTO> eventsForMap = new ArrayList<>();
+        for (Invitation item : invitations) {
+            eventsForMap.add(new EventForMapDTO(item.getEvent().getEventId(), item.getEvent().getEventName(), item.getEvent().getLatitude(), item.getEvent().getLongitude(), item.getEvent().getEventImageURI()));
+        }
+        Intent intent = new Intent(getContext(), GoogleMapActivity.class);
+        intent.putExtra("EVENTS", eventsForMap);
+        startActivity(intent);
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
+        //prikazi map dugme
+        FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
+        fabMap.show();
+
+        //vrati bivse add (trenutno map dugme) u add dugme
         FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-        fab.show();
+
+        fab.setImageResource(android.R.drawable.ic_input_add);
+        fab.hide(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.show(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickCreateEvent();
+            }
+        });
     }
 
     private void getAllInvitations() {
@@ -81,7 +129,7 @@ public class InvitationsFragment extends Fragment {
         RecyclerView recyclerView =
                 getActivity().findViewById(R.id.recyclerview_fragment_invitations);
 
-        ArrayList<Invitation> invitations = TestMockup.invitations;
+        invitations = TestMockup.invitations;
         for(Invitation invitation : invitations){
             adapter.add(new InvitationItem(invitation));
         }
@@ -116,5 +164,9 @@ public class InvitationsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
+    }
+
+    public ArrayList<Invitation> getItems(){
+        return invitations;
     }
 }

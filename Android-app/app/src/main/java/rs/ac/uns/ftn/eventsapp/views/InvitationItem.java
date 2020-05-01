@@ -17,7 +17,7 @@ import com.xwray.groupie.Item;
 import java.text.SimpleDateFormat;
 
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.activities.ShowEventDetailsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
@@ -115,7 +115,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     }
 
     private void goToEventDetail(Context context){
-        Intent detailsIntent = new Intent(context, ShowEventDetailsActivity.class);
+        Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
         final Event e = invitation.getEvent();
         EventDetailsDTO transferObject = new EventDetailsDTO(e.getEventId(), e.getEventName(),

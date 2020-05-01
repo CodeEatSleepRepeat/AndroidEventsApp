@@ -24,7 +24,7 @@ import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 
 
-public class ShowEventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "ShowEventDetailsAct";
     private static final int LAUNCH_SEND_INVITATIONS_ACTIVITY = 2001;

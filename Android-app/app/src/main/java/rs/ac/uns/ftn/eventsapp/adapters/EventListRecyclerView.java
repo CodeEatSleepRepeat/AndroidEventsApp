@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.activities.ShowEventDetailsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 
@@ -68,7 +68,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
-                Intent detailsIntent = new Intent(context, ShowEventDetailsActivity.class);
+                Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
                 final Event e = mItems.get(i);
                 EventDetailsDTO dto = new EventDetailsDTO(e.getEventId(), e.getEventName(), e.getEventDescription(), e.getEventImageURI(), e.getEventType(),
