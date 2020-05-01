@@ -1,13 +1,17 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import rs.ac.uns.ftn.eventsapp.R;
 import android.os.Bundle;
-import android.preference.Preference;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import rs.ac.uns.ftn.eventsapp.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -23,34 +27,35 @@ public class SettingsActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(R.string.nav_settings);
         getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new MyPreferenceFragment()).commit(); 
+                new MyPreferenceFragment()).commit();
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragment{
+    public static class MyPreferenceFragment extends PreferenceFragment {
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
-            getPreferenceManager().findPreference("pref_default_distance2").setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener() {
+            
+            EditTextPreference pref = (EditTextPreference) findPreference("pref_default_distance2");
+            pref.getEditText().setFilters(new InputFilter[]{
+                    new InputFilter() {
                         @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            String enteredValueString = (String) newValue;
-                            int enteredValue = Integer.valueOf(enteredValueString);
-                            if(enteredValue >= MIN_DISTANCE && enteredValue<= MAX_DISTANCE){
-                                return true;
+                        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                            try {
+                                int enteredValue = Integer.parseInt(dest.toString() + source.toString());
+                                if (enteredValue >= MIN_DISTANCE && enteredValue <= MAX_DISTANCE)
+                                    return null;
+                            } catch (NumberFormatException nfe) {
                             }
-                            else{
-                                Toast.makeText(getActivity(), "Value must be between " +
-                                                + MIN_DISTANCE + " and " + MAX_DISTANCE + " !",
-                                        Toast.LENGTH_SHORT).show();
-                                return false;
-                            }
-
+                            Toast.makeText(getActivity(), "Value must be between " +
+                                            +MIN_DISTANCE + " and " + MAX_DISTANCE + " !",
+                                    Toast.LENGTH_SHORT).show();
+                            return "";
                         }
                     }
-            );
+            });
+
         }
     }
 

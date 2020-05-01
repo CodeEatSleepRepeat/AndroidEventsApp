@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile_image_option_change"
+        android:title="Change profile image" />
+    <item
+        android:id="@+id/profile_image_option_delete"
+        android:title="Remove profile image" />
+</menu>

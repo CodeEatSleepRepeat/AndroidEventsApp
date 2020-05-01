@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/collapse_menu_item"
+        android:title="options"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_settings_dots">
+
+        <menu>
+
+            <item android:id="@+id/action_unlink_fb_menu_item"
+                android:icon="@drawable/ic_facebook_remove"
+                android:title="Unlink Facebook"
+                />
+
+            <item android:id="@+id/action_remove_account_menu_item"
+                android:icon="@drawable/ic_account_remove"
+                android:title="Remove Account" />
+
+        </menu>
+
+    </item>
+</menu>

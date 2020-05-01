@@ -1,15 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
-import rs.ac.uns.ftn.eventsapp.models.Event;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
-import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,9 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
+import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class UserDetailActivity extends AppCompatActivity {
 
@@ -39,9 +39,7 @@ public class UserDetailActivity extends AppCompatActivity {
         //setting username
         String intentExtraUsername = getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_NAME);
         if(intentExtraUsername != null){
-            TextView textUsername = findViewById(R.id.text_user_username_user_detail);
             TextView textUserEvents = findViewById(R.id.text_user_events_user_detail);
-            textUsername.setText(intentExtraUsername);
             textUserEvents.setText(intentExtraUsername+ "'s Events");
             getSupportActionBar().setTitle(intentExtraUsername);
         }

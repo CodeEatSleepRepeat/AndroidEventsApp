@@ -18,6 +18,17 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarCreateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <EditText
                 android:id="@+id/endingDateCreateEventEditText"
                 android:layout_width="160dp"
@@ -71,12 +82,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/endingTimeCreateEventEditText"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginBottom="8dp"
                 android:layout_toStartOf="@+id/endingTimeCreateEventEditText"
                 android:layout_toEndOf="@+id/endingDateCreateEventEditText"
                 android:gravity="center"
-                android:text="at"/>
+                android:text="at" />
 
             <EditText
                 android:id="@+id/endingTimeCreateEventEditText"
@@ -134,15 +145,19 @@
                 android:id="@+id/selectLocationTextView"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
+                android:layout_below="@+id/toolbarCreateEvent"
                 android:text="Select a location"
                 android:textAlignment="center"
-                android:textSize="25dp" />
+                android:textSize="25dp"
+                app:layout_constraintEnd_toEndOf="@+id/toolbarCreateEvent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarCreateEvent" />
 
             <rs.ac.uns.ftn.eventsapp.fragments.CustomMapView
                 android:id="@+id/createEventMapView"
                 android:layout_width="match_parent"
                 android:layout_height="340dp"
-                android:layout_below="@id/selectLocationTextView" />
+                android:layout_below="@+id/selectLocationTextView"/>
 
             <EditText
                 android:id="@+id/eventNameEditText"
@@ -309,33 +324,33 @@
                     android:id="@+id/clearImageCreateEvent"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:padding="5dp"
                     android:layout_gravity="right"
-                    android:src="@drawable/ic_close_white"/>
+                    android:padding="5dp"
+                    android:src="@drawable/ic_close_white" />
 
                 <ImageView
                     android:id="@+id/eventImageCreateEventImgView"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:gravity="center" />
 
                 <ImageView
                     android:id="@+id/cameraImageView"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:gravity="center"
                     android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:src="@drawable/ic_add_photo_camera"/>
+                    android:gravity="center"
+                    android:src="@drawable/ic_add_photo_camera" />
 
                 <TextView
                     android:id="@+id/addPhotoTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="20dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
                     android:text="ADD COVER PHOTO" />
 
 

@@ -35,6 +35,7 @@ import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
+import rs.ac.uns.ftn.eventsapp.activities.UserProfileActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
 
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
     private Toolbar toolbar;
     private ChipGroup chipGroup;
     //private NoInternetDialog noInternetDialog;
@@ -219,6 +221,26 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        //set on picture and name click listener for user info activity
+        View header = navigationView.getHeaderView(0);
+        FrameLayout imageIconFrame = header.findViewById(R.id.frameNavDrawer);
+        TextView userNameTextView = header.findViewById(R.id.userNameNavDrawer);
+
+        imageIconFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickUserProfile();
+            }
+        });
+
+        userNameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickUserProfile();
+            }
+        });
+
     }
 
 
@@ -335,6 +357,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void onClickCreateEvent() {
         Intent intent = new Intent(this, CreateEventActivity.class);
+        startActivity(intent);
+    }
+
+    private void onClickUserProfile() {
+        Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
     }
 
@@ -512,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
         super.onAttachFragment(fragment);
 
         toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
 
         if (fragment == null) {
             return;

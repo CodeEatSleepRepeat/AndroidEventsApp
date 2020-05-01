@@ -1,13 +1,11 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -15,6 +13,10 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TimePicker;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -58,6 +60,13 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        Toolbar toolbar = findViewById(R.id.toolbarCreateEvent);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
         mMapView = findViewById(R.id.createEventMapView);
         if(savedInstanceState!=null) {
             lat = savedInstanceState.getDouble("lat");
@@ -340,6 +349,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         outState.putDouble("lng", lng);
         outState.putString("uri", imgUri);
         mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     /*@Override

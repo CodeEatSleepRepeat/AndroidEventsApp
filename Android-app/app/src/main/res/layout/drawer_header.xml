@@ -9,13 +9,13 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <FrameLayout
-        android:id="@+id/frame"
+        android:id="@+id/frameNavDrawer"
         android:layout_width="@dimen/drawer_image_dims"
         android:layout_height="@dimen/drawer_image_dims"
         android:layout_marginLeft="@dimen/drawer_left_margin">
 
         <ImageView
-            android:id="@+id/pic"
+            android:id="@+id/userPicNavDrawer"
             android:layout_width="@dimen/drawer_image_dims"
             android:layout_height="@dimen/drawer_image_dims"
             android:src="@drawable/ic_user_icon" />
@@ -30,7 +30,7 @@
 
 
     <TextView
-        android:id="@+id/userNameTextView"
+        android:id="@+id/userNameNavDrawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/drawer_left_margin"

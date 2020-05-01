@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:id="@+id/resetFilter"
+    <item
+        android:id="@+id/resetFilter"
         android:title="@string/reset"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

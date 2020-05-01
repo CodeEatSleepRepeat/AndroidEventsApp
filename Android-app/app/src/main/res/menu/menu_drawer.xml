@@ -18,9 +18,9 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_create"
+            android:checkable="false"
             android:icon="@drawable/ic_add_event"
-            android:title="@string/nav_item_create"
-            android:checkable="false"/>
+            android:title="@string/nav_item_create" />
         <item
             android:id="@+id/navigation_item_myEvents"
             android:icon="@drawable/ic_my_events"
