@@ -33,7 +33,6 @@ import java.util.List;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
-import rs.ac.uns.ftn.eventsapp.activities.MapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;

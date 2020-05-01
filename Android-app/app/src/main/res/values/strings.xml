@@ -95,6 +95,10 @@
     <string name="comment">Comment</string>
     <string name="nav_item_home">Home</string>
     <string name="authors_events">Authors Events</string>
+    <string name = "yes">Yes</string>
+    <string name="no">No</string>
+    <string name="gps_dialog">This application requires GPS to work properly, do you want to enable it?</string>
+    <string name="gps_dialog2">These permissions are mandatory to get your location. Do you want to allow them?</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">00000000000000</string>

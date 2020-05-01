@@ -8,11 +8,15 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +44,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
@@ -67,6 +72,7 @@ public class GoogleMapActivity extends AppCompatActivity
     private ClusterManager mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
     private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
+    private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
 
     @Override
@@ -88,6 +94,7 @@ public class GoogleMapActivity extends AppCompatActivity
             }
         }
 
+        isMapsEnabled();
         // we build google api client
         googleApiClient = new GoogleApiClient.Builder(this).
                 addApi(LocationServices.API).
@@ -273,8 +280,8 @@ public class GoogleMapActivity extends AppCompatActivity
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
                             new AlertDialog.Builder(GoogleMapActivity.this).
-                                    setMessage("These permissions are mandatory to get your location. You need to allow them.").
-                                    setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    setMessage(R.string.gps_dialog2).
+                                    setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -282,7 +289,7 @@ public class GoogleMapActivity extends AppCompatActivity
                                                         toArray(new String[permissionsRejected.size()]), ALL_PERMISSIONS_RESULT);
                                             }
                                         }
-                                    }).setNegativeButton("Cancel", null).create().show();
+                                    }).setNegativeButton(R.string.no, null).create().show();
 
                             return;
                         }
@@ -309,4 +316,42 @@ public class GoogleMapActivity extends AppCompatActivity
 
         mMapView.onSaveInstanceState(mapViewBundle);
     }
-}
+
+    public boolean isMapsEnabled(){
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            buildAlertMessageNoGps();
+            return false;
+        }
+        return true;
+    }
+
+    private void buildAlertMessageNoGps(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.gps_dialog).setCancelable(false).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intentMA);
+            }
+        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(intent, PERMISSION_REQUEST_ENABLE_GPS);
+            }
+        });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("onActivityResult", "called");
+        switch(requestCode){
+            case PERMISSION_REQUEST_ENABLE_GPS:{
+                return;
+            }
+        }
+    }}

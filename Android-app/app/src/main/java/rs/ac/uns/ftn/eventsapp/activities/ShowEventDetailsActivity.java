@@ -101,7 +101,7 @@ public class ShowEventDetailsActivity extends AppCompatActivity {
         eventDescriptionEventDetailsView.setText(dto.getEventDescription());
         eventLocationEventDetailsTextView.setText(dto.getLocation());
         final EventForMapDTO mapDto = new EventForMapDTO(dto.getEventId(), dto.getEventName(), dto.getLongitude(), dto.getLatitude(), dto.getEventImageURI());
-        final Intent intent = new Intent(this, MapActivity.class);
+        final Intent intent = new Intent(this, GoogleMapActivity.class);
         seeOnMapEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

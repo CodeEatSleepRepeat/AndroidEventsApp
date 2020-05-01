@@ -25,9 +25,6 @@
             android:label="@string/comments" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddFriendActivity" />
-        <activity
-            android:name=".activities.MapActivity"
-            android:label="@string/map" />
         <activity android:name=".activities.UserDetailActivity" />
         <activity android:name=".activities.ChatLogActivity" />
         <activity android:name=".activities.LatestMessagesActivity" />
