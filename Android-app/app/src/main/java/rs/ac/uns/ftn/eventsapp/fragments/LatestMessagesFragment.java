@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +47,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
     private List<User> userList = new ArrayList<User>();
     private List<User> userListAll = new ArrayList<User>();
-    private String searchText;
+    private String searchText ="";
     private GroupAdapter adapter;
 
     public LatestMessagesFragment() {
@@ -183,6 +185,11 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         getActivity().getMenuInflater().inflate(R.menu.menu_search_users, menu);
         MenuItem item = menu.findItem(R.id.action_search_users);
         SearchView searchView = (SearchView) item.getActionView();
+        if(!searchText.equals("")){
+            MenuItemCompat.expandActionView(item);
+            searchView.setQuery(searchText, true);
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
