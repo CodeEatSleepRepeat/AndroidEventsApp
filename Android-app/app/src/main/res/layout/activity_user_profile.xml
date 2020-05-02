@@ -61,9 +61,8 @@
                 android:id="@+id/name_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_person_outline"
-                android:drawablePadding="10dp"
-                android:text="John Doe" />
+                android:drawableStart="@drawable/ic_person_outline"
+                android:drawablePadding="10dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -76,13 +75,12 @@
                 android:id="@+id/email_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_mail_outline"
+                android:drawableStart="@drawable/ic_mail_outline"
                 android:drawablePadding="20dp"
                 android:clickable="false"
                 android:cursorVisible="false"
                 android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:text="john.doe@example.com" />
+                android:focusableInTouchMode="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -95,7 +93,7 @@
                 android:id="@+id/password_current_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_lock_outline"
+                android:drawableStart="@drawable/ic_lock_outline"
                 android:drawablePadding="10dp"
                 android:inputType="textPassword"
                 android:text="" />
@@ -111,7 +109,7 @@
                 android:id="@+id/password_new1_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_lock_outline"
+                android:drawableStart="@drawable/ic_lock_outline"
                 android:drawablePadding="10dp"
                 android:inputType="textPassword"
                 android:text="" />
@@ -127,7 +125,7 @@
                 android:id="@+id/password_new2_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_lock_outline"
+                android:drawableStart="@drawable/ic_lock_outline"
                 android:drawablePadding="10dp"
                 android:inputType="textPassword"
                 android:text="" />

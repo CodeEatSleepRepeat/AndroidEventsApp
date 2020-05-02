@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,7 +18,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xwray.groupie.GroupAdapter;
 
 import java.util.ArrayList;
@@ -32,82 +34,112 @@ import rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem;
 public class SendInvitationsActivity extends AppCompatActivity implements Filterable {
 
     private Toolbar toolbar;
-    private ChipGroup chipGroup;
     private ArrayList<Long> checkedUsers = new ArrayList<>();
     private List<UserShareDTO> userList = new ArrayList<>();
     private List<UserShareDTO> userListAll = new ArrayList<>();
     private GroupAdapter adapter;
+    private FloatingActionButton sendBtn;
+    private TextView selectionText;
+    private CheckBox selectionCheckbox;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
 
-        chipGroup = findViewById(R.id.chipsShareGroup);
-        chipGroup.setVisibility(View.GONE);
-
         toolbar = findViewById(R.id.toolbarShareFriends);
-        toolbar.setTitle(getString(R.string.invite_friends));
-        toolbar.setNavigationIcon(R.drawable.ic_close_white);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkedUsers.size() == 0) {
-                    //samo zatvori, nema izabranih usera
-                    Toast.makeText(getApplicationContext(), "Invitation canceled!", Toast.LENGTH_SHORT).show();
-                    setResult(Activity.RESULT_CANCELED);
-                    finish();
-                    return;
-                }
+                onBackPressed();
+            }
+        });
 
+        sendBtn = findViewById(R.id.floating_send_btn);
+        sendBtn.hide();
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("SHARED_FRIENDS", checkedUsers);
                 setResult(Activity.RESULT_OK, returnIntent);
-                //TODO: Ovde ide kod za slanje pozivnica
 
-                Toast.makeText(getApplicationContext(), "Invitation send!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Invitations send!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.resetFilter) {
-                    //TODO: ovde resetuj filtere na pocetne vrednosti
 
+        selectionCheckbox = findViewById(R.id.selectionCheckbox);
+        selectionCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    selectAllUsers();
+                } else {
+                    deselectAllUsers();
                 }
-                return false;
             }
         });
-        Menu menu = toolbar.getMenu();
-        menu.clear();
-        getMenuInflater().inflate(R.menu.menu_search_users, menu);
-        MenuItem item = menu.findItem(R.id.action_search_users);
-        SearchView searchView = (SearchView) item.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        selectionText = findViewById(R.id.selectionText);
+        selectionText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                getFilter().filter(newText);
-                return false;
+            public void onClick(View v) {
+                if (selectionCheckbox.isChecked()) {
+                    deselectAllUsers();
+                } else {
+                    selectAllUsers();
+                }
             }
         });
 
         getAllFriendUsers();
     }
 
+    private void deselectAllUsers() {
+        for (UserShareDTO user : userListAll) {
+            user.setChecked(false);
+        }
+        checkedUsers = new ArrayList<>();
+
+        adapter.notifyDataSetChanged();
+
+        selectionCheckbox.setChecked(false);
+        selectionText.setText("Select all");
+        sendBtn.hide();
+    }
+
+    private void selectAllUsers() {
+        for (UserShareDTO user : userListAll) {
+            user.setChecked(true);
+            checkedUsers.add(user.getUser().getUserId());
+        }
+
+        adapter.notifyDataSetChanged();
+
+        selectionCheckbox.setChecked(true);
+        selectionText.setText("Deselect all");
+        sendBtn.show();
+    }
+
     public void checkedUserCountChanged(Boolean checked, Long userId) {
         if (checked) {
             checkedUsers.add(userId);
-            toolbar.setNavigationIcon(R.drawable.ic_check_white);
+            sendBtn.show();
+
+            if (checkedUsers.size() == userListAll.size()) {
+                selectionCheckbox.setChecked(true);
+                selectionText.setText("Deselect all");
+            }
         } else {
             checkedUsers.remove(userId);
+            selectionCheckbox.setChecked(false);
+            selectionText.setText("Select all");
+
             if (checkedUsers.size() == 0) {
-                toolbar.setNavigationIcon(R.drawable.ic_close_white);
+                sendBtn.hide();
             }
         }
     }
@@ -187,7 +219,6 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         Toast.makeText(getApplicationContext(), "Invitation canceled!", Toast.LENGTH_SHORT).show();
         setResult(Activity.RESULT_CANCELED);
         finish();
-        return;
     }
 
     /**
@@ -209,7 +240,8 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
 
         long[] checkedUsersOld = savedInstanceState.getLongArray("checkedUsers");
         if (checkedUsersOld.length != 0) {
-            toolbar.setNavigationIcon(R.drawable.ic_check_white);
+            //toolbar.setNavigationIcon(R.drawable.ic_check_white);
+            sendBtn.show();
 
             for (int i = 0; i < checkedUsersOld.length; i++) {
                 checkedUsers.add(checkedUsersOld[i]);
@@ -223,10 +255,32 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
                         user.setChecked(true);
                     }
                 }
-            }//for
+            }
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+            //toolbar.setNavigationIcon(R.drawable.ic_close_white);
+            sendBtn.hide();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_search_users, menu);
+        MenuItem item = menu.findItem(R.id.action_search_users);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
 
 }

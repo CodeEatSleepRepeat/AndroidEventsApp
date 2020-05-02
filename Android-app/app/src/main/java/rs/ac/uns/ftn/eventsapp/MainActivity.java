@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,10 +27,12 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
@@ -45,17 +48,24 @@ import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
+import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
+    private static final int LAUNCH_USER_PROFILE_ACTIVITY = 5001;
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ChipGroup chipGroup;
+
+    //TODO: get user in DB
+    User user = TestMockup.getInstance().users.get(0);
+
     //private NoInternetDialog noInternetDialog;
 
     @Override
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
@@ -120,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
                     chipGroup = fragmentView.findViewById(R.id.chipsGroup);
                     chipGroup.setVisibility(View.GONE);
                 }
-
-
             } catch (Exception e) {
             }
         } else {
@@ -144,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 onClickMap();
             }
         });
+
+        changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
     }
 
     private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
@@ -224,10 +234,10 @@ public class MainActivity extends AppCompatActivity {
 
         //set on picture and name click listener for user info activity
         View header = navigationView.getHeaderView(0);
-        FrameLayout imageIconFrame = header.findViewById(R.id.frameNavDrawer);
+        CircleImageView imageIcon = header.findViewById(R.id.circle_crop);
         TextView userNameTextView = header.findViewById(R.id.userNameNavDrawer);
 
-        imageIconFrame.setOnClickListener(new View.OnClickListener() {
+        imageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickUserProfile();
@@ -240,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
                 onClickUserProfile();
             }
         });
-
     }
 
 
@@ -361,8 +370,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickUserProfile() {
+        mDrawerLayout.closeDrawers();
+
         Intent intent = new Intent(this, UserProfileActivity.class);
-        startActivity(intent);
+        //TODO: get logged user here
+        User loggedUser = TestMockup.getInstance().users.get(0);
+        intent.putExtra("userId", loggedUser.getUserId());
+        intent.putExtra("userName", loggedUser.getUserName());
+        intent.putExtra("email", loggedUser.getEmail());
+        intent.putExtra("password", loggedUser.getPassword());
+        intent.putExtra("profileImageUrl", loggedUser.getProfileImageUrl());
+        startActivityForResult(intent, LAUNCH_USER_PROFILE_ACTIVITY);
     }
 
     private void onClickNavItem(Class<?> intentClass) {
@@ -443,7 +461,11 @@ public class MainActivity extends AppCompatActivity {
                 //user je kliknuo na brisanje svih filtera
                 removeFilterChips();
             }
+        } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            //imamo novu sliku i user name za nav drawer
+            changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
         }
+
     }
 
     private void setFilterChips(ArrayList<String> chipTexts) {
@@ -638,6 +660,20 @@ public class MainActivity extends AppCompatActivity {
     private void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    private void changeNavBarProfile(String name, String imgUri) {
+        TextView userName = navigationView.getHeaderView(0).findViewById(R.id.userNameNavDrawer);
+        CircleImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.circle_crop);
+
+        userName.setText(name);
+        if (!imgUri.equals("")) {
+            Picasso.get().setLoggingEnabled(true);
+            Picasso.get().load(Uri.parse(imgUri)).into(userImage);
+
+        } else {
+            userImage.setImageResource(R.drawable.ic_user_icon);
+        }
     }
 }
 

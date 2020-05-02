@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/colorGray"
+        android:contentDescription="@string/app_name"
+        android:scaleType="center"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="This will disconnect the Facebook account from the Events account! This action can be undone by logging into the Events application with Facebook.\nYou are going to be logged out of app after this!\n\nPlease type your password to confirm."
+        android:textStyle="bold"
+        android:layout_margin="15dp"/>
+
+    <EditText
+        android:id="@+id/password_unlink_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"
+        android:hint="@string/login_registration_password_hint"
+        android:inputType="textPassword" />
+</LinearLayout>

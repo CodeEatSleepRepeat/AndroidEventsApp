@@ -40,6 +40,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     private List<User> userListAll = new ArrayList<User>();
     private String searchText;
     private GroupAdapter adapter;
+    private SearchView searchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,10 +61,10 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         getAllFriendUsers();
 
         // ukoliko korisnik npr rotira telefon, prehodno stanje mu ucitavam
-        if(savedInstanceState != null){
-            if(savedInstanceState.getString(SEARCH_TEXT_LIST_OF_USERS) != null){
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString(SEARCH_TEXT_LIST_OF_USERS) != null) {
                 searchText = savedInstanceState.getString(SEARCH_TEXT_LIST_OF_USERS);
-                getFilter().filter(searchText);
+                //getFilter().filter(searchText);
             }
         }
     }
@@ -98,14 +99,14 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         outState.putString(SEARCH_TEXT_LIST_OF_USERS, searchText);
     }
 
-    private void getAllFriendUsers(){
+    private void getAllFriendUsers() {
 
         adapter = new GroupAdapter<>();
         RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerview_list_of_users);
 
         userList.addAll(TestMockup.users);
         userListAll.addAll(TestMockup.users);
-        for(User user : userList){
+        for (User user : userList) {
             adapter.add(new UserSimpleItem(user, false, false));
         }
 
@@ -113,7 +114,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
 
     }
 
-    private void goToAddFriendActivity(){
+    private void goToAddFriendActivity() {
         Intent intent = new Intent(getActivity(), AddFriendActivity.class);
         startActivity(intent);
     }
@@ -123,7 +124,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         menu.clear();
         getActivity().getMenuInflater().inflate(R.menu.menu_search_users, menu);
         MenuItem item = menu.findItem(R.id.action_search_users);
-        SearchView searchView = (SearchView) item.getActionView();
+        searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -138,14 +139,21 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             }
         });
 
+        if (searchText != null && !searchText.equals("")) {
+            final String s = searchText;
+            item.expandActionView();
+            searchView.setQuery(s, true);
+            searchView.clearFocus();
+        }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
 
     /*
-    * Filter za filtriranje korisnika
-    * po njihovom username-u
-    * */
+     * Filter za filtriranje korisnika
+     * po njihovom username-u
+     * */
     @Override
     public Filter getFilter() {
         return filter;
@@ -164,12 +172,11 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
 
             List<User> filteredList = new ArrayList<User>();
 
-            if(charSequence.toString().isEmpty()){
+            if (charSequence.toString().isEmpty()) {
                 filteredList.addAll(userListAll);
-            }
-            else {
-                for(User user: userListAll){
-                    if(user.getUserName().toLowerCase().contains(charSequence.toString().toLowerCase())){
+            } else {
+                for (User user : userListAll) {
+                    if (user.getUserName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
                         filteredList.add(user);
                     }
                 }
@@ -187,7 +194,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             userList.clear();
             userList.addAll((Collection<? extends User>) results.values);
             adapter.clear();
-            for(User user : userList){
+            for (User user : userList) {
                 adapter.add(new UserSimpleItem(user, false, false));
             }
         }

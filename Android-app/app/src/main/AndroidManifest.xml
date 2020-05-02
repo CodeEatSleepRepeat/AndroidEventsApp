@@ -40,7 +40,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.UserProfileActivity"
-            android:theme="@style/AppTheme.WarningActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CreateEventActivity"
             android:label="@string/createEvent"

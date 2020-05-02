@@ -6,6 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".activities.EventDetailsActivity">
 
+    <LinearLayout
+        android:id="@+id/selectionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarShareFriends"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/selectionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/selectAll"
+            android:clickable="true"/>
+
+        <CheckBox
+            android:id="@+id/selectionCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarShareFriends"
         android:layout_width="match_parent"
@@ -17,29 +43,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/chipsShareView"
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_send_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/toolbarShareFriends"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarShareFriends">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipsShareGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:animateLayoutChanges="true"
-            android:visibility="gone"
-            app:chipSpacing="8dp"
-            app:singleSelection="false">
-
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_send_white"
+        android:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_marginEnd="@dimen/floating_btn_h_margin"
+        android:layout_marginBottom="@dimen/floating_btn_v_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerview_list_of_users"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerview_list_of_users" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_list_of_users"
@@ -50,6 +65,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipsShareView" />
+        app:layout_constraintTop_toBottomOf="@+id/selectionLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

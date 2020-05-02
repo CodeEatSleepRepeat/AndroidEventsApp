@@ -63,16 +63,16 @@
                 android:id="@+id/password_edittext_login"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:autofillHints=""
                 android:background="@drawable/rounded_edittext_field"
                 android:ems="10"
-                android:inputType="textPassword"
                 android:hint="@string/login_registration_password_hint"
-                app:layout_constraintEnd_toEndOf="@+id/edittext_email_login"
-                app:layout_constraintStart_toStartOf="@+id/edittext_email_login"
-                app:layout_constraintTop_toBottomOf="@+id/edittext_email_login"
-                android:layout_marginTop="8dp"
+                android:inputType="textPassword"
                 android:paddingStart="16dp"
-                android:autofillHints="" />
+                app:layout_constraintEnd_toEndOf="@+id/edittext_email_login"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/edittext_email_login"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_email_login" />
 
             <Button
                 android:id="@+id/btn_login_login"

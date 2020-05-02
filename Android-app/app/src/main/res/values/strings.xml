@@ -107,4 +107,7 @@
     <string name="check_your_internet">Please check your internet connection</string>
     <string name="there_is_no_internet">There is no internet connection</string>
     <string name="invite_friends">Invite friends to event</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="unlink_account">Unlink Facebook</string>
+    <string name="cancel">Cancel</string>
 </resources>
