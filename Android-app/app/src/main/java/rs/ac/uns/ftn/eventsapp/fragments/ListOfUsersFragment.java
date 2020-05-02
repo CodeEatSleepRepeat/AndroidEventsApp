@@ -39,7 +39,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
 
     private List<User> userList = new ArrayList<User>();
     private List<User> userListAll = new ArrayList<User>();
-    private String searchText;
+    private String searchText ="";
     private GroupAdapter adapter;
 
     @Override
