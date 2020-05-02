@@ -38,6 +38,21 @@
                 android:autofillHints="" />
 
             <EditText
+                android:id="@+id/edittext_username_register"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_edittext_field"
+                android:ems="10"
+                android:hint="@string/registration_username_hint"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="@+id/edittext_email_register"
+                app:layout_constraintStart_toStartOf="@+id/edittext_email_register"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_email_register"
+                android:layout_marginTop="8dp"
+                android:paddingStart="16dp"
+                android:autofillHints="" />
+
+            <EditText
                 android:id="@+id/edittext_password_1_register"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
@@ -45,9 +60,9 @@
                 android:ems="10"
                 android:hint="@string/login_registration_password_hint"
                 android:inputType="textPassword"
-                app:layout_constraintEnd_toEndOf="@+id/edittext_email_register"
-                app:layout_constraintStart_toStartOf="@+id/edittext_email_register"
-                app:layout_constraintTop_toBottomOf="@+id/edittext_email_register"
+                app:layout_constraintEnd_toEndOf="@+id/edittext_username_register"
+                app:layout_constraintStart_toStartOf="@+id/edittext_username_register"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_username_register"
                 android:layout_marginTop="8dp"
                 android:paddingStart="16dp"
                 android:autofillHints="" />

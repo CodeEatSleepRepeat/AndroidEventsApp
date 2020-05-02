@@ -48,6 +48,7 @@
     <string name="action_register">Register</string>
     <string name="sign_in_continue_as_anonymous">Continue As Anonymous</string>
     <string name="login_registration_email_hint">Email</string>
+    <string name="registration_username_hint">Username</string>
     <string name="login_registration_password_hint">Password</string>
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_continue_with_social_media">Continue with social media</string>
