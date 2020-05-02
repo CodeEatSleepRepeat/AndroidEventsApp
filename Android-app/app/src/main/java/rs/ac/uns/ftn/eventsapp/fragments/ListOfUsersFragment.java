@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -124,6 +125,11 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         getActivity().getMenuInflater().inflate(R.menu.menu_search_users, menu);
         MenuItem item = menu.findItem(R.id.action_search_users);
         SearchView searchView = (SearchView) item.getActionView();
+        if(!searchText.equals("")){
+            MenuItemCompat.expandActionView(item);
+            searchView.setQuery(searchText, true);
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
