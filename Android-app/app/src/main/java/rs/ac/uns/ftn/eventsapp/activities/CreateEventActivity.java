@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -72,6 +73,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             lat = savedInstanceState.getDouble("lat");
             lng = savedInstanceState.getDouble("lng");
             imgUri = savedInstanceState.getString("uri");
+            Log.d("KOORDINATE3 ", lat + " : " + lng);
         }
         initGoogleMap(savedInstanceState);
 
@@ -315,11 +317,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-        if(lat!=null && lng!=null){
+        if((lat!=null && lng!=null) && (!lat.equals(0.0) && !lng.equals(0.0))){
             MarkerOptions mo = new MarkerOptions();
             mo.position(new LatLng(lat, lng));
             mo.title(lat + " : " + lng);
             googleMap.addMarker(mo);
+            Log.d("KOORDINATE1 ", lat + " : " + lng);
         }
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -345,9 +348,14 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             mapViewBundle = new Bundle();
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
         }
-        outState.putDouble("lat", lat);
-        outState.putDouble("lng", lng);
-        outState.putString("uri", imgUri);
+        if(lat!=null && lng!=null) {
+            outState.putDouble("lat", lat);
+            outState.putDouble("lng", lng);
+            Log.d("KOORDINATE2 ", lat + " : " + lng);
+        }
+        if(imgUri!=null) {
+            outState.putString("uri", imgUri);
+        }
         mMapView.onSaveInstanceState(mapViewBundle);
     }
 
