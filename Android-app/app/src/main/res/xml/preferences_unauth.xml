@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        >
+        <PreferenceCategory android:title="@string/title_pref_application">
+            <ListPreference
+                android:defaultValue="2"
+                android:entries="@array/updateLanguage"
+                android:entryValues="@array/updateLanguageValue"
+                android:key="pref_language"
+                android:title="@string/title_pref_language"
+                android:summary="%s"/>
+            <ListPreference
+                android:defaultValue="2"
+                android:entries="@array/updateDefaultEventSort"
+                android:entryValues="@array/updateDefaultEventSortValues"
+                android:key="pref_default_event_sort"
+                android:title="@string/title_pref_default_event_filter_sort"
+                android:summary="%s"/>
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/map">
+            <EditTextPreference
+                android:defaultValue="0"
+                android:key="pref_default_distance2"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:inputType="number"
+                android:dialogTitle="@string/title_pref_dialog_default_radius_distance"
+                android:dialogMessage="@string/msg_pref_dialog_default_radius_distance"
+                android:title="@string/title_pref_default_distance_value"
+                android:summary="@string/msg_pref_set_default_radius_distance"/>
+            <ListPreference
+                android:defaultValue="1"
+                android:entries="@array/updateDefaultZoomOption"
+                android:entryValues="@array/updateDefaultZoomOptionValues"
+                android:key="pref_default_map_zoom"
+                android:title="@string/title_pref_default_map_zoom"
+                android:summary="%s"/>
+        </PreferenceCategory>
+</PreferenceScreen>

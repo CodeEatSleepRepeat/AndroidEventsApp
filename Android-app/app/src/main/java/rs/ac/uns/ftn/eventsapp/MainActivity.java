@@ -37,6 +37,7 @@ import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SettingsUnAuthUserActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserProfileActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                         onClickNavItem(HomeEventListFragment.class);
                         break;
                     case R.id.navigation_item_settings_unauth:
-                        openSettings();
+                        openSettingsUnauth();
                         break;
                     case R.id.navigation_item_sign_in:
                         logout();
@@ -668,6 +669,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void openSettingsUnauth() {
+        Intent intent = new Intent(this, SettingsUnAuthUserActivity.class);
         startActivity(intent);
     }
 

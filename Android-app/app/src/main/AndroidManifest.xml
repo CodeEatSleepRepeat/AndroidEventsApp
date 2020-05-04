@@ -18,6 +18,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
+        <activity android:name=".activities.SettingsUnAuthUserActivity"></activity>
         <activity
             android:name=".activities.GoogleMapActivity"
             android:label="@string/map" />
