@@ -10,7 +10,7 @@
         android:id="@+id/retry_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/rounded_btn_retry"
         android:paddingLeft="40dp"
         android:paddingTop="20dp"
@@ -22,7 +22,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <pl.droidsonroids.gif.GifImageView
@@ -60,7 +59,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="40dp"
         android:text="@string/check_your_internet"
         app:layout_constraintBottom_toTopOf="@+id/retry_btn"
         app:layout_constraintEnd_toEndOf="parent"

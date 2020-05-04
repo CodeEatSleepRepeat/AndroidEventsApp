@@ -98,27 +98,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         navigationView = findViewById(R.id.navigation_view);
-        if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
-            navigationView.getHeaderView(0).setVisibility(View.GONE);
-            setNavigationListenerUnauthorizedUser(navigationView, toolbar);
-        } else {
-            setNavigationListenerAuthorizedUser(navigationView, toolbar);
-        }
 
-        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCreateEvent();
-            }
-        });
-
-        /*
-        EventListPagerAdapter adapter = new EventListPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.fragment_view);
-        viewPager.setAdapter(adapter);*/
         if (savedInstanceState == null) {
             try {
                 FragmentTransition.to(HomeEventListFragment.class.newInstance(), this, false);
@@ -145,6 +125,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickCreateEvent();
+            }
+        });
+
         FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,15 +141,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
+        if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
+            setNavigationListenerUnauthorizedUser(navigationView, toolbar);
+            changeNavBarUnautorized();
+        } else {
+            setNavigationListenerAuthorizedUser(navigationView, toolbar);
+            changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
+        }
     }
 
     private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                //clearCheckedItems(navigationView.getMenu());
-                //menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()) {
@@ -182,14 +176,29 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        //sakrij map dugme
+        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
+        fabMap.hide();
+
+        //pretvori add dugme u map dugme
+        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
+
+        fab.setImageResource(android.R.drawable.ic_dialog_map);
+        fab.hide(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.show(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
     }
 
     private void setNavigationListenerAuthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                //clearCheckedItems(navigationView.getMenu());
-                //menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()) {
@@ -662,7 +671,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void changeNavBarProfile(String name, String imgUri) {
+    private void changeNavBarProfile(@NonNull String name, @NonNull String imgUri) {
+        //TODO: ovde se uzima logovani user
         TextView userName = navigationView.getHeaderView(0).findViewById(R.id.userNameNavDrawer);
         CircleImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.circle_crop);
 
@@ -670,11 +680,19 @@ public class MainActivity extends AppCompatActivity {
         if (!imgUri.equals("")) {
             Picasso.get().setLoggingEnabled(true);
             Picasso.get().load(Uri.parse(imgUri)).into(userImage);
-
         } else {
             userImage.setImageResource(R.drawable.ic_user_icon);
         }
     }
+
+    private void changeNavBarUnautorized() {
+        TextView userName = navigationView.getHeaderView(0).findViewById(R.id.userNameNavDrawer);
+        CircleImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.circle_crop);
+
+        userName.setText(getResources().getText(R.string.app_name));
+        userImage.setImageResource(R.drawable.icon);
+    }
+
 }
 
 

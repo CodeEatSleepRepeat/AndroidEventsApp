@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
@@ -37,14 +38,16 @@ public class HomeEventListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row));
 
-        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateEventActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (!getActivity().getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
+            FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), CreateEventActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         return v;
     }

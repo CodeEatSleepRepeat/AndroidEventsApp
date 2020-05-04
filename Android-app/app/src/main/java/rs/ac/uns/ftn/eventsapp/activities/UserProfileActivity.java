@@ -318,7 +318,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void notifyUserSaveChanges() {
         AlertDialog.Builder notifyDialogBuilder = new AlertDialog.Builder(this);
-        notifyDialogBuilder.setTitle("You have made changes to your account. Do you want to save them?");
+        notifyDialogBuilder.setMessage("You have made changes to your account. Do you want to save them?");
         notifyDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -354,8 +354,8 @@ public class UserProfileActivity extends AppCompatActivity {
             return true;
         }
         if (!password_current_profile.getText().toString().equals("") ||
-                !password_current_profile.getText().toString().equals("") ||
-                !password_current_profile.getText().toString().equals("")) {
+                !password_new1_profile.getText().toString().equals("") ||
+                !password_new2_profile.getText().toString().equals("")) {
             return true;
         }
         return false;
@@ -388,8 +388,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         //check password
         if (!password_current_profile.getText().toString().equals("") ||
-                !password_current_profile.getText().toString().equals("") ||
-                !password_current_profile.getText().toString().equals("")) {
+                !password_new1_profile.getText().toString().equals("") ||
+                !password_new2_profile.getText().toString().equals("")) {
 
             //old password not same
             if (!password_current_profile.getText().toString().equals(oldUserState.getString("password"))) {

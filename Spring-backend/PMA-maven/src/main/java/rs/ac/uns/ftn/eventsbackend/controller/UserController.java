@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
 import rs.ac.uns.ftn.eventsbackend.dto.UserLoginDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UserProfileChangeDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UserRegisterDTO;
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -53,7 +54,7 @@ public class UserController {
 	/**
 	 * Prijava korisnika koji ima FB nalog povezan sa ovom aplikacijom i koristi FB dugme
 	 * @param accessToken - Token dobijen preko FB OAuth 2.0 protokola
-	 * @return
+	 * @return logged user
 	 */
 	@RequestMapping(value = "/login/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> login(@PathVariable String accessToken) {
@@ -107,7 +108,7 @@ public class UserController {
 	/**
 	 * Prijava korisnika sa email-om i password-om
 	 * @param korisnikPrijavaDTO
-	 * @return
+	 * @return logged user
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
@@ -162,7 +163,7 @@ public class UserController {
 	/**
 	 * Registracija korisnika sa email-om i password-om
 	 * @param korisnikPrijavaDTO
-	 * @return
+	 * @return new user
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> register(@RequestBody UserRegisterDTO user) {
@@ -194,7 +195,7 @@ public class UserController {
 	/**
 	 * Registracija korisnika koji ima FB nalog povezan sa ovom aplikacijom i koristi FB dugme
 	 * @param korisnikPrijavaDTO
-	 * @return
+	 * @return new user
 	 */
 	@RequestMapping(value = "/register/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> register(@PathVariable String accessToken) {
@@ -232,12 +233,74 @@ public class UserController {
 		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 	
-	public void updateUser() {
-		//TODO: Update user in db
+	/**
+	 * Update basic user info in DB
+	 * @param user
+	 * @return updated user
+	 */
+	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = "application/json")
+	public ResponseEntity<User> update(@RequestBody UserProfileChangeDTO user) {
+		User dbUser = userService.findByEmail(user.getEmail());
+		if (dbUser == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		if (user.getName()!=null && user.getName().trim().equals("")) {
+			//promeni ime
+			dbUser.setUserName(user.getName().trim());
+		}
+		if (user.getImageUri()!=null) {
+			//promeni sliku
+			dbUser.setUserImageURI(user.getImageUri().trim());
+		}
+		if (user.getPasswordNew1()!=null && user.getPasswordNew1().trim().equals("")) {
+			//promeni password ako je dobar
+			if (!dbUser.getPassword().equals(user.getPasswordOld()) || !user.getPasswordNew1().equals(user.getPasswordNew2())) {
+				return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			}
+			
+			dbUser.setPassword(user.getPasswordNew1());
+		}
+		
+		//sacuvaj usera
+		dbUser = userService.save(dbUser);
+		if (dbUser.getUserId()==null) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<>(dbUser, HttpStatus.CREATED);
 	}
 	
-	public void resetPassword() {
-		//TODO: Reset password and send email to user
+	/**
+	 * Resets password and send email to user
+	 * @param email
+	 * @return HttpStatus
+	 */
+	@RequestMapping(value = "/forgot/{email}", method = RequestMethod.GET)
+	public ResponseEntity<Void> forgotPassword(@PathVariable String email) {
+		User dbUser = userService.findByEmail(email);
+		if (dbUser == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		//reset password of this user
+		String psw = UUID.randomUUID().toString();
+		psw = psw.substring(0, psw.indexOf("-")).toUpperCase();
+		dbUser.setPassword(psw);
+		
+		dbUser = userService.save(dbUser);
+		if (dbUser.getUserId()==null) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//slanje welcome maila sa passwordom
+		try {
+			emailService.sendForgottenPassword(dbUser);
+		} catch (MailException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.OK);		
 	}
 
 }

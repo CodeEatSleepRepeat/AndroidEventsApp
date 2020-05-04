@@ -98,6 +98,19 @@ public class EmailService {
 	}
 	
 	
+	@Async
+	public void sendForgottenPassword(User user) throws MailException, InterruptedException {
+
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo(user.getEmail());
+		mail.setFrom(env.getProperty("spring.mail.username"));
+		mail.setSubject("Your password was reset");
+		mail.setText("Hello " + user.getUserName() + ",\n\nWe wanted to let you know that your Events password was reset.\nYour current password is: " + user.getPassword() + "\nPlease change it as soon as possible!\n\nEvents app developer team");
+		
+		javaMailSender.send(mail);		
+	}
+	
+	
 	/**
 	 * Stupid encryption of message
 	 * @param message
@@ -108,7 +121,7 @@ public class EmailService {
 	 * @throws IllegalBlockSizeException 
 	 * @throws InvalidKeyException 
 	 */
-	public String encript(String message) {
+	private String encript(String message) {
         try{
         	// Create key and cipher
         	Key aesKey = new SecretKeySpec(key.getBytes(), "AES");

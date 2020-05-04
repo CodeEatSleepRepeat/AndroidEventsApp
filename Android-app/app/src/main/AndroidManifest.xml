@@ -20,7 +20,7 @@
         tools:replace="android:theme">
         <activity
             android:name=".activities.GoogleMapActivity"
-            android:label="@string/map"></activity>
+            android:label="@string/map" />
         <activity
             android:name=".activities.CommentsActivity"
             android:label="@string/comments" />

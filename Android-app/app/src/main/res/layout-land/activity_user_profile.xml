@@ -28,9 +28,6 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -74,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="Profile name">
+                    android:hint="@string/profile_name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/name_profile"
@@ -88,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="Email">
+                    android:hint="@string/login_registration_email_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/email_profile"
@@ -106,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="Current password">
+                    android:hint="@string/current_password">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_current_profile"
@@ -122,7 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="New password">
+                    android:hint="@string/new_password">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_new1_profile"
@@ -138,7 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:hint="Confirm password">
+                    android:hint="@string/confirm_password">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_new2_profile"
@@ -158,9 +155,8 @@
         android:id="@+id/updateProfileBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_marginTop="-40dp"
         android:background="@color/colorPrimary"
-        android:text="Update profile"
+        android:text="@string/update_profile"
         android:textColor="@color/colorWhite" />
 </LinearLayout>
