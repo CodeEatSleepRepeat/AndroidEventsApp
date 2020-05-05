@@ -10,6 +10,5 @@ public class InvitationService {
 
 	@Autowired
 	private InvitationRepository invitationRepository;
-	
-	
+
 }

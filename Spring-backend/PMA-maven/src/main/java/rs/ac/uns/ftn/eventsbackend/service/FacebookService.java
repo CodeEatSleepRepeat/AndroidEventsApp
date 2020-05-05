@@ -168,9 +168,9 @@ public class FacebookService {
 		}
 		
 		dbUser.setFacebookId(fbProfile.getId());
-		dbUser.setUserName(fbProfile.getName());
+		dbUser.setName(fbProfile.getName());
 		dbUser.setEmail(fbProfile.getEmail());
-		dbUser.setUserImageURI(fbProfile.getPicture().getData().getUrl());
+		dbUser.setImageUri(fbProfile.getPicture().getData().getUrl());
 		dbUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
 		dbUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
 		

@@ -9,5 +9,5 @@ import lombok.Data;
 public class CustomFacebookPicture {
 
 	private CustomFacebookData data;
-	
+
 }

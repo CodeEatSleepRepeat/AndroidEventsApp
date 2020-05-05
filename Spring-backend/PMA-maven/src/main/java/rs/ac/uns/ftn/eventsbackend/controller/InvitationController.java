@@ -9,9 +9,8 @@ import rs.ac.uns.ftn.eventsbackend.service.InvitationService;
 @RequestMapping("/invitation")
 @RestController
 public class InvitationController {
-	
+
 	@Autowired
 	private InvitationService invitationService;
-	
-	
+
 }

@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomFacebookProfile {
-	
+
 	private String id;
 	private String name;
 	private String email;
 	private CustomFacebookPicture picture;
-	
+
 }

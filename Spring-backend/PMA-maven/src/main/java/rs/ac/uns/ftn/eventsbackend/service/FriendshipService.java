@@ -10,6 +10,5 @@ public class FriendshipService {
 
 	@Autowired
 	private FriendshipRepository friendshipRepository;
-	
-	
+
 }

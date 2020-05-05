@@ -11,23 +11,23 @@ public class EventService {
 
 	@Autowired
 	private EventRepository eventRepository;
-	
+
 	public Event findById(Long id) {
-		try{
+		try {
 			return eventRepository.findById(id).get();
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	public Event findByFacebookId(String fbId) {
-		try{
+		try {
 			return eventRepository.findByFacebookId(fbId);
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	public Event save(Event event) {
 		return eventRepository.save(event);
 	}

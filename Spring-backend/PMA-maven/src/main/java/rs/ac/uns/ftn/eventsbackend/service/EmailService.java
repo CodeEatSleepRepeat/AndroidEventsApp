@@ -26,7 +26,7 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	private final String key = "2s5v8y/B?E(H+MbQeThWmZq3t6w9z$C&"; // 256-bit WEP key
 
 	/**
@@ -35,9 +35,9 @@ public class EmailService {
 	@Autowired
 	private Environment env;
 
-
 	/**
 	 * Slanje maila sa linkom za aktivaciju naloga
+	 * 
 	 * @param user
 	 * @throws MailException
 	 * @throws InterruptedException
@@ -45,42 +45,45 @@ public class EmailService {
 	@Async
 	public void sendActivationEmail(User user) throws MailException, InterruptedException {
 
-		String link = "http://localhost:8080/user/activate/" + encript(user.getUserId().toString());
-		
+		String link = "http://localhost:8080/user/activate/" + encript(user.getId().toString());
+
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getEmail());
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Account activation link");
-		mail.setText("Hello " + user.getUserName() + ",\n\nBy clicking on the following link your account will be activated.\n" + link + " \n\nWelcome to the Events community!\nEvents app developer team");
-		
+		mail.setText(
+				"Hello " + user.getName() + ",\n\nBy clicking on the following link your account will be activated.\n"
+						+ link + " \n\nWelcome to the Events community!\nEvents app developer team");
+
 		javaMailSender.send(mail);
 	}
-	
-	
+
 	/**
 	 * 
 	 * Slanje Welcome maila za Korisnike koji su se registrovali preko FB
+	 * 
 	 * @param user
 	 * @throws MailException
 	 * @throws InterruptedException
 	 */
 	@Async
 	public void sendWelcomeFBEmail(User user) throws MailException, InterruptedException {
-		
+
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getEmail());
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Welcome to Events community");
-		mail.setText("Hello " + user.getUserName() + ",\n\nYou have successfully registered with the Events app.\n\n" + 
-				"Your password is: " + user.getPassword() + " in case you ever decide to use Events app without Facebook.\n\nEnjoy the events around you!\nEvents app developer team");
-		
+		mail.setText("Hello " + user.getName() + ",\n\nYou have successfully registered with the Events app.\n\n"
+				+ "Your password is: " + user.getPassword()
+				+ " in case you ever decide to use Events app without Facebook.\n\nEnjoy the events around you!\nEvents app developer team");
+
 		javaMailSender.send(mail);
 	}
-	
-	
+
 	/**
 	 * 
 	 * Slanje Welcome maila za Korisnike koji su se registrovali preko aplikacije
+	 * 
 	 * @param user
 	 * @throws MailException
 	 * @throws InterruptedException
@@ -92,12 +95,12 @@ public class EmailService {
 		mail.setTo(user.getEmail());
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Welcome to Events community");
-		mail.setText("Hello " + user.getUserName() + ",\n\nYou have successfully registered with the Events app.\n\nEnjoy the events around you!\nEvents app developer team");
-		
+		mail.setText("Hello " + user.getName()
+				+ ",\n\nYou have successfully registered with the Events app.\n\nEnjoy the events around you!\nEvents app developer team");
+
 		javaMailSender.send(mail);
 	}
-	
-	
+
 	@Async
 	public void sendForgottenPassword(User user) throws MailException, InterruptedException {
 
@@ -105,66 +108,69 @@ public class EmailService {
 		mail.setTo(user.getEmail());
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Your password was reset");
-		mail.setText("Hello " + user.getUserName() + ",\n\nWe wanted to let you know that your Events password was reset.\nYour current password is: " + user.getPassword() + "\nPlease change it as soon as possible!\n\nEvents app developer team");
-		
-		javaMailSender.send(mail);		
+		mail.setText("Hello " + user.getName()
+				+ ",\n\nWe wanted to let you know that your Events password was reset.\nYour current password is: "
+				+ user.getPassword() + "\nPlease change it as soon as possible!\n\nEvents app developer team");
+
+		javaMailSender.send(mail);
 	}
-	
-	
+
 	/**
 	 * Stupid encryption of message
+	 * 
 	 * @param message
 	 * @return encrypted message
-	 * @throws NoSuchPaddingException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidKeyException 
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws InvalidKeyException
 	 */
 	private String encript(String message) {
-        try{
-        	// Create key and cipher
-        	Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-	        Cipher cipher = Cipher.getInstance("AES");
-	        
-	        // encrypt the text
-	        cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-	        byte[] encrypted = cipher.doFinal(message.getBytes());
-	        
-	        return Base64.getEncoder().encodeToString(encrypted);
-        } catch (Exception e) {
+		try {
+			// Create key and cipher
+			Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+
+			// encrypt the text
+			cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+			byte[] encrypted = cipher.doFinal(message.getBytes());
+
+			return Base64.getEncoder().encodeToString(encrypted);
+		} catch (Exception e) {
 			e.getMessage();
 		}
-        
-        return Base64.getEncoder().encodeToString(message.getBytes());
+
+		return Base64.getEncoder().encodeToString(message.getBytes());
 	}
-	
+
 	/**
 	 * Stupid decryption of message
+	 * 
 	 * @param encryptedMessage
 	 * @return decrypted message
-	 * @throws NoSuchPaddingException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidKeyException 
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws InvalidKeyException
 	 */
 	public String decript(String encryptedMessage) {
 		try {
 			byte[] encr = Base64.getDecoder().decode(encryptedMessage);
-			
+
 			// Create key and cipher
-	        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-	        Cipher cipher = Cipher.getInstance("AES");
-	        
-	        // decrypt the text
-	        cipher.init(Cipher.DECRYPT_MODE, aesKey);
-	        String decrypted = new String(cipher.doFinal(encr));
-	        return decrypted;
+			Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+
+			// decrypt the text
+			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+			String decrypted = new String(cipher.doFinal(encr));
+			return decrypted;
 		} catch (Exception e) {
 			e.getMessage();
 		}
-		
+
 		return "";
 	}
 

@@ -9,6 +9,6 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomFacebookEvent {
-	
+
 	private List<CustomFacebookEventData> data;
 }

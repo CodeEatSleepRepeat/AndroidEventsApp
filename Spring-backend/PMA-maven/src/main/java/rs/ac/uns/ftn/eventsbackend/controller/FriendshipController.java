@@ -9,7 +9,7 @@ import rs.ac.uns.ftn.eventsbackend.service.FriendshipService;
 @RequestMapping("/friendship")
 @RestController
 public class FriendshipController {
-	
+
 	@Autowired
 	private FriendshipService friendshipService;
 

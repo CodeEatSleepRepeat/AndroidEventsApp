@@ -18,14 +18,14 @@ public class CustomFacebookEventData {
 	private Long attending_count;
 	private String description;
 	@JsonProperty("end_time")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Date end_time;
 	private Boolean guest_list_enabled;
 	private String id;
 	private Long declined_count;
 	private Boolean can_guests_invite;
 	@JsonProperty("start_time")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Date start_time;
 	private CustomFacebookEventPlace place;
 	private String name;
@@ -34,14 +34,13 @@ public class CustomFacebookEventData {
 	private String timezone;
 	private String type;
 	@JsonProperty("updated_time")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Date updated_time;
 	private Long interested_count;
 	private Boolean is_online;
-	
+
 	public FacebookPrivacy getPrivacy() {
 		return FacebookPrivacy.valueOf(type.toUpperCase());
 	}
-	
-	
+
 }

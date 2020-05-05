@@ -24,27 +24,27 @@ public class ChatMessage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageId;
-	
+	private Long messageId;
+
 	@NotNull
-    private String text;
-	
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-    private User sender;
-	
+	private String text;
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-    private User recipient;
-    
-    @JsonProperty("created_time")
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private User sender;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User recipient;
+
+	@JsonProperty("created_time")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
-    private Date created_time;
-    
-    @NotNull
-    private Boolean seen;
+	private Date created_time;
+
+	@NotNull
+	private Boolean seen;
 
 	public ChatMessage(Long messageId, @NotNull String text, @NotNull User sender, @NotNull User recipient,
 			Date created_time, @NotNull Boolean seen) {
@@ -56,9 +56,9 @@ public class ChatMessage {
 		this.created_time = created_time;
 		this.seen = seen;
 	}
-    
-    public ChatMessage() {
 
-    }
+	public ChatMessage() {
+
+	}
 
 }

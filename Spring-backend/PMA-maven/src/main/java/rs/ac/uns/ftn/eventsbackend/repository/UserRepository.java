@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-	
+
 	User findByEmail(String email);
 
 	/**
 	 * User that has this facebookId is returned from DB
+	 * 
 	 * @param fbId
 	 * @return
 	 */

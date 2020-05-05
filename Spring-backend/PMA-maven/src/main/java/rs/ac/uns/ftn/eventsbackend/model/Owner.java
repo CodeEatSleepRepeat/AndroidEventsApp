@@ -11,21 +11,21 @@ import lombok.Data;
 @Data
 @Entity
 public class Owner {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@OneToOne
 	private User user;
 	private String facebookId;
-	
+
 	public Owner(User user, String facebookId) {
 		super();
 		this.user = user;
 		this.facebookId = facebookId;
 	}
-	
+
 	public Owner() {
-		
+
 	}
 }

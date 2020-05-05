@@ -22,19 +22,18 @@ public class Invitation {
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User invitationSender;
-	
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User invitationReceiver;
-	
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Event event;
-	
+
 	@NotNull
 	private InvitationStatus status;
-	
-	
+
 	public Invitation(Long invitationId, @NotNull User invitationSender, @NotNull User invitationReceiver,
 			@NotNull Event event, @NotNull InvitationStatus status) {
 		super();
@@ -44,10 +43,9 @@ public class Invitation {
 		this.event = event;
 		this.status = status;
 	}
-	
+
 	public Invitation() {
-	
+
 	}
-	
-	
+
 }

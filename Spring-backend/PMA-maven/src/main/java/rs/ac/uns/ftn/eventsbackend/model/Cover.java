@@ -11,18 +11,18 @@ import lombok.Data;
 @Data
 @Entity
 public class Cover {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long coverId;
-	
+
 	private Long offset_x;
-	
+
 	private Long offset_y;
-	
+
 	@NotNull
 	private String source;
-	
+
 	private String fbId;
 
 	public Cover(Long coverId, @NotNull String source, Long offset_x, Long offset_y, String fbId) {
@@ -33,7 +33,7 @@ public class Cover {
 		this.offset_y = offset_y;
 		this.fbId = fbId;
 	}
-	
+
 	public Cover() {
 
 	}

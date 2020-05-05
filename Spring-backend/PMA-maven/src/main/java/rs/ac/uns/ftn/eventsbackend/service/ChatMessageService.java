@@ -7,9 +7,8 @@ import rs.ac.uns.ftn.eventsbackend.repository.ChatMessageRepository;
 
 @Service
 public class ChatMessageService {
-	
+
 	@Autowired
 	private ChatMessageRepository chatMessageRepository;
-	
 
 }

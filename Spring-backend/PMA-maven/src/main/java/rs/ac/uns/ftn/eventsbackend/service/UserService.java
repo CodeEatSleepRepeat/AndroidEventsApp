@@ -11,43 +11,47 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	public User findByEmail(String email, String password) {
+
+	public User findByCredentials(String email, String password) {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
 			return null;
 		}
-		if (user.getPassword()!=null && user.getPassword().equals(password)) {
+		if (user.getPassword() != null && user.getPassword().equals(password)) {
 			return user;
 		}
 		return null;
 	}
-	
+
 	public User findById(Long id) {
-		try{
+		try {
 			return userRepository.findById(id).get();
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	public User save(User user) {
 		return userRepository.save(user);
 	}
 
 	public User findByFacebookId(String fbId) {
-		try{
+		try {
 			return userRepository.findByFacebookId(fbId);
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	public boolean existsByEmail(String email) {
 		return userRepository.existsByEmail(email);
 	}
 
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
+	}
+
+	public void delete(Long userId) {
+		userRepository.deleteById(userId);
 	}
 }

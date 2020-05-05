@@ -38,71 +38,71 @@ public class Event {
 	private Long eventId;
 
 	private String facebookId;
-	
+
 	@NotNull
 	@Size(min = 1, max = 64)
 	private String name;
-	
+
 	@NotNull
 	@Size(min = 1)
 	private String description;
-	
-	@OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+
+	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private Cover cover;
-	
+
 	@NotNull
 	private EventType type;
-	
+
 	@NotNull
 	private FacebookPrivacy privacy;
-	
+
 	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
-	@Column(name = "start_time", columnDefinition="DATETIME")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@Column(name = "start_time", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date start_time;
-	
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
-	@Column(name = "end_time", columnDefinition="DATETIME")
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@Column(name = "end_time", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date end_time;
-	
+
 	private String place;
-	
+
 	private float latitude;
-	
+
 	private float longitude;
-	
+
 	@NotNull
-	@OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private Owner owner;
-	
-	@ManyToMany(mappedBy="interestedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+	@ManyToMany(mappedBy = "interestedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<User> interested;
-	
-	@ManyToMany(mappedBy="goingEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+	@ManyToMany(mappedBy = "goingEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<User> going;
-	
-	@OneToMany(mappedBy="event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Invitation> userInvitation;
-	
+
 	@JsonProperty("updated_time")
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@UpdateTimestamp
 	private Date updated_time;
-	
+
 	@JsonProperty("created_time")
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
 	private Date created_time;
-	
-	//FB attributes
-	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+
+	// FB attributes
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Date updated_timeFB;
 	private Long attending_countFB;
 	private Boolean guest_list_enabledFB;
@@ -113,8 +113,7 @@ public class Event {
 	private String timezone;
 	private Long interested_count;
 	private Boolean is_online;
-	
-	
+
 	public Event(Long eventId, String facebookId, @NotNull @Size(min = 1, max = 64) String name,
 			@NotNull @Size(min = 1) String description, Cover cover, @NotNull EventType type,
 			@NotNull FacebookPrivacy privacy, @NotNull Date start_time, Date end_time, String place, float latitude,
@@ -152,7 +151,7 @@ public class Event {
 		this.interested_count = interested_count;
 		this.is_online = is_online;
 	}
-	
+
 	public Event() {
 
 	}

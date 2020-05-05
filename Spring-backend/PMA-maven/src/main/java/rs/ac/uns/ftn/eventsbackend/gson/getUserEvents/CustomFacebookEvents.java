@@ -10,5 +10,5 @@ public class CustomFacebookEvents {
 
 	private CustomFacebookEvent events;
 	private String id;
-	
+
 }

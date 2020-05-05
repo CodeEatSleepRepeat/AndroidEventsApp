@@ -13,7 +13,7 @@ import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 @Entity
 @Data
 public class Friendship {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long friendshipId;
@@ -21,11 +21,11 @@ public class Friendship {
 	@NotNull
 	@ManyToOne
 	private User requestSender;
-	
+
 	@NotNull
 	@ManyToOne
 	private User requestReceiver;
-	
+
 	@NotNull
 	private FriendshipStatus status;
 
@@ -39,7 +39,7 @@ public class Friendship {
 	}
 
 	public Friendship() {
-	
+
 	}
-	
+
 }

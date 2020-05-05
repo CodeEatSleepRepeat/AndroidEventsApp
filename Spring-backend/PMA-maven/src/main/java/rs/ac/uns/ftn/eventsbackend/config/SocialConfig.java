@@ -18,30 +18,26 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 
-
 @Configuration
 @EnableSocial
 public class SocialConfig implements SocialConfigurer {
 
 	private final Logger log = LoggerFactory.getLogger(SocialConfig.class);
 
-    @Override
-    public void addConnectionFactories(ConnectionFactoryConfigurer connectionFactoryConfigurer, Environment environment) {
-    	// Facebook configuration
-        String facebookClientId = environment.getProperty("spring.social.facebook.appId");	//TODO: test this config
-        String facebookClientSecret = environment.getProperty("spring.social.facebook.appSecret");
-        if (facebookClientId != null && facebookClientSecret != null) {
-            log.debug("Configuring FacebookConnectionFactory");
-            connectionFactoryConfigurer.addConnectionFactory(
-                new FacebookConnectionFactory(
-                    facebookClientId,
-                    facebookClientSecret
-                )
-            );
-        } else {
-            log.error("Cannot configure FacebookConnectionFactory: id or secret null");
-        }
-    }
+	@Override
+	public void addConnectionFactories(ConnectionFactoryConfigurer connectionFactoryConfigurer,
+			Environment environment) {
+		// Facebook configuration
+		String facebookClientId = environment.getProperty("spring.social.facebook.appId"); // TODO: test this config
+		String facebookClientSecret = environment.getProperty("spring.social.facebook.appSecret");
+		if (facebookClientId != null && facebookClientSecret != null) {
+			log.debug("Configuring FacebookConnectionFactory");
+			connectionFactoryConfigurer
+					.addConnectionFactory(new FacebookConnectionFactory(facebookClientId, facebookClientSecret));
+		} else {
+			log.error("Cannot configure FacebookConnectionFactory: id or secret null");
+		}
+	}
 
 	@Override
 	public UserIdSource getUserIdSource() {
@@ -49,27 +45,27 @@ public class SocialConfig implements SocialConfigurer {
 	}
 
 	@Override
-    public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        return new UsersConnectionRepository() {
-        	// TODO: WTF
+	public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
+		return new UsersConnectionRepository() {
+			// TODO: WTF
 			@Override
 			public List<String> findUserIdsWithConnection(Connection<?> connection) {
-				
+
 				return null;
 			}
-			
+
 			@Override
 			public Set<String> findUserIdsConnectedTo(String providerId, Set<String> providerUserIds) {
-				
+
 				return null;
 			}
-			
+
 			@Override
 			public ConnectionRepository createConnectionRepository(String userId) {
-				
+
 				return null;
 			}
 		};
-    }
+	}
 
 }
