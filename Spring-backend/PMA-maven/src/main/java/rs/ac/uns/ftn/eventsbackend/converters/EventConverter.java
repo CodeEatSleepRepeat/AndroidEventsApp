@@ -37,6 +37,7 @@ public class EventConverter {
 		dbEvent.getCover().setOffset_x(fbEvent.getCover().getOffset_x());
 		dbEvent.getCover().setOffset_y(fbEvent.getCover().getOffset_y());
 		dbEvent.getCover().setSource(fbEvent.getCover().getSource());
+		dbEvent.setIsDeleted(false);
 		
 		dbEvent.setType(EventType.FACEBOOK);
 		

@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Event {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long eventId;
+	private Long id;
 
 	private String facebookId;
 
@@ -85,8 +86,11 @@ public class Event {
 	@ManyToMany(mappedBy = "goingEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<User> going;
 
-	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Invitation> userInvitation;
+	
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments;
 
 	@JsonProperty("updated_time")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -99,6 +103,8 @@ public class Event {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
 	private Date created_time;
+	
+	private Boolean isDeleted;
 
 	// FB attributes
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -114,45 +120,11 @@ public class Event {
 	private Long interested_count;
 	private Boolean is_online;
 
-	public Event(Long eventId, String facebookId, @NotNull @Size(min = 1, max = 64) String name,
-			@NotNull @Size(min = 1) String description, Cover cover, @NotNull EventType type,
-			@NotNull FacebookPrivacy privacy, @NotNull Date start_time, Date end_time, String place, float latitude,
-			float longitude, @NotNull Owner owner, List<User> interested, List<User> going,
-			List<Invitation> userInvitation, Date updated_time, Date created_time, Date updated_timeFB,
-			Long attending_countFB, Boolean guest_list_enabledFB, Long declined_count, Boolean can_guests_invite,
-			Long maybe_count, Boolean is_canceled, String timezone, Long interested_count, Boolean is_online) {
-		super();
-		this.eventId = eventId;
-		this.facebookId = facebookId;
-		this.name = name;
-		this.description = description;
-		this.cover = cover;
-		this.type = type;
-		this.privacy = privacy;
-		this.start_time = start_time;
-		this.end_time = end_time;
-		this.place = place;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.owner = owner;
-		this.interested = interested;
-		this.going = going;
-		this.userInvitation = userInvitation;
-		this.updated_time = updated_time;
-		this.created_time = created_time;
-		this.updated_timeFB = updated_timeFB;
-		this.attending_countFB = attending_countFB;
-		this.guest_list_enabledFB = guest_list_enabledFB;
-		this.declined_count = declined_count;
-		this.can_guests_invite = can_guests_invite;
-		this.maybe_count = maybe_count;
-		this.is_canceled = is_canceled;
-		this.timezone = timezone;
-		this.interested_count = interested_count;
-		this.is_online = is_online;
-	}
-
 	public Event() {
-
+		super();
+		comments = new ArrayList<Comment>();
+		going = new ArrayList<User>();
+		interested = new ArrayList<User>();
+		userInvitation = new ArrayList<Invitation>();
 	}
 }

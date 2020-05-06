@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.eventsbackend.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,9 +17,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-@Data
 @Entity
-public class ChatMessage {
+@Data
+public class Comment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,34 +29,29 @@ public class ChatMessage {
 	private String text;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User sender;
+	@ManyToOne
+	private User user;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User recipient;
+	@ManyToOne
+	private Event event;
 
-	@JsonProperty("created_time")
+	@JsonProperty("timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
-	private Date created_time;
+	private Date timestamp;
 
-	@NotNull
-	private Boolean seen;
-
-	public ChatMessage(Long id, @NotNull String text, @NotNull User sender, @NotNull User recipient, Date created_time,
-			@NotNull Boolean seen) {
+	public Comment(Long id, @NotNull String text, @NotNull User user, @NotNull Event event, Date timestamp) {
 		super();
 		this.id = id;
 		this.text = text;
-		this.sender = sender;
-		this.recipient = recipient;
-		this.created_time = created_time;
-		this.seen = seen;
+		this.user = user;
+		this.event = event;
+		this.timestamp = timestamp;
 	}
 
-	public ChatMessage() {
+	public Comment() {
 
 	}
 

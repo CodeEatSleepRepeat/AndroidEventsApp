@@ -101,12 +101,16 @@ public class FacebookService {
 	 * Proverava u bazi da li je fb event sveziji i sa promenjenim parametrima.
 	 * Prvo se proverava da li je "updated_time" fbEvent > dbEventa (koji se izvlaci iz baze)
 	 * @param fbEvent
-	 * @return true (ukoliko nema promena) ili false (ima promena i potrebno je osveziti bazu)
+	 * @return true (ukoliko nema promena ili je obrisan) ili false (ima promena i potrebno je osveziti bazu)
 	 */
 	public Boolean isUpToDate(CustomFacebookEventData fbEvent) {
 		Event dbEvent = eventService.findByFacebookId(fbEvent.getId());
 		if (dbEvent==null) {
 			return false;
+		}
+		//nema pull eventa ukoliko je on obrisan
+		if (dbEvent.getIsDeleted()) {
+			return true;
 		}
 		
 		return EventComparator.compare(fbEvent, dbEvent);
@@ -192,7 +196,7 @@ public class FacebookService {
 				Event dbEvent = eventService.findByFacebookId(fbEvent.getId());
 				if (dbEvent != null) {
 					//event postoji
-					updateDbEvent(fbEvent, dbEvent.getEventId());
+					updateDbEvent(fbEvent, dbEvent.getId());
 				} else {
 					//ovo je novi event
 					dbEvent = EventConverter.convert(fbEvent);

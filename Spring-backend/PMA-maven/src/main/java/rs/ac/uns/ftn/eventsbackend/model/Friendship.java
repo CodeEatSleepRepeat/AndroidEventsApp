@@ -16,7 +16,7 @@ public class Friendship {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long friendshipId;
+	private Long id;
 
 	@NotNull
 	@ManyToOne
@@ -29,10 +29,10 @@ public class Friendship {
 	@NotNull
 	private FriendshipStatus status;
 
-	public Friendship(Long friendshipId, @NotNull User requestSender, @NotNull User requestReceiver,
+	public Friendship(Long id, @NotNull User requestSender, @NotNull User requestReceiver,
 			@NotNull FriendshipStatus status) {
 		super();
-		this.friendshipId = friendshipId;
+		this.id = id;
 		this.requestSender = requestSender;
 		this.requestReceiver = requestReceiver;
 		this.status = status;

@@ -81,14 +81,6 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
     /**
      * Setovanje onClickListenera za dugmeice (KOJI MOZDA NE POSTOJE NA SVAKOM LAYOUTU koji se ovde prosledi - zato je if null
-     *  
-     */
-    private void setOnClickListeners() {
-        setOnClickListeners();
-    }
-
-    /**
-     * Setovanje onClickListenera za dugmeice (KOJI MOZDA NE POSTOJE NA SVAKOM LAYOUTU koji se ovde prosledi - zato je if null
      *
      * @param viewHolder
      */

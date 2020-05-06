@@ -17,7 +17,7 @@ public class Invitation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long invitationId;
+	private Long id;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -34,10 +34,10 @@ public class Invitation {
 	@NotNull
 	private InvitationStatus status;
 
-	public Invitation(Long invitationId, @NotNull User invitationSender, @NotNull User invitationReceiver,
-			@NotNull Event event, @NotNull InvitationStatus status) {
+	public Invitation(Long id, @NotNull User invitationSender, @NotNull User invitationReceiver, @NotNull Event event,
+			@NotNull InvitationStatus status) {
 		super();
-		this.invitationId = invitationId;
+		this.id = id;
 		this.invitationSender = invitationSender;
 		this.invitationReceiver = invitationReceiver;
 		this.event = event;

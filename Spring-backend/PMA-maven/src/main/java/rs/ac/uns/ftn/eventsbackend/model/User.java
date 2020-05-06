@@ -34,7 +34,9 @@ public class User {
 	private String name;
 
 	private String imageUri;
+
 	private Integer imageHeight;
+
 	private Integer imageWidth;
 
 	@NotNull
@@ -72,8 +74,13 @@ public class User {
 			@JoinColumn(name = "eventId") })
 	private List<Event> goingEvents;
 
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments;
+
 	private Boolean activatedAccount;
+
 	private Boolean syncFacebookEvents;
+
 	private Boolean syncFacebookProfile;
 
 	/**
@@ -99,13 +106,24 @@ public class User {
 		this.receivedInvitations = new ArrayList<Invitation>();
 		this.interestedEvents = new ArrayList<Event>();
 		this.goingEvents = new ArrayList<Event>();
+		this.chatMessagesReceived = new ArrayList<ChatMessage>();
+		this.chatMessagesSent = new ArrayList<ChatMessage>();
+		this.comments = new ArrayList<Comment>();
 		this.activatedAccount = false;
 		this.syncFacebookEvents = false;
 		this.syncFacebookProfile = false;
 	}
 
 	public User() {
-
+		super();
+		this.sendRequests = new ArrayList<Friendship>();
+		this.receivedRequests = new ArrayList<Friendship>();
+		this.sendInvitations = new ArrayList<Invitation>();
+		this.receivedInvitations = new ArrayList<Invitation>();
+		this.interestedEvents = new ArrayList<Event>();
+		this.goingEvents = new ArrayList<Event>();
+		this.chatMessagesReceived = new ArrayList<ChatMessage>();
+		this.chatMessagesSent = new ArrayList<ChatMessage>();
+		this.comments = new ArrayList<Comment>();
 	}
-
 }
