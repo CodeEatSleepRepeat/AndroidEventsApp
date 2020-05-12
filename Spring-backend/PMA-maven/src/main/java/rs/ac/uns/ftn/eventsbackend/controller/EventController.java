@@ -10,13 +10,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
 
 @RequestMapping("/event")
@@ -79,6 +84,21 @@ public class EventController {
 			File oldImage = new File(IMAGE_FOLDER + userImageURI);
 			oldImage.delete();
 		}
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Event>> getAll(){
+		return ResponseEntity.ok(eventService.findAll());
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Event> getById(@PathVariable Long id){
+		return ResponseEntity.ok(eventService.findById(id));
+	}
+	
+	@PostMapping
+	public ResponseEntity<Event> create(@RequestBody CreateEventDTO dto){
+		return ResponseEntity.ok(eventService.save(new Event(dto)));
 	}
 
 }

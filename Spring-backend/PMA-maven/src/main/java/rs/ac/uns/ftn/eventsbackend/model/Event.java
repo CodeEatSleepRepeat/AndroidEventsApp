@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
 
@@ -40,24 +41,24 @@ public class Event {
 
 	private String facebookId;
 
-	@NotNull
+	//@NotNull
 	@Size(min = 1, max = 64)
 	private String name;
 
-	@NotNull
+	//@NotNull
 	@Size(min = 1)
 	private String description;
 
 	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private Cover cover;
 
-	@NotNull
+	//@NotNull
 	private EventType type;
 
-	@NotNull
+	//@NotNull
 	private FacebookPrivacy privacy;
 
-	@NotNull
+	//@NotNull
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(name = "start_time", columnDefinition = "DATETIME")
@@ -76,7 +77,7 @@ public class Event {
 
 	private float longitude;
 
-	@NotNull
+	//@NotNull
 	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private Owner owner;
 
@@ -126,5 +127,18 @@ public class Event {
 		going = new ArrayList<User>();
 		interested = new ArrayList<User>();
 		userInvitation = new ArrayList<Invitation>();
+	}
+	
+	public Event(CreateEventDTO dto) {
+		latitude = dto.getLatitude();
+		longitude = dto.getLongitude();
+		name = dto.getName();
+		place = dto.getPlace();
+		description = dto.getDescription();
+		type = dto.getType();
+		start_time = dto.getStart_time();
+		end_time = dto.getEnd_time();
+		privacy = dto.getPrivacy();
+		owner = dto.getOwner();	
 	}
 }
