@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,11 +29,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
+import rs.ac.uns.ftn.eventsapp.models.EventType;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 
 public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private Button createButton;
 
     private MapView mMapView;
     private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
@@ -62,11 +76,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        createButton = findViewById(R.id.createEventBtn);
+
         Toolbar toolbar = findViewById(R.id.toolbarCreateEvent);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
 
         mMapView = findViewById(R.id.createEventMapView);
         if(savedInstanceState!=null) {
@@ -288,6 +303,34 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
             }
         }
+
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://10.0.2.2:8080")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+                Call<CreateEventDTO> s = e.createEvent(new CreateEventDTO(22.0f, 33.0f, "s1", "s2", "s3",
+                        EventType.MUSIC, "2020-05-13T23:06:55.909Z", "2020-05-13T23:06:55.909Z", FacebookPrivacy.PRIVATE));
+                s.enqueue(new Callback<CreateEventDTO>() {
+                    @Override
+                    public void onResponse(Call<CreateEventDTO> call, Response<CreateEventDTO> response) {
+                        if(!response.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                        }
+                        Toast.makeText(getApplicationContext(), "Hi i arrived " + response.body(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<CreateEventDTO> call, Throwable t) {
+                        Log.d("Response", t.toString());
+                        Toast.makeText(getApplicationContext(), "Failed :(", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     /*
@@ -407,4 +450,6 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+
 }

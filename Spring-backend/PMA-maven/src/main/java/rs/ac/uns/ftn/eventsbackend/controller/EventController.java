@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
 
+@CrossOrigin
 @RequestMapping("/event")
 @RestController
 public class EventController {
@@ -97,8 +99,10 @@ public class EventController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Event> create(@RequestBody CreateEventDTO dto){
-		return ResponseEntity.ok(eventService.save(new Event(dto)));
+	public ResponseEntity<CreateEventDTO> create(@RequestBody CreateEventDTO dto){
+		System.out.println("Stigao");
+		eventService.save(new Event(dto));
+		return ResponseEntity.ok(dto);
 	}
 
 }
