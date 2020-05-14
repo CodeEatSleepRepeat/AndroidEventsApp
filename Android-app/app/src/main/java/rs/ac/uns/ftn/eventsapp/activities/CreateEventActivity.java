@@ -51,12 +51,19 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
 
     final Calendar calendar = Calendar.getInstance();
+    final Calendar calendar2 = Calendar.getInstance();
     private EditText startingDateEditText;
     private EditText startingTimeEditText;
     private EditText endingDateEditText;
     private EditText endingTimeEditText;
+    private EditText nameEditText;
+    private EditText descriptionEditText;
     private Double lat = null;
     private Double lng = null;
+    private String startDateTime = null;
+    private String endDateTime = null;
+    private EventType eventType;
+    private FacebookPrivacy facebookPrivacy = FacebookPrivacy.PUBLIC;
     private String imgUri = null;
 
     private CheckBox charityCB;
@@ -65,6 +72,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private CheckBox musicCB;
     private CheckBox partyCB;
     private CheckBox sportsCB;
+
+    private CheckBox privateCB;
 
     private static final int GALLERY_REQUEST=123;
     private ImageView imgView;
@@ -77,6 +86,9 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_create_event);
 
         createButton = findViewById(R.id.createEventBtn);
+        nameEditText = findViewById(R.id.eventNameEditText);
+        descriptionEditText = findViewById(R.id.eventDescriptionEditText);
+        privateCB = findViewById(R.id.privateEventCreateEventCB);
 
         Toolbar toolbar = findViewById(R.id.toolbarCreateEvent);
         setSupportActionBar(toolbar);
@@ -165,8 +177,6 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-
-
         /*
          * Listener koji se odnosi na kalendar
          * Postavlja izabrani pocetni datum u edit text
@@ -179,6 +189,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
+                startingDateEditText.setError(null);
                 startingDateEditText.setText(sdf.format(calendar.getTime()));
             }
         };
@@ -192,6 +203,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
+                startingTimeEditText.setError(null);
                 if (minute < 10) {
                     startingTimeEditText.setText(hourOfDay + ":0" + minute);
                 } else {
@@ -224,12 +236,13 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         final DatePickerDialog.OnDateSetListener endingDate = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendar2.set(Calendar.YEAR, year);
+                calendar2.set(Calendar.MONTH, month);
+                calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
-                endingDateEditText.setText(sdf.format(calendar.getTime()));
+                endingDateEditText.setError(null);
+                endingDateEditText.setText(sdf.format(calendar2.getTime()));
             }
         };
 
@@ -240,8 +253,9 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         final TimePickerDialog.OnTimeSetListener endingTime = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                calendar2.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar2.set(Calendar.MINUTE, minute);
+                endingTimeEditText.setError(null);
                 if (minute < 10) {
                     endingTimeEditText.setText(hourOfDay + ":0" + minute);
                 } else {
@@ -254,7 +268,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 new TimePickerDialog(CreateEventActivity.this, endingTime,
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                        calendar2.get(Calendar.HOUR_OF_DAY), calendar2.get(Calendar.MINUTE), true).show();
             }
         });
 
@@ -262,8 +276,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(CreateEventActivity.this, endingDate,
-                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                        calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH),
+                        calendar2.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -307,30 +321,101 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://10.0.2.2:8080")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-                Call<CreateEventDTO> s = e.createEvent(new CreateEventDTO(22.0f, 33.0f, "s1", "s2", "s3",
-                        EventType.MUSIC, "2020-05-13T23:06:55.909Z", "2020-05-13T23:06:55.909Z", FacebookPrivacy.PRIVATE));
-                s.enqueue(new Callback<CreateEventDTO>() {
-                    @Override
-                    public void onResponse(Call<CreateEventDTO> call, Response<CreateEventDTO> response) {
-                        if(!response.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
-                        }
-                        Toast.makeText(getApplicationContext(), "Hi i arrived " + response.body(), Toast.LENGTH_LONG).show();
+                if (validationSuccess()) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    startDateTime = sdf.format(calendar.getTime());
+                    endDateTime = sdf.format(calendar2.getTime());
+                    if (charityCB.isChecked()) {
+                        eventType = EventType.CHARITY;
+                    } else if (educationalCB.isChecked()) {
+                        eventType = EventType.EDUCATIONAL;
+                    } else if (talksCB.isChecked()) {
+                        eventType = EventType.TALKS;
+                    } else if (musicCB.isChecked()) {
+                        eventType = EventType.MUSIC;
+                    } else if (partyCB.isChecked()) {
+                        eventType = EventType.PARTY;
+                    } else if (sportsCB.isChecked()) {
+                        eventType = EventType.SPORTS;
                     }
 
-                    @Override
-                    public void onFailure(Call<CreateEventDTO> call, Throwable t) {
-                        Log.d("Response", t.toString());
-                        Toast.makeText(getApplicationContext(), "Failed :(", Toast.LENGTH_LONG).show();
+                    if (privateCB.isChecked()) {
+                        facebookPrivacy = FacebookPrivacy.PRIVATE;
                     }
-                });
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://10.0.2.2:8080")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+                    Call<CreateEventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), "s2",
+                            descriptionEditText.getText().toString(), eventType, startDateTime,
+                            endDateTime, facebookPrivacy));
+                    s.enqueue(new Callback<CreateEventDTO>() {
+                        @Override
+                        public void onResponse(Call<CreateEventDTO> call, Response<CreateEventDTO> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                            }
+                            Toast.makeText(getApplicationContext(), "Hi i arrived " + response.body(), Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<CreateEventDTO> call, Throwable t) {
+                            Log.d("Response", t.toString());
+                            Toast.makeText(getApplicationContext(), "Failed :(", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
+    }
+
+    private Boolean validationSuccess(){
+        if((lat == null && lng == null) || (lat==0.0 && lng==0.0)){
+            Toast.makeText(getApplicationContext(),"Please select a location for your event.",Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(nameEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a name for your event.",Toast.LENGTH_LONG).show();
+            nameEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(descriptionEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a description for your event.",Toast.LENGTH_LONG).show();
+            descriptionEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(!charityCB.isChecked() && !educationalCB.isChecked() && !musicCB.isChecked() && !partyCB.isChecked()
+            && !sportsCB.isChecked() && !talksCB.isChecked()){
+            Toast.makeText(getApplicationContext(),"Please select a category for your event.",Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(startingDateEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a starting date for your event.",Toast.LENGTH_LONG).show();
+            startingDateEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(startingTimeEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a starting time for your event.",Toast.LENGTH_LONG).show();
+            startingTimeEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(endingDateEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a ending date for your event.",Toast.LENGTH_LONG).show();
+            endingDateEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(endingTimeEditText.getText().toString().trim().equals("")){
+            Toast.makeText(getApplicationContext(),"Please enter a ending time for your event.",Toast.LENGTH_LONG).show();
+            endingTimeEditText.setError("This field cannot be blank.");
+            return false;
+        }
+        if(calendar.getTimeInMillis()>=calendar2.getTimeInMillis()){
+            Toast.makeText(getApplicationContext(),"Please make sure that your starting date and time is before ending date and time.",Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     /*

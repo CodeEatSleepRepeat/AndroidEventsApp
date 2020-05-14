@@ -16,8 +16,8 @@ import rs.ac.uns.ftn.eventsbackend.model.Owner;
 @AllArgsConstructor
 public class CreateEventDTO {
 	
-	private float latitude;
-	private float longitude;
+	private double latitude;
+	private double longitude;
 	private String name;
 	private String place;
 	private String description;

@@ -73,9 +73,9 @@ public class Event {
 
 	private String place;
 
-	private float latitude;
+	private double latitude;
 
-	private float longitude;
+	private double longitude;
 
 	//@NotNull
 	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)

@@ -7,8 +7,8 @@ import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 
 public class CreateEventDTO {
 
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private String name;
     private String place;
     private String description;
@@ -22,7 +22,7 @@ public class CreateEventDTO {
     public CreateEventDTO() {
     }
 
-    public CreateEventDTO(float latitude, float longitude, String name, String place, String description, EventType type, String start_time, String end_time, FacebookPrivacy privacy) {
+    public CreateEventDTO(double latitude, double longitude, String name, String place, String description, EventType type, String start_time, String end_time, FacebookPrivacy privacy) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
@@ -34,19 +34,19 @@ public class CreateEventDTO {
         this.privacy = privacy;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
