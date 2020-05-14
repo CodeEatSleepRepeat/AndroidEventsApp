@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
 
@@ -99,10 +100,10 @@ public class EventController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<CreateEventDTO> create(@RequestBody CreateEventDTO dto){
-		System.out.println("Stigao");
-		eventService.save(new Event(dto));
-		return ResponseEntity.ok(dto);
+	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto){
+		System.out.println("create");
+		Event e = eventService.save(new Event(dto));
+		return ResponseEntity.ok(new EventDTO(e));
 	}
 
 }

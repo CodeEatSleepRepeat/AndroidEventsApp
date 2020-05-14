@@ -163,7 +163,7 @@
                 android:id="@+id/eventNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/createEventMapView"
+                android:layout_below="@+id/placeCreateEventEditText"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -355,6 +355,19 @@
 
 
             </FrameLayout>
+
+            <EditText
+                android:id="@+id/placeCreateEventEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createEventMapView"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:hint="@string/eventPlace"
+                android:inputType="textPersonName" />
 
 
         </RelativeLayout>

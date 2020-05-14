@@ -100,6 +100,19 @@
     <string name="no">No</string>
     <string name="gps_dialog">This application requires GPS to work properly, do you want to enable it?</string>
     <string name="gps_dialog2">These permissions are mandatory to get your location. Do you want to allow them?</string>
+    <string name="eventPlace">Event place</string>
+    <string name="createEventValidation1">Please select a location for your event.</string>
+    <string name="createEventValidation2">Please enter a place for your event.</string>
+    <string name="createEventValidation3">Please enter a name for your event.</string>
+    <string name="createEventValidation4">Please enter a description for your event.</string>
+    <string name="createEventValidation5">Please select a category for your event.</string>
+    <string name="createEventValidation6">Please enter a starting date for your event.</string>
+    <string name="createEventValidation7">Please enter a starting time for your event.</string>
+    <string name="createEventValidation8">Please enter a ending date for your event.</string>
+    <string name="createEventValidation9">Please enter a ending time for your event.</string>
+    <string name="createEventValidation10">Please make sure that your starting date and time is before ending date and time.</string>
+    <string name="blankFieldError">This field cannot be blank.</string>
+    <string name="failed">Failed :(</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">00000000000000</string>
