@@ -2,9 +2,15 @@ package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +33,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,6 +90,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private ImageView imgView;
     private ImageView clearImage;
     private FrameLayout imageHolder;
+    private Retrofit retrofit;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -399,7 +414,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             facebookPrivacy = FacebookPrivacy.PRIVATE;
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -413,8 +428,13 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                 }
-                Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-                startActivity(intent);
+                try {
+                    uploadImage();
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
+                /*Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(intent);*/
             }
 
             @Override
@@ -424,15 +444,67 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
+    private void uploadImage() throws URISyntaxException {
+        if(imgUri!=null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("http://10.0.2.2:8080")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+            Log.d("FILENAME", imgUri);
+            File featured_image = new File(imgUri);//isprobaj kasnije samo sa imgUri
+            if(featured_image.exists()){
+                Log.d("EXIST", "i exist");
+                Bitmap bmp = BitmapFactory.decodeFile(featured_image.getAbsolutePath());
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 30, bos);
+                builder.addFormDataPart("image", featured_image.getName(), RequestBody.create(MultipartBody.FORM, bos.toByteArray()));
+            }
+            RequestBody requestBody = builder.build();
+            Call<String> s = e.uploadEventImg(requestBody);
+            s.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    }
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                /*Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(intent);*/
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("FAILED", t.toString());
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri imageData = data.getData();
-            imgUri = imageData.toString();
+            Log.d("PATH1", imageData.getPath());
+            Log.d("PATH2", imageData.toString());
+            try {
+                InputStream is = getContentResolver().openInputStream(imageData);
+                Bitmap bm = BitmapFactory.decodeStream(is);
+                imgView.setImageBitmap(bm);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            File file = new File(Environment.getExternalStorageDirectory() + "/Download/mailupp.png");
+            if(file.exists()){
+                Log.d("FILE", "POSTOJI");
+            }
+            imgUri = imageData.getPath();
             findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
             findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
-            imgView.setImageURI(imageData);
+            //imgView.setImageURI(imageData);
             clearImage.bringToFront();
         }
     }
