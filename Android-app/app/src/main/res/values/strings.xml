@@ -113,6 +113,7 @@
     <string name="createEventValidation10">Please make sure that your starting date and time is before ending date and time.</string>
     <string name="blankFieldError">This field cannot be blank.</string>
     <string name="failed">Failed :(</string>
+    <string name="eventCreated">Event created!</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">00000000000000</string>

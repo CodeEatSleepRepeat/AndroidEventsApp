@@ -41,30 +41,31 @@ public class Event {
 
 	private String facebookId;
 
-	//@NotNull
+	@NotNull
 	@Size(min = 1, max = 64)
 	private String name;
 
-	//@NotNull
+	@NotNull
 	@Size(min = 1)
 	private String description;
 
 	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private Cover cover;
 
-	//@NotNull
+	@NotNull
 	private EventType type;
 
-	//@NotNull
+	@NotNull
 	private FacebookPrivacy privacy;
 
-	//@NotNull
+	@NotNull
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(name = "start_time", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date start_time;
 
+	@NotNull
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(name = "end_time", columnDefinition = "DATETIME")

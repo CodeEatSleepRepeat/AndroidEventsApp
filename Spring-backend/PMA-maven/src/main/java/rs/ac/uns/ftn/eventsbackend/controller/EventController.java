@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
 
@@ -46,8 +47,8 @@ public class EventController {
 	 * @param image
 	 * @return
 	 */
-	@RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> uploadImage(@RequestPart(name = "image") MultipartFile image) {
+	@RequestMapping(value = "/upload/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<EventDTO> uploadImage(@PathVariable Long id, @RequestPart(name = "image") MultipartFile image) {
 
 		if (image != null && !image.isEmpty()) {
 			if (!MIME_IMAGE_TYPES.contains(image.getContentType())) {
@@ -57,15 +58,20 @@ public class EventController {
 			try {
 				// image is good size
 				String newImageName = System.currentTimeMillis()
-						+ image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf("."));
+						+ image.getOriginalFilename()/*.substring(image.getOriginalFilename().lastIndexOf("."))*/;
 				String newFileUri = new File(IMAGE_FOLDER + newImageName).getAbsolutePath();
 
 				// save image to folder
 				image.transferTo(new File(newFileUri));
-				return new ResponseEntity<>(newImageName, HttpStatus.CREATED);
+				Cover c = new Cover();
+				c.setSource(newFileUri);
+				Event e = eventService.findById(id);
+				e.setCover(c);
+				eventService.save(e);
+				return new ResponseEntity<>(new EventDTO(e), HttpStatus.CREATED);
 
 			} catch (Exception e) {
-				System.out.println("Failed saving image...");
+				e.printStackTrace();
 			}
 
 		} else {
