@@ -35,7 +35,7 @@ public class InterestedEventsListFragment extends Fragment {
         /*items = TestMockup.getInstance().events;
         ArrayList<Event> temp = new ArrayList<>();
         for (Event e : items) {
-            if (e.getAuthor().getUserId() != 1l) {
+            if (e.getAuthor().getId() != 1l) {
                 temp.add(e);
             }
         }

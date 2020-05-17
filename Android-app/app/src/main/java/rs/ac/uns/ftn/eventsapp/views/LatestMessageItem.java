@@ -37,8 +37,8 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
         //  korisniku (znaci nekad je from Id nekad toId). Kada otkrijemo ko je, onda treba iz
         //  baze izvuci informaciju o korisniku i ispisati njegove vrednosti.. tako cemo mi sad
         //  napraviti nesto random skroz...
-        chatPartnerUser = new User(20l, "Veljko Man", "nema");
-        textUserUsername.setText(chatPartnerUser.getUserName());
+        chatPartnerUser = new User(20l, "Veljko Man", "nema", "", "");
+        textUserUsername.setText(chatPartnerUser.getName());
         textMessage.setText(chatMessage.getText());
 
         //TODO: pored provere SEEN moramo gledati da li je poruka namenjena nama!

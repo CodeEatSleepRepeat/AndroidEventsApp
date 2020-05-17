@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             changeNavBarUnautorized();
         } else {
             setNavigationListenerAuthorizedUser(navigationView, toolbar);
-            changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
+            changeNavBarProfile(user.getName(), user.getImageUri());
         }
     }
 
@@ -386,11 +386,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UserProfileActivity.class);
         //TODO: get logged user here
         User loggedUser = TestMockup.getInstance().users.get(0);
-        intent.putExtra("userId", loggedUser.getUserId());
-        intent.putExtra("userName", loggedUser.getUserName());
+        intent.putExtra("userId", loggedUser.getId());
+        intent.putExtra("userName", loggedUser.getName());
         intent.putExtra("email", loggedUser.getEmail());
         intent.putExtra("password", loggedUser.getPassword());
-        intent.putExtra("profileImageUrl", loggedUser.getProfileImageUrl());
+        intent.putExtra("profileImageUrl", loggedUser.getImageUri());
         startActivityForResult(intent, LAUNCH_USER_PROFILE_ACTIVITY);
     }
 
@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
-            changeNavBarProfile(user.getUserName(), user.getProfileImageUrl());
+            changeNavBarProfile(user.getName(), user.getImageUri());
         }
 
     }

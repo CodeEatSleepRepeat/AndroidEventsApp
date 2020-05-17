@@ -46,8 +46,8 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        //        intent.putExtra("userId", loggedUser.getUserId());
-        //        intent.putExtra("userName", loggedUser.getUserName());
+        //        intent.putExtra("userId", loggedUser.getId());
+        //        intent.putExtra("userName", loggedUser.getName());
         //        intent.putExtra("email", loggedUser.getEmail());
         //        intent.putExtra("password", loggedUser.getPassword());
         //        intent.putExtra("profileImageUrl", loggedUser.getProfileImageUrl());
@@ -363,9 +363,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void saveUserParams() {
         //TODO: sacuvaj nove parametre
-        TestMockup.getInstance().users.get(0).setUserName(name_profile.getText().toString().trim());
+        TestMockup.getInstance().users.get(0).setName(name_profile.getText().toString().trim());
         TestMockup.getInstance().users.get(0).setPassword(password_new1_profile.getText().toString().trim());
-        TestMockup.getInstance().users.get(0).setProfileImageUrl(imgUri);
+        TestMockup.getInstance().users.get(0).setImageUri(imgUri);
 
         Intent intent = new Intent();
         //intent.putExtra("userName", name_profile.getText().toString().trim());

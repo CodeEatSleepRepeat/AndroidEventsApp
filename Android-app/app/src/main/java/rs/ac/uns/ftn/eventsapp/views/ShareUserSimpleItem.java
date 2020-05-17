@@ -42,11 +42,11 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
         Context itemViewContext = viewHolder.itemView.getContext();
         CheckBox selectedCB = viewHolder.itemView.findViewById(R.id.selectFriendForShareCB);
 
-        textUsername.setText(user.getUser().getUserName());
+        textUsername.setText(user.getUser().getName());
         selectedCB.setChecked(user.getChecked());
 
         Picasso.get()
-                .load(user.getUser().getProfileImageUrl())
+                .load(user.getUser().getImageUri())
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_user_icon)
                 .into(imageUser);
@@ -58,7 +58,7 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
                 CheckBox cb = viewHolder.itemView.findViewById(R.id.selectFriendForShareCB);
                 cb.setChecked(!cb.isChecked());
                 user.setChecked(cb.isChecked());
-                parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getUserId());
+                parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getId());
             }
         });
 
@@ -67,7 +67,7 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
                 user.setChecked(cb.isChecked());
-                parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getUserId());
+                parentActivity.checkedUserCountChanged(user.getChecked(), user.getUser().getId());
             }
         });
     }
@@ -81,8 +81,8 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
     private void goToUserDetails(GroupieViewHolder viewHolder) {
         // TODO: Do something when user clicks on row..
         Intent intent = new Intent(viewHolder.itemView.getContext(), UserDetailActivity.class);
-        intent.putExtra(EXTRA_USER_NAME, user.getUser().getUserName());
-        intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getUser().getProfileImageUrl());
+        intent.putExtra(EXTRA_USER_NAME, user.getUser().getName());
+        intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getUser().getImageUri());
         intent.putExtra(EXTRA_USER_EMAIL, user.getUser().getEmail());
         viewHolder.itemView.getContext().startActivity(intent);
     }

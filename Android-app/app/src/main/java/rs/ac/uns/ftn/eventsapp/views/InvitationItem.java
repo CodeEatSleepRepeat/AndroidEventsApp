@@ -53,7 +53,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
                 .into(eventImage);
 
         eventName.setText(invitation.getEvent().getEventName());
-        userUsername.setText("Invited by: " + invitation.getInvitationSender().getUserName());
+        userUsername.setText("Invited by: " + invitation.getInvitationSender().getName());
         eventDate.setText(formatter.format(invitation.getEvent().getStartTime()));
 
     }
@@ -122,7 +122,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         EventDetailsDTO transferObject = new EventDetailsDTO(e.getEventId(), e.getEventName(),
                 e.getEventDescription(), e.getEventImageURI(),
                 e.getEventType(), FacebookPrivacy.PUBLIC, e.getStartTime(), e.getEndTime(),
-                e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getUserId());
+                e.getLocation(), e.getLongitude(), e.getLatitude(), 1l);
 
 //        detailsIntent.putExtra("id", e.getEventId());
 //        detailsIntent.putExtra("name", e.getEventName());
@@ -135,7 +135,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
 //        detailsIntent.putExtra("location", e.getLocation());
 //        detailsIntent.putExtra("longitude", e.getLongitude());
 //        detailsIntent.putExtra("latitude", e.getLatitude());
-//        detailsIntent.putExtra("userId", e.getAuthor().getUserId());
+//        detailsIntent.putExtra("userId", e.getAuthor().getId());
         detailsIntent.putExtra("EVENT", transferObject);
 
         context.startActivity(detailsIntent);
