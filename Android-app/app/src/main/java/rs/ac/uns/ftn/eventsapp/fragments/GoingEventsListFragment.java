@@ -15,29 +15,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class GoingEventsListFragment extends Fragment {
 
-    private ArrayList<Event> items;
+    private List<EventDTO> items = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: data goes here
-        items = TestMockup.getInstance().events;
+        //items = TestMockup.getInstance().events;
         ArrayList<Event> temp = new ArrayList<>();
-        for (Event e : items) {
+        /*for (Event e : items) {
             if (e.getAuthor().getUserId() != 1l) {
                 temp.add(e);
             }
         }
-        items = temp;
+        items = temp;*/
 
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
@@ -62,7 +64,7 @@ public class GoingEventsListFragment extends Fragment {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_going);
     }
 
-    public ArrayList<Event> getItems() {
+    public List<EventDTO> getItems() {
         return items;
     }
 }

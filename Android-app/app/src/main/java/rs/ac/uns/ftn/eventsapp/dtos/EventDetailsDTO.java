@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 
 public class EventDetailsDTO implements Serializable {
 
@@ -12,17 +13,17 @@ public class EventDetailsDTO implements Serializable {
     private String eventDescription;
     private String eventImageURI;
     private EventType eventType;
-    private Boolean openForAll;
+    private FacebookPrivacy openForAll;
     private Date startTime;
     private Date endTime;
     private String location;
-    private Long latitude;
-    private Long longitude;
+    private double latitude;
+    private double longitude;
     private Long author;
 
     public EventDetailsDTO(Long eventId, String eventName, String eventDescription,
-                           String eventImageURI, EventType eventType, Boolean openForAll, Date startTime, Date endTime,
-                           String location, Long latitude, Long longitude, Long author) {
+                           String eventImageURI, EventType eventType, FacebookPrivacy openForAll, Date startTime, Date endTime,
+                           String location, double latitude, double longitude, Long author) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
@@ -77,11 +78,11 @@ public class EventDetailsDTO implements Serializable {
         this.eventType = eventType;
     }
 
-    public Boolean getOpenForAll() {
+    public FacebookPrivacy getOpenForAll() {
         return openForAll;
     }
 
-    public void setOpenForAll(Boolean openForAll) {
+    public void setOpenForAll(FacebookPrivacy openForAll) {
         this.openForAll = openForAll;
     }
 
@@ -109,7 +110,7 @@ public class EventDetailsDTO implements Serializable {
         this.location = location;
     }
 
-    public Long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -117,7 +118,7 @@ public class EventDetailsDTO implements Serializable {
         this.latitude = latitude;
     }
 
-    public Long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 

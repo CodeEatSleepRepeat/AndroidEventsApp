@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
@@ -77,7 +79,7 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void fillUserEvents(){
-        ArrayList<Event> items = TestMockup.getInstance().events;
+        List<EventDTO> items = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_user_details);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

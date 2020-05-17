@@ -6,11 +6,11 @@ public class EventForMapDTO implements Serializable {
 
     private Long eventId;
     private String eventName;
-    private Long latitude;
-    private Long longitude;
+    private double latitude;
+    private double longitude;
     private String eventImageURI;
 
-    public EventForMapDTO(Long eventId, String eventName, Long latitude, Long longitude, String eventImageURI) {
+    public EventForMapDTO(Long eventId, String eventName, double latitude, double longitude, String eventImageURI) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.latitude = latitude;
@@ -26,11 +26,11 @@ public class EventForMapDTO implements Serializable {
         return eventName;
     }
 
-    public Long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public Long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 

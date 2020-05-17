@@ -20,6 +20,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 
 public class InvitationItem extends Item<GroupieViewHolder> {
@@ -120,7 +121,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         final Event e = invitation.getEvent();
         EventDetailsDTO transferObject = new EventDetailsDTO(e.getEventId(), e.getEventName(),
                 e.getEventDescription(), e.getEventImageURI(),
-                e.getEventType(), e.getOpenForAll(), e.getStartTime(), e.getEndTime(),
+                e.getEventType(), FacebookPrivacy.PUBLIC, e.getStartTime(), e.getEndTime(),
                 e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getUserId());
 
 //        detailsIntent.putExtra("id", e.getEventId());

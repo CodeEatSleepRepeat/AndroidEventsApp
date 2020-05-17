@@ -1,10 +1,18 @@
 package rs.ac.uns.ftn.eventsbackend.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -96,8 +104,52 @@ public class EventController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Event>> getAll(){
-		return ResponseEntity.ok(eventService.findAll());
+	public ResponseEntity<List<EventDTO>> getAll() throws IOException{
+		List<Event> events = eventService.findAll();
+		List<EventDTO> dtos = new ArrayList<>();
+		for (Event event : events) {
+			EventDTO dto = new EventDTO(event);
+			/*if(event.getCover()!=null) {
+				dto.setImage(imageToByteArray(event.getCover().getSource()));
+			}*/
+			dtos.add(dto);
+		}
+		
+		return ResponseEntity.ok(dtos);
+	}
+	
+	public String imageToByteArray(String path) throws IOException {
+		File f = new File(path);
+		byte[] b = new byte[(int) f.length()];
+		FileInputStream fis = new FileInputStream(f);
+		fis.read(b);
+		String s = new String(Base64.getEncoder().encodeToString(b));
+		/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		for(int readNum; (readNum = fis.read(buf))!=-1;) {
+			baos.write(buf, 0, readNum);
+		}
+		byte[] bytes = baos.toByteArray();*/
+		return s;
+	}
+	
+	@GetMapping("/test/{id}")
+	public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException{
+		Event e = eventService.findById(id);
+		File f = new File(e.getCover().getSource());
+		FileInputStream fis = new FileInputStream(f);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		for(int readNum; (readNum = fis.read(buf))!=-1;) {
+			baos.write(buf, 0, readNum);
+		}
+		byte[] bytes = baos.toByteArray();
+		File newFIle = new File("newImage.png");
+		FileOutputStream fos = new FileOutputStream(newFIle);
+		fos.write(bytes);
+		fos.flush();
+		fos.close();
+		return ResponseEntity.ok(bytes);
 	}
 	
 	@GetMapping("/{id}")

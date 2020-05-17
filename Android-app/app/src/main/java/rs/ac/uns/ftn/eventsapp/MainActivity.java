@@ -40,6 +40,7 @@ import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsUnAuthUserActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserProfileActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
@@ -346,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickMap() {
-        ArrayList<Event> items = new ArrayList<>();
+        List<EventDTO> items = new ArrayList<>();
         ArrayList<EventForMapDTO> eventsForMap = new ArrayList<>();
         FragmentManager fm = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fm.getFragments();
@@ -365,8 +366,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        for (Event item : items) {
-            eventsForMap.add(new EventForMapDTO(item.getEventId(), item.getEventName(), item.getLatitude(), item.getLongitude(), item.getEventImageURI()));
+        for (EventDTO item : items) {
+            eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), "imageURI"));
         }
         Intent intent = new Intent(this, GoogleMapActivity.class);
         intent.putExtra("EVENTS", eventsForMap);
