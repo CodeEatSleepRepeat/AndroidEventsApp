@@ -3,71 +3,113 @@ package rs.ac.uns.ftn.eventsapp.models;
 import java.util.List;
 
 /*
-* Dodat je konstruktor koji zahteva userId, username, profileImageUrl
-*
-* Dodato je polje profileImageUrl: String
-* */
+ * Dodat je konstruktor koji zahteva userId, username, profileImageUrl
+ *
+ * Dodato je polje profileImageUrl: String
+ * */
 public class User {
 
-    private Long userId;
-    private String userName;
+    private Long id;
+    private String facebookId;
+    private String name;
+    private String imageUri;
+    private Integer imageHeight;
+    private Integer imageWidth;
     private String email;
     private String password;
-    private String profileImageUrl;
-    private String facebookToken;
     private List<Friendship> sendRequests;
     private List<Friendship> receivedRequests;
     private List<Invitation> sendInvitations;
     private List<Invitation> receivedInvitations;
-    private List<Event> userEvents;
+    private List<ChatMessage> chatMessagesSent;
+    private List<ChatMessage> chatMessagesReceived;
+    private List<Event> userEvents; //added, not on backend User model
     private List<Event> interestedEvents;
     private List<Event> goingEvents;
+    private List<Comment> comments;
     private Boolean activatedAccount;
+    private Boolean syncFacebookEvents;
+    private Boolean syncFacebookProfile;
 
-    public User(Long userId, String userName, String email, String password, String facebookToken, List<Friendship> sendRequests, List<Friendship> receivedRequests, List<Invitation> sendInvitations, List<Invitation> receivedInvitations, List<Event> userEvents, List<Event> interestedEvents, List<Event> goingEvents, Boolean activatedAccount) {
-        this.userId = userId;
-        this.userName = userName;
+
+    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Friendship> sendRequests, List<Friendship> receivedRequests, List<Invitation> sendInvitations, List<Invitation> receivedInvitations, List<ChatMessage> chatMessagesSent, List<ChatMessage> chatMessagesReceived, List<Event> userEvents, List<Event> interestedEvents, List<Event> goingEvents, List<Comment> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile) {
+        this.id = id;
+        this.facebookId = facebookId;
+        this.name = name;
+        this.imageUri = imageUri;
+        this.imageHeight = imageHeight;
+        this.imageWidth = imageWidth;
         this.email = email;
         this.password = password;
-        this.facebookToken = facebookToken;
         this.sendRequests = sendRequests;
         this.receivedRequests = receivedRequests;
         this.sendInvitations = sendInvitations;
         this.receivedInvitations = receivedInvitations;
+        this.chatMessagesSent = chatMessagesSent;
+        this.chatMessagesReceived = chatMessagesReceived;
         this.userEvents = userEvents;
         this.interestedEvents = interestedEvents;
         this.goingEvents = goingEvents;
+        this.comments = comments;
         this.activatedAccount = activatedAccount;
+        this.syncFacebookEvents = syncFacebookEvents;
+        this.syncFacebookProfile = syncFacebookProfile;
     }
 
-    public User(Long userId, String userName, String profileImageUrl){
-        this.userId = userId;
-        this.userName = userName;
-        this.profileImageUrl = profileImageUrl;
+    public User(Long id, String name, String email, String password, String imageUri) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.imageUri = imageUri;
     }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    public Long getId() {
+        return id;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getFacebookId() {
+        return facebookId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
     }
 
     public String getEmail() {
@@ -84,14 +126,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFacebookToken() {
-        return facebookToken;
-    }
-
-    public void setFacebookToken(String facebookToken) {
-        this.facebookToken = facebookToken;
     }
 
     public List<Friendship> getSendRequests() {
@@ -126,6 +160,22 @@ public class User {
         this.receivedInvitations = receivedInvitations;
     }
 
+    public List<ChatMessage> getChatMessagesSent() {
+        return chatMessagesSent;
+    }
+
+    public void setChatMessagesSent(List<ChatMessage> chatMessagesSent) {
+        this.chatMessagesSent = chatMessagesSent;
+    }
+
+    public List<ChatMessage> getChatMessagesReceived() {
+        return chatMessagesReceived;
+    }
+
+    public void setChatMessagesReceived(List<ChatMessage> chatMessagesReceived) {
+        this.chatMessagesReceived = chatMessagesReceived;
+    }
+
     public List<Event> getUserEvents() {
         return userEvents;
     }
@@ -150,11 +200,35 @@ public class User {
         this.goingEvents = goingEvents;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
     public Boolean getActivatedAccount() {
         return activatedAccount;
     }
 
     public void setActivatedAccount(Boolean activatedAccount) {
         this.activatedAccount = activatedAccount;
+    }
+
+    public Boolean getSyncFacebookEvents() {
+        return syncFacebookEvents;
+    }
+
+    public void setSyncFacebookEvents(Boolean syncFacebookEvents) {
+        this.syncFacebookEvents = syncFacebookEvents;
+    }
+
+    public Boolean getSyncFacebookProfile() {
+        return syncFacebookProfile;
+    }
+
+    public void setSyncFacebookProfile(Boolean syncFacebookProfile) {
+        this.syncFacebookProfile = syncFacebookProfile;
     }
 }

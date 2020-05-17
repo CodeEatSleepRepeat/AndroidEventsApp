@@ -114,7 +114,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
     private void selectAllUsers() {
         for (UserShareDTO user : userListAll) {
             user.setChecked(true);
-            checkedUsers.add(user.getUser().getUserId());
+            checkedUsers.add(user.getUser().getId());
         }
 
         adapter.notifyDataSetChanged();
@@ -182,7 +182,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
                 filteredList.addAll(userListAll);
             } else {
                 for (UserShareDTO user : userListAll) {
-                    if (user.getUser().getUserName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                    if (user.getUser().getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
                         filteredList.add(user);
                     }
                 }
@@ -246,12 +246,12 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
             for (int i = 0; i < checkedUsersOld.length; i++) {
                 checkedUsers.add(checkedUsersOld[i]);
                 for (UserShareDTO user : userListAll) {
-                    if (user.getUser().getUserId().equals(checkedUsersOld[i])) {
+                    if (user.getUser().getId().equals(checkedUsersOld[i])) {
                         user.setChecked(true);
                     }
                 }
                 for (UserShareDTO user : userList) {
-                    if (user.getUser().getUserId().equals(checkedUsersOld[i])) {
+                    if (user.getUser().getId().equals(checkedUsersOld[i])) {
                         user.setChecked(true);
                     }
                 }

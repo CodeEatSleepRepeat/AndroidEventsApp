@@ -132,4 +132,14 @@
     <string name="confirm_password">Confirm password</string>
     <string name="change_profile_image">Change profile image</string>
     <string name="remove_profile_image">Remove profile image</string>
+    <string name="registerUserValidationName">Please enter your new profile name.</string>
+    <string name="registerUserValidationName2">Name must have at least 3 letters including \' - and .</string>
+    <string name="registerUserValidationEmail">Please enter your email.</string>
+    <string name="registerUserValidationEmail2">Please enter a valid email.</string>
+    <string name="emailAlreadyExists">Email is already registered!</string>
+    <string name="registerUserValidationPsw">Please enter your new profile password.</string>
+    <string name="registerUserValidationPsw2">Please reenter your new profile password.</string>
+    <string name="registerUserValidationPsw3">Entered passwords don\'t match!</string>
+    <string name="registerUserValidationPsw4">New passwords must contain at least: \n1. 4 characters \n2.  one small and one capital letter \n3.  one number or special character</string>
+
 </resources>

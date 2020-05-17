@@ -40,7 +40,7 @@ public class CommentsArrayAdapter extends ArrayAdapter<Comment> {
         TextView textViewUsername = convertView.findViewById(R.id.userNameCommentsActivityTextView);
         TextView textViewComment = convertView.findViewById(R.id.commentCommentsActivityTextView);
 
-        textViewUsername.setText(c.getUser().getUserName());
+        textViewUsername.setText(c.getUser().getName());
         textViewComment.setText(c.getComment());
 
         return convertView;

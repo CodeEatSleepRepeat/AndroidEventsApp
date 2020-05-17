@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -41,11 +44,12 @@ public class EmailService {
 	 * @param user
 	 * @throws MailException
 	 * @throws InterruptedException
+	 * @throws UnsupportedEncodingException 
 	 */
 	@Async
-	public void sendActivationEmail(User user) throws MailException, InterruptedException {
+	public void sendActivationEmail(final User user) throws MailException, InterruptedException, UnsupportedEncodingException {
 
-		String link = "http://localhost:8080/user/activate/" + encript(user.getId().toString());
+		String link = "http://localhost:8080/user/activate?id=" + URLEncoder.encode(encript(user.getId().toString()), StandardCharsets.UTF_8.name());
 
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getEmail());

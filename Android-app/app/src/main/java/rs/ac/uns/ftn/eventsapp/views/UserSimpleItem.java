@@ -57,10 +57,10 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             });
         }
 
-        textUsername.setText(user.getUserName());
+        textUsername.setText(user.getName());
 
         Picasso.get()
-                .load(user.getProfileImageUrl())
+                .load(user.getImageUri())
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_user_icon)
                 .into(imageUser);
@@ -100,8 +100,8 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
     private void goToUserDetails(GroupieViewHolder viewHolder) {
         // TODO: Do something when user clicks on row..
         Intent intent = new Intent(viewHolder.itemView.getContext(), UserDetailActivity.class);
-        intent.putExtra(EXTRA_USER_NAME, user.getUserName());
-        intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getProfileImageUrl());
+        intent.putExtra(EXTRA_USER_NAME, user.getName());
+        intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getImageUri());
         intent.putExtra(EXTRA_USER_EMAIL, user.getEmail());
         viewHolder.itemView.getContext().startActivity(intent);
     }

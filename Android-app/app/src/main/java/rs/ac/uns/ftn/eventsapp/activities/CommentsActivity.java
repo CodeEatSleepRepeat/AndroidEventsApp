@@ -23,9 +23,9 @@ public class CommentsActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.commentsListView);
 
-        User u1 = new User(1l, "Borko Bakic", "baki9@example.com", "sdcsdc84sSA", "SD58s4dSD8s87sdfSf4sdf87sdf48SDFsd178", null, null, null, null, null, null, null, true);
-        User u2 = new User(2l, "Martin Kovac", "kovac.m@example.com", "sdcsdcs8794", "1s4asSDF894FSDSDF478sd48fsdfsdf8s74ssd", null, null, null, null, null, null, null, true);
-        User u3 = new User(3l, "Aleksej Stralic", "ftnstudent@example.com", "sdf984sd54", "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c", null, null, null, null, null, null, null, true);
+        User u1 = new User(1l, "Borko Bakic", "baki9@example.com", "sdcsdc84sSA", "SD58s4dSD8s87sdfSf4sdf87sdf48SDFsd178");
+        User u2 = new User(2l, "Martin Kovac", "kovac.m@example.com", "sdcsdcs8794", "1s4asSDF894FSDSDF478sd48fsdfsdf8s74ssd");
+        User u3 = new User(3l, "Aleksej Stralic", "ftnstudent@example.com", "sdf984sd54", "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c");
         Comment c1 = new Comment(u1, "Bas je dobar dogadjaj, jedva cekam da odem!!!");
         Comment c2 = new Comment(u2, "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW");
         Comment c3 = new Comment(u3, "oh my god, I am never going to financially recover from this.");

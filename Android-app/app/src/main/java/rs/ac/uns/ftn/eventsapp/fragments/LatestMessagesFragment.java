@@ -230,7 +230,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
             }
             else {
                 for(User user: userListAll){
-                    if(user.getUserName().toLowerCase().contains(charSequence.toString().toLowerCase())){
+                    if(user.getName().toLowerCase().contains(charSequence.toString().toLowerCase())){
                         filteredList.add(user);
                     }
                 }

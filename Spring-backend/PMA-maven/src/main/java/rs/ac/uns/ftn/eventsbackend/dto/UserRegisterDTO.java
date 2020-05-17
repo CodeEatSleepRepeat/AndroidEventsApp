@@ -14,6 +14,4 @@ public class UserRegisterDTO {
 
 	@NonNull
 	private String name;
-
-	private String imageUri;
 }

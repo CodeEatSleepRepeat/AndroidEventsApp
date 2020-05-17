@@ -75,17 +75,17 @@ public class ChatLogFragment extends Fragment {
         // TODO: Pokupiti sve poruke izmedju naseg korisnika i prosledjenog chatPartnera i
         //  ispisati ih
         adapter.add(new MessageToChatPartnerItem("Pozdrav Veljko",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
         adapter.add(new MessageFromChatPartnerItem("Pozdrav Veljko!",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
         adapter.add(new MessageToChatPartnerItem("Sta je anketa?",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
         adapter.add(new MessageFromChatPartnerItem("Sta?",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
         adapter.add(new MessageToChatPartnerItem("STA JE A-N-K-E-T-A?",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
         adapter.add(new MessageFromChatPartnerItem("Pa ja ovo prvi put vidim!",
-                new User(1l, "Veljko", "nema")));
+                new User(1l, "Veljko", "nema", "", "")));
 
 
         recyclerView.scrollToPosition(adapter.getItemCount()-1);

@@ -72,7 +72,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
                 final Event e = mItems.get(i);
                 EventDetailsDTO dto = new EventDetailsDTO(e.getEventId(), e.getEventName(), e.getEventDescription(), e.getEventImageURI(), e.getEventType(),
-                        e.getOpenForAll(), e.getStartTime(), e.getEndTime(), e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getUserId());
+                        e.getOpenForAll(), e.getStartTime(), e.getEndTime(), e.getLocation(), e.getLongitude(), e.getLatitude(), e.getAuthor().getId());
                 detailsIntent.putExtra("EVENT", dto);
                 context.startActivity(detailsIntent);
             }

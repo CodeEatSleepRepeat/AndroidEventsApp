@@ -1,10 +1,15 @@
 package rs.ac.uns.ftn.eventsbackend.controller;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,13 +99,19 @@ public class UserController {
 			dbUser.setSyncFacebookProfile(true);
 			User updatedUser = userService.save(dbUser);
 			dbUser = (updatedUser == null) ? dbUser : updatedUser;
-
-			// slanje welcome maila
-			try {
-				emailService.sendWelcomeDBEmail(dbUser);
-			} catch (MailException | InterruptedException e) {
-				e.printStackTrace();
-			}
+			
+			final User u = dbUser;
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// slanje welcome maila
+					try {
+						emailService.sendWelcomeDBEmail(u);
+					} catch (MailException | InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
 		}
 
 		// povlacenje liste eventova sa fb i azuriranje iste
@@ -156,26 +167,32 @@ public class UserController {
 	 * @param encr - Token koji sadrzi enkriptovan User ID
 	 * @return
 	 */
-	@RequestMapping(value = "activate/{encr}", method = RequestMethod.GET)
-	public ResponseEntity<User> activateAccount(@PathVariable String encr) {
+	@RequestMapping(value = "activate", method = RequestMethod.GET)
+	public ResponseEntity<User> activateAccount(HttpServletRequest request) {
 
+		String encr = (String) request.getParameter("id");
 		try {
-			String stringId = emailService.decript(encr);
+			String stringId = emailService.decript(URLDecoder.decode(encr, StandardCharsets.UTF_8.name()));
 
 			User user = userService.findById(new Long(stringId));
 			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 			}
 
 			user.setActivatedAccount(true);
-			User retVal = userService.save(user);
-
-			// slanje welcome maila
-			try {
-				emailService.sendWelcomeDBEmail(retVal);
-			} catch (MailException | InterruptedException e) {
-				e.printStackTrace();
-			}
+			final User retVal = userService.save(user);
+			
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// slanje welcome maila
+					try {
+						emailService.sendWelcomeDBEmail(retVal);
+					} catch (MailException | InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
 
 			return new ResponseEntity<>(retVal, HttpStatus.OK);
 		} catch (Exception e) {
@@ -185,35 +202,36 @@ public class UserController {
 	}
 
 	/**
-	 * Registracija korisnika sa email-om i password-om
+	 * Registracija korisnika sa imenom, email-om i password-om
 	 * 
-	 * @param korisnikPrijavaDTO
-	 * @return new user
+	 * @param UserRegisterDTO user
+	 * @return User newUser
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> register(@RequestBody UserRegisterDTO user) {
-
+		
 		if (userService.existsByEmail(user.getEmail())) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
 
 		User newUser = new User(user.getName(), user.getEmail(), user.getPassword());
-
-		// da li je slika uploade-ovana
-		if (!user.getImageUri().equals("")) {
-			newUser.setImageUri(user.getImageUri());
-		}
-
 		newUser = userService.save(newUser);
 
 		if (newUser.getId() != null) {
+			final User u = newUser;
 			// slanje maila za aktivaciju naloga
-			try {
-				emailService.sendActivationEmail(newUser);
-			} catch (MailException | InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						emailService.sendActivationEmail(u);
+					} catch (MailException | InterruptedException | UnsupportedEncodingException e) {
+						System.out.println("email failed");
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			
 			return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -255,13 +273,21 @@ public class UserController {
 
 		// povlacenje liste eventova sa fb i azuriranje iste
 		facebookService.pullEvents(accessToken, newUser);
-
-		// slanje welcome maila sa passwordom
-		try {
-			emailService.sendWelcomeFBEmail(newUser);
-		} catch (MailException | InterruptedException e) {
-			e.printStackTrace();
-		}
+		
+		
+		// slanje maila za aktivaciju naloga
+		final User u = newUser;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					emailService.sendWelcomeFBEmail(u);
+				} catch (MailException | InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 
 		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
@@ -332,13 +358,19 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		// slanje welcome maila sa passwordom
-		try {
-			emailService.sendForgottenPassword(dbUser);
-		} catch (MailException | InterruptedException e) {
-			e.printStackTrace();
-		}
-
+		final User u = dbUser;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// slanje welcome maila sa passwordom
+				try {
+					emailService.sendForgottenPassword(u);
+				} catch (MailException | InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -439,8 +471,8 @@ public class UserController {
 	 * @param image
 	 * @return
 	 */
-	@RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> uploadImage(@RequestPart(name = "image") MultipartFile image) {
+	@RequestMapping(value = "/upload/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<User> uploadImage(@PathVariable Long id, @RequestPart(name = "image") MultipartFile image) {
 
 		if (image != null && !image.isEmpty()) {
 			if (!MIME_IMAGE_TYPES.contains(image.getContentType())) {
@@ -448,14 +480,22 @@ public class UserController {
 				return new ResponseEntity<>(null, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 			}
 			try {
+				User user = userService.findById(id);
+				if (user == null) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				}
+				
 				// image is good size
 				String newImageName = System.currentTimeMillis()
-						+ image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf("."));
+						+ image.getOriginalFilename()/*.substring(image.getOriginalFilename().lastIndexOf("."))*/;
 				String newFileUri = new File(IMAGE_FOLDER + newImageName).getAbsolutePath();
 
 				// save image to folder
 				image.transferTo(new File(newFileUri));
-				return new ResponseEntity<>(newImageName, HttpStatus.CREATED);
+				
+				user.setImageUri(newImageName);
+				user = userService.save(user);
+				return new ResponseEntity<>(user, HttpStatus.CREATED);
 
 			} catch (Exception e) {
 				System.out.println("Failed saving image...");
