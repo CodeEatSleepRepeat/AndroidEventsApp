@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -109,31 +112,13 @@ public class EventController {
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
-			/*if(event.getCover()!=null) {
-				dto.setImage(imageToByteArray(event.getCover().getSource()));
-			}*/
 			dtos.add(dto);
 		}
 		
 		return ResponseEntity.ok(dtos);
 	}
 	
-	public String imageToByteArray(String path) throws IOException {
-		File f = new File(path);
-		byte[] b = new byte[(int) f.length()];
-		FileInputStream fis = new FileInputStream(f);
-		fis.read(b);
-		String s = new String(Base64.getEncoder().encodeToString(b));
-		/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		for(int readNum; (readNum = fis.read(buf))!=-1;) {
-			baos.write(buf, 0, readNum);
-		}
-		byte[] bytes = baos.toByteArray();*/
-		return s;
-	}
-	
-	@GetMapping("/test/{id}")
+	@GetMapping("/image/{id}")
 	public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException{
 		Event e = eventService.findById(id);
 		File f = new File(e.getCover().getSource());
@@ -144,11 +129,6 @@ public class EventController {
 			baos.write(buf, 0, readNum);
 		}
 		byte[] bytes = baos.toByteArray();
-		File newFIle = new File("newImage.png");
-		FileOutputStream fos = new FileOutputStream(newFIle);
-		fos.write(bytes);
-		fos.flush();
-		fos.close();
 		return ResponseEntity.ok(bytes);
 	}
 	

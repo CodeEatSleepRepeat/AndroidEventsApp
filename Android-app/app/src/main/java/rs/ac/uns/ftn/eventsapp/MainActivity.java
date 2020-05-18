@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
     private static final int LAUNCH_USER_PROFILE_ACTIVITY = 5001;
+    private static final String IMAGE_URI = "http://10.0.2.2:8080/event/image/";
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
@@ -367,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (EventDTO item : items) {
-            eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), "imageURI"));
+            eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), IMAGE_URI + item.getId()));
         }
         Intent intent = new Intent(this, GoogleMapActivity.class);
         intent.putExtra("EVENTS", eventsForMap);

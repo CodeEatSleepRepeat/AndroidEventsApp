@@ -15,6 +15,8 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.squareup.picasso.Picasso;
 
+import rs.ac.uns.ftn.eventsapp.R;
+
 public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
 
     private final IconGenerator iconGenerator;
@@ -38,7 +40,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     @Override
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {
 
-        Picasso.get().load(item.getImgUri()).into(imageView);
+        Picasso.get().load(item.getImgUri()).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
         Bitmap icon = iconGenerator.makeIcon();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle());
 

@@ -95,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
         Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(Uri.parse(dto.getEventImageURI())).into(imageView);
+        Picasso.get().load(dto.getEventImageURI()).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
         eventNameEventDetailsTextView.setText(dto.getEventName());
         eventStartEventDetailsView.setText(dto.getStartTime() + "");
         eventDescriptionEventDetailsView.setText(dto.getEventDescription());

@@ -3,8 +3,6 @@ package rs.ac.uns.ftn.eventsapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -28,12 +24,11 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
-import rs.ac.uns.ftn.eventsapp.models.Event;
 
 public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecyclerView.EventViewHolder> {
 
+    private static final String IMAGE_URI = "http://10.0.2.2:8080/event/image/";
     private List<EventDTO> mItems;
-    private  Bitmap bitmap;
     private Context context;
     private int listRowResourceLayout;
     private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
@@ -57,20 +52,12 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventNameTextView.setText(item.getName());
         viewHolder.eventAddressTextView.setText(item.getPlace());
         viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
-        /*if(item.getImage()!=null){
-            Log.d("USAO", item.getImage());
-            //byte[] b = Base64.decode(item.getImage(), Base64.URL_SAFE);
-           // bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-           // viewHolder.eventImage.setImageBitmap(bitmap);
-        }else {*/
-            try {
-                Picasso.get().
-                        load(R.drawable.ic_missing_event_icon).
-                        into(viewHolder.eventImage);
-            } catch (Exception e) {
-                Log.d(this.getClass().getName(), "onBindViewHolder: Picasso error\n" + e.getMessage());
-            }
-        //}
+        Picasso.get()
+                .load(IMAGE_URI + item.getId())
+                .placeholder(R.drawable.ic_missing_event_icon)
+                .error(R.drawable.ic_missing_event_icon)
+                .into(viewHolder.eventImage);
+
 
         //postavljanje listenera za going/interested/cancel dugmice
         setOnClickListeners(viewHolder);
@@ -83,7 +70,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
                 final EventDTO e = mItems.get(i);
-                EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), "uri slike", e.getType(),
+                EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), IMAGE_URI + e.getId(), e.getType(),
                         e.getPrivacy(), e.getStart_time(), e.getEnd_time(), e.getPlace(), e.getLongitude(), e.getLatitude(), 1l);
 
                 detailsIntent.putExtra("EVENT", dto);
@@ -139,7 +126,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
     @Override
     public int getItemCount() {
-        Log.d("SIZE", mItems.size()+"");
+        Log.d("SIZE", mItems.size() + "");
         return mItems.size();
     }
 

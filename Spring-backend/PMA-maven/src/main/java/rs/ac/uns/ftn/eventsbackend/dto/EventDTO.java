@@ -27,7 +27,6 @@ public class EventDTO {
 	private Date start_time;
 	private Date end_time;
 	private FacebookPrivacy privacy;
-	private String image;
 	private Owner owner;
 	
 	public EventDTO(Event event) {
