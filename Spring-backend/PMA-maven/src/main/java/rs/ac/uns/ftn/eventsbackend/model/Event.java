@@ -46,7 +46,7 @@ public class Event {
 	private String name;
 
 	@NotNull
-	@Size(min = 1)
+	@Size(min = 1, max = 10000)
 	private String description;
 
 	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
@@ -72,6 +72,7 @@ public class Event {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date end_time;
 
+	@Column(length = 500)
 	private String place;
 
 	private double latitude;

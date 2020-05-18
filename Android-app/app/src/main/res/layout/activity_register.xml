@@ -147,7 +147,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_already_have_an_account_register" />
 
             <com.facebook.login.widget.LoginButton
-                android:id="@+id/login_button_register"
+                android:id="@+id/login_button_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -170,8 +170,8 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/login_button_register"
-                app:layout_constraintTop_toBottomOf="@+id/login_button_register" />
+                app:layout_constraintStart_toStartOf="@+id/login_button_login"
+                app:layout_constraintTop_toBottomOf="@+id/login_button_login" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

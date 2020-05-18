@@ -79,10 +79,11 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/login/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> login(@PathVariable String accessToken) {
-
+		System.out.println("login-fb");
+		
 		CustomFacebookProfile fbProfile = facebookService.getFbUserProfile(accessToken);
 		if (fbProfile == null) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
 
 		User dbUser = userService.findByEmail(fbProfile.getEmail());
@@ -147,7 +148,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
-
+		System.out.println("login");
+		
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -209,6 +211,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> register(@RequestBody UserRegisterDTO user) {
+		System.out.println("register");
 		
 		if (userService.existsByEmail(user.getEmail())) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -248,7 +251,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/register/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> register(@PathVariable String accessToken) {
-
+		System.out.println("register-fb");
+		
 		CustomFacebookProfile fbProfile = facebookService.getFbUserProfile(accessToken);
 		if (fbProfile == null) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -273,7 +277,6 @@ public class UserController {
 
 		// povlacenje liste eventova sa fb i azuriranje iste
 		facebookService.pullEvents(accessToken, newUser);
-		
 		
 		// slanje maila za aktivaciju naloga
 		final User u = newUser;

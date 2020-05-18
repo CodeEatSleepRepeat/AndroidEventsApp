@@ -19,6 +19,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,16 +37,27 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 123;
-
+    private final String EMAIL = "email";
+    private final String EVENTS = "user_events";
+    private final String TAG = this.getClass().getName();
+    private CallbackManager callbackManager;
     private Button btnSelectImage;
     private CircleImageView userProfile;
     private EditText email;
@@ -61,6 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        setupFacebookRegistration();
 
         Button btnRegister = findViewById(R.id.btn_register_register);
         btnSelectImage = findViewById(R.id.btn_select_photo_register);
@@ -121,6 +135,74 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void setupFacebookRegistration() {
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginButton loginButton = findViewById(R.id.login_button_login);
+        loginButton.setPermissions(Arrays.asList(EMAIL, EVENTS));
+
+        // Callback login for facebook
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+
+                Log.d(TAG, "onSuccess: token  = " + accessToken.getToken());
+                Log.d(TAG, "onSuccess: logged = " + isLoggedIn);
+
+                Log.d(TAG, "onClick:");
+
+                // Instantiate the backend request
+                retrofit = new Retrofit.Builder()
+                        .baseUrl("http://10.0.2.2:8080")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                UserAppApi api = retrofit.create(UserAppApi.class);
+                Call<User> call = api.register(accessToken.getToken());
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                        if (!response.isSuccessful()) {
+                            if (response.code() == 403) {
+                                email.setError(getString(R.string.facebookNotAvailable));
+                            } else {
+                                Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
+                                Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Log.d("TAG", response.body().getId().toString());
+                            addUserToDB(response.body());
+                            goToMainWindowAsAuthorized();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                        Log.d("xxs", "onFailure: registration failed");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.d(TAG, "onError: " + exception.toString());
+                Toast.makeText(getApplicationContext(), "Facebbok sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addUserToDB(User user) {
+        AppDataSingleton.getInstance().setContext(this);
+        AppDataSingleton.getInstance().create(user);
     }
 
     /**
@@ -209,6 +291,9 @@ public class RegisterActivity extends AppCompatActivity {
             if (imageData != null) {
                 addImage(imageData);
             }
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -255,7 +340,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        // TODO: Register user on system then upload image to it
         UserRegisterDTO registerUser = new UserRegisterDTO(email.getText().toString().trim(), psw1.getText().toString().trim(), username.getText().toString().trim());
 
         retrofit = new Retrofit.Builder()
@@ -277,8 +361,10 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("TAG", response.body().getId().toString());
                     if (bitmap != null) {
                         uploadImage(response.body().getId());
+                    } else {
+                        addUserToDB(response.body());
+                        goToMainWindowAsAuthorized();
                     }
-                    goToMainWindowAsUnauthorized();
                 }
             }
 
@@ -308,6 +394,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     Log.d("xxs", "onResponse: image uploaded success");
+                } else {
+                    addUserToDB(response.body());
                 }
             }
 
@@ -320,10 +408,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void goToMainWindowAsUnauthorized() {
-        //TODO: Go to main window.
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(SignInActivity.IS_ANONYMOUS, true);
+        startActivity(intent);
+    }
+
+    private void goToMainWindowAsAuthorized() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

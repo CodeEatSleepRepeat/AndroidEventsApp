@@ -2,15 +2,27 @@ package rs.ac.uns.ftn.eventsapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
+import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,6 +42,9 @@ import java.util.Arrays;
 public class LoginActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
+    private Retrofit retrofit;
+    private EditText email;
+    private EditText psw;
     private final String EMAIL = "email";
     private final String EVENTS = "user_events";
     private final String TAG = this.getClass().getName();
@@ -44,13 +59,17 @@ public class LoginActivity extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.btn_login_login);
         TextView textForgotPassword = findViewById(R.id.text_forgot_password_login);
         TextView textBackToRegister = findViewById(R.id.text_continue_as_anonymous_sign_in);
-        TextView textContinueAsAnnoymous = findViewById(R.id.text_continue_as_anonymous_login);
+        TextView textContinueAsAnonymous = findViewById(R.id.text_continue_as_anonymous_login);
 
+        email = findViewById(R.id.edittext_email_login);
+        psw = findViewById(R.id.password_edittext_login);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginUser();
+                if (validationSuccess()) {
+                    loginUser();
+                }
             }
         });
 
@@ -68,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        textContinueAsAnnoymous.setOnClickListener(new View.OnClickListener(){
+        textContinueAsAnonymous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToMainWindowAsUnauthorized();
@@ -77,13 +96,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void setupFacebookLogin(){
+    private boolean validationSuccess() {
+        if (email.getText().toString().trim().equals("")) {
+            //Toast.makeText(getApplicationContext(), R.string.registerUserValidationEmail, Toast.LENGTH_LONG).show();
+            email.setError(getString(R.string.registerUserValidationEmail));
+            return false;
+        }
+        if (!isValidEmail(email.getText())) {
+            //Toast.makeText(getApplicationContext(), R.string.registerUserValidationEmail2, Toast.LENGTH_LONG).show();
+            email.setError(getString(R.string.registerUserValidationEmail2));
+            return false;
+        }
+        if (psw.getText().toString().trim().equals("")) {
+            //Toast.makeText(getApplicationContext(), R.string.registerUserValidationPsw, Toast.LENGTH_LONG).show();
+            psw.setError(getString(R.string.registerUserValidationPsw));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
+    private void setupFacebookLogin() {
         callbackManager = CallbackManager.Factory.create();
 
         LoginButton loginButton = findViewById(R.id.login_button_login);
         loginButton.setPermissions(Arrays.asList(EMAIL, EVENTS));
 
-        // Callback registration
+        // Callback login for facebook
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -95,29 +137,36 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onClick:");
 
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://192.168.1.14:8080/user/login/" + accessToken.getToken();
-
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
-                                Log.d(TAG, "Response is: "+ response);
-                            }
-                        }, new Response.ErrorListener() {
+                // Instantiate the backend request
+                retrofit = new Retrofit.Builder()
+                        .baseUrl("http://10.0.2.2:8080")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                UserAppApi api = retrofit.create(UserAppApi.class);
+                Call<User> call = api.login(accessToken.getToken());
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
-                        Log.d(TAG, "onErrorResponse: " + error.getMessage());
+                    public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                        if (!response.isSuccessful()) {
+                            if (response.code() == 403) {
+                                email.setError(getString(R.string.facebookNotAvailable));
+                            } else {
+                                Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
+                                Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Log.d("TAG", response.body().getId().toString());
+                            addUserToDB(response.body());
+                            goToMainWindowAsAuthorized();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                        Log.d("xxs", "onFailure: registration failed");
                     }
                 });
-
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
-
             }
 
             @Override
@@ -128,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "onError: " + exception.toString());
+                Toast.makeText(getApplicationContext(), "Facebbok sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -138,24 +188,67 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loginUser(){
-        // TODO: Log user in system then go to main window
+    private void loginUser() {
+        UserLoginDTO user = new UserLoginDTO(email.getText().toString().trim(), psw.getText().toString());
+
+        // Instantiate the backend request
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        UserAppApi api = retrofit.create(UserAppApi.class);
+        Call<User> call = api.login(user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                if (!response.isSuccessful()) {
+                    if (response.code() == 404) {
+                        psw.setError(getString(R.string.userNotFound));
+                        psw.setText("");
+                    } else if (response.code() == 403) {
+                        Toast.makeText(getApplicationContext(), "Please activate your account to continue!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
+                        Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Log.d("TAG", response.body().getId().toString());
+                    addUserToDB(response.body());
+                    goToMainWindowAsAuthorized();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("xxs", "onFailure: registration failed");
+            }
+        });
     }
 
-    private void forgotPasswordClicked(){
+    private void addUserToDB(User user) {
+        AppDataSingleton.getInstance().setContext(this);
+        AppDataSingleton.getInstance().create(user);
+    }
+
+    private void forgotPasswordClicked() {
         // TODO: Do something when user click forgot password
     }
 
-    private void goToRegisterActivity(){
+    private void goToRegisterActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    private void goToMainWindowAsUnauthorized(){
-        //TODO: Go to main window.
+    private void goToMainWindowAsUnauthorized() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(SignInActivity.IS_ANONYMOUS, true);
+        startActivity(intent);
+    }
+
+    private void goToMainWindowAsAuthorized() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

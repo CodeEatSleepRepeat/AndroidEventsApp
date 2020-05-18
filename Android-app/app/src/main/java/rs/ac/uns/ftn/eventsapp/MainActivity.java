@@ -49,10 +49,9 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
-import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -65,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ChipGroup chipGroup;
 
-    //TODO: get user in DB
-    User user = TestMockup.getInstance().users.get(0);
+    private User loggedUser;
 
     //private NoInternetDialog noInternetDialog;
 
@@ -74,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
+
+        AppDataSingleton.getInstance().setContext(this);
+        loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -143,14 +144,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
+        if (!AppDataSingleton.getInstance().isLoggedIn()) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
             setNavigationListenerUnauthorizedUser(navigationView, toolbar);
-            changeNavBarUnautorized();
+            changeNavBarUnauthorized();
         } else {
             setNavigationListenerAuthorizedUser(navigationView, toolbar);
-            changeNavBarProfile(user.getName(), user.getImageUri());
+            changeNavBarProfile(loggedUser.getName(), loggedUser.getImageUri());
         }
     }
 
@@ -315,7 +316,6 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (chipGroup != null && chipGroup.getChildCount() != 0) {
-            //TODO: Dodati unistavanje filtera kad se klikne back
             removeFilterChips();
         } else {
             super.onBackPressed();
@@ -384,8 +384,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
 
         Intent intent = new Intent(this, UserProfileActivity.class);
-        //TODO: get logged user here
-        User loggedUser = TestMockup.getInstance().users.get(0);
         intent.putExtra("userId", loggedUser.getId());
         intent.putExtra("userName", loggedUser.getName());
         intent.putExtra("email", loggedUser.getEmail());
@@ -405,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        AppDataSingleton.getInstance().delete();
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -474,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
-            changeNavBarProfile(user.getName(), user.getImageUri());
+            changeNavBarProfile(loggedUser.getName(), loggedUser.getImageUri());
         }
 
     }
@@ -679,7 +678,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeNavBarProfile(@NonNull String name, @NonNull String imgUri) {
-        //TODO: ovde se uzima logovani user
         TextView userName = navigationView.getHeaderView(0).findViewById(R.id.userNameNavDrawer);
         CircleImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.circle_crop);
 
@@ -692,7 +690,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void changeNavBarUnautorized() {
+    private void changeNavBarUnauthorized() {
         TextView userName = navigationView.getHeaderView(0).findViewById(R.id.userNameNavDrawer);
         CircleImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.circle_crop);
 

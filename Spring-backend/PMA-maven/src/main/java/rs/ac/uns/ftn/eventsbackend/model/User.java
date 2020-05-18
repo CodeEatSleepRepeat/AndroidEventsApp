@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class User {
 	@Size(min = 1, max = 64)
 	private String name;
 
+	@Column(length = 500)
 	private String imageUri;
 
 	private Integer imageHeight;

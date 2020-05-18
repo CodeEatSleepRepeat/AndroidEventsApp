@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class Cover {
 	private Long offset_y;
 
 	@NotNull
+	@Column(length = 500)
 	private String source;
 
 	private String fbId;

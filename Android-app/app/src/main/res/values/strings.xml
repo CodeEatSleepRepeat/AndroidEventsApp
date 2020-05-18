@@ -114,10 +114,11 @@
     <string name="blankFieldError">This field cannot be blank.</string>
     <string name="failed">Failed :(</string>
     <string name="eventCreated">Event created!</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="facebook_app_id">00000000000000</string>
-    <string name="fb_login_protocol_scheme">999999999999999</string>
+
+    <string name="facebook_app_id">xxx</string>
+    <string name="fb_login_protocol_scheme">xxx</string>
+
     <string name="oops">Oops!</string>
     <string name="check_your_internet">Please check your internet connection</string>
     <string name="there_is_no_internet">There is no internet connection</string>
@@ -141,5 +142,6 @@
     <string name="registerUserValidationPsw2">Please reenter your new profile password.</string>
     <string name="registerUserValidationPsw3">Entered passwords don\'t match!</string>
     <string name="registerUserValidationPsw4">New passwords must contain at least: \n1. 4 characters \n2.  one small and one capital letter \n3.  one number or special character</string>
-
+    <string name="facebookNotAvailable">Facebook profile is not available</string>
+    <string name="userNotFound">Email and password don\'t match any known user</string>
 </resources>
