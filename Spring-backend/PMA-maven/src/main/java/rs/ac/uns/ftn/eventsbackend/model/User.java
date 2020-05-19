@@ -18,6 +18,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.Data;
 
 @Entity
@@ -48,34 +52,52 @@ public class User {
 	@NotNull
 	private String password; // TODO: add password validation annotation
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "requestSender", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Friendship> sendRequests;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "requestReceiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Friendship> receivedRequests;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "invitationSender", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Invitation> sendInvitations;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "invitationReceiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Invitation> receivedInvitations;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ChatMessage> chatMessagesSent;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ChatMessage> chatMessagesReceived;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "InterestedEvents", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
 			@JoinColumn(name = "eventId") })
 	private List<Event> interestedEvents;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "GoingEvents", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
 			@JoinColumn(name = "eventId") })
 	private List<Event> goingEvents;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments;
 

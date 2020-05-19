@@ -68,14 +68,13 @@ public class EventController {
 			}
 			try {
 				// image is good size
-				String newImageName = System.currentTimeMillis()
-						+ image.getOriginalFilename()/*.substring(image.getOriginalFilename().lastIndexOf("."))*/;
+				String newImageName = System.currentTimeMillis() + "";
 				String newFileUri = new File(IMAGE_FOLDER + newImageName).getAbsolutePath();
 
 				// save image to folder
 				image.transferTo(new File(newFileUri));
 				Cover c = new Cover();
-				c.setSource(newFileUri);
+				c.setSource(newImageName);
 				Event e = eventService.findById(id);
 				e.setCover(c);
 				eventService.save(e);
@@ -118,10 +117,9 @@ public class EventController {
 		return ResponseEntity.ok(dtos);
 	}
 	
-	@GetMapping("/image/{id}")
-	public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException{
-		Event e = eventService.findById(id);
-		File f = new File(e.getCover().getSource());
+	@GetMapping("/image/{name}")
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException{
+		File f = new File(IMAGE_FOLDER + name);
 		FileInputStream fis = new FileInputStream(f);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buf = new byte[1024];
@@ -129,6 +127,8 @@ public class EventController {
 			baos.write(buf, 0, readNum);
 		}
 		byte[] bytes = baos.toByteArray();
+		fis.close();
+		baos.close();
 		return ResponseEntity.ok(bytes);
 	}
 	

@@ -4,14 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.database.UserSQLiteHelper;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class AppDataSingleton {
 
     private User loggedUser;
-    //TODO: ovde dodati ostale klase koje se cuvaju
+    //TODO: ovde dodati ostale klase koje se cuvaju (npr. lista korisnikovih eventova)
 
     private SQLiteDatabase mDatabase;
     private UserSQLiteHelper dbUserHelper;
@@ -35,7 +39,7 @@ public class AppDataSingleton {
             return;
         }
 
-        delete();
+        deleteAll();
 
         //edit user table
         ContentValues cv = new ContentValues();
@@ -57,25 +61,27 @@ public class AppDataSingleton {
         loggedUser = user;
     }
 
-    public User read(User user) {
+    public User read() {
         if (loggedUser != null) {
             return loggedUser;
         }
         Cursor cursor = mDatabase.query(UserSQLiteHelper.TABLE_USER, null, null, null, null, null, UserSQLiteHelper.COLUMN_ID + " DESC");
-        loggedUser = new User(
-                cursor.getLong(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getInt(4),
-                cursor.getInt(5),
-                cursor.getString(6),
-                cursor.getString(7),
-                null, null, null, null, null, null, null, null, null, null,
-                cursor.getInt(8) == 1,
-                cursor.getInt(9) == 1,
-                cursor.getInt(10) == 1);
-
+        while (cursor.moveToNext()) {
+            loggedUser = new User(
+                    cursor.getLong(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getInt(4),
+                    cursor.getInt(5),
+                    cursor.getString(6),
+                    cursor.getString(7),
+                    null, null, null, null, null, null, null, null, null, null,
+                    cursor.getInt(8) == 1,
+                    cursor.getInt(9) == 1,
+                    cursor.getInt(10) == 1);
+        }
+        cursor.close();
         return loggedUser;
     }
 
@@ -97,21 +103,18 @@ public class AppDataSingleton {
         this.loggedUser = user;
     }
 
-    public void delete() {
-        if (this.loggedUser == null){
-            return;
-        }
-
-        mDatabase.delete(UserSQLiteHelper.TABLE_USER, UserSQLiteHelper.COLUMN_ID + "=" + this.loggedUser.getId(), null);
-        //TODO: ovde dodati brisanje ostalih klasa - ovo je za loggout
+    public void deleteAll() {
         loggedUser = null;
+
+        mDatabase.delete(UserSQLiteHelper.TABLE_USER, null, null);
+        //TODO: ovde dodati brisanje ostalih tabela (klasa) - ovo je za loggout
     }
 
     public boolean isLoggedIn() {
         return loggedUser != null;
     }
 
-    public User getLoggedUser(){
+    public User getLoggedUser() {
         return loggedUser;
     }
 

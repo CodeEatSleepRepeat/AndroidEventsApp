@@ -8,9 +8,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class SplashScreenActivity extends Activity
 {
@@ -40,6 +43,7 @@ public class SplashScreenActivity extends Activity
         protected Void doInBackground(Void... arg0)
         {
             checkInternetConnection();
+            checkLastDBUser();
             return null;
         }
 
@@ -65,6 +69,16 @@ public class SplashScreenActivity extends Activity
         }
     }
 
+    /**
+     * Pull last user email and password from db if exists and sync with server
+     */
+    private void checkLastDBUser() {
+        //TODO: check db for user - if true update, else open login/register page
+        AppDataSingleton.getInstance().setContext(this);
+        User dbUser = AppDataSingleton.getInstance().read();
+        Log.d("sss", "checkLastDBUser: " + dbUser);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -74,12 +88,12 @@ public class SplashScreenActivity extends Activity
     private void startMainActivity()
     {
         startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-        finish(); // da nebi mogao da ode back na splash
+        finish(); // da ne bi mogao da ode back na splash
     }
 
     private void startNoInternetActivity()
     {
         startActivity(new Intent(SplashScreenActivity.this, NoInternetActivity.class));
-        finish(); // da nebi mogao da ode back na splash
+        finish(); // da ne bi mogao da ode back na splash
     }
 }

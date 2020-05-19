@@ -35,9 +35,9 @@ public class TestMockup {
         Friendship f2 = new Friendship(2l, u3, u1, FriendshipStatus.ACCEPTED);
         Friendship f3 = new Friendship(3l, u2, u3, FriendshipStatus.PENDING);
 
-        ArrayList<Friendship> u1Send = new ArrayList<>();
-        ArrayList<Friendship> u2Send = new ArrayList<>();
-        ArrayList<Friendship> u3Send = new ArrayList<>();
+        ArrayList<Long> u1Send = new ArrayList<>();
+        ArrayList<Long> u2Send = new ArrayList<>();
+        ArrayList<Long> u3Send = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 0, 11, 17, 0, 0);    //mesec pocinje od 0 -> januar!?
@@ -55,30 +55,30 @@ public class TestMockup {
         invitations.add(i2);
         invitations.add(i3);
 
-        ArrayList<Invitation> u1Inv = new ArrayList<>();
-        ArrayList<Invitation> u2Inv = new ArrayList<>();
-        ArrayList<Invitation> u3Inv = new ArrayList<>();
+        ArrayList<Long> u1Inv = new ArrayList<>();
+        ArrayList<Long> u2Inv = new ArrayList<>();
+        ArrayList<Long> u3Inv = new ArrayList<>();
 
-        ArrayList<Event> u1e1 = new ArrayList<>();
-        ArrayList<Event> u2e2 = new ArrayList<>();
+        ArrayList<Long> u1e1 = new ArrayList<>();
+        ArrayList<Long> u2e2 = new ArrayList<>();
 
         //friendship requests
-        u1Send.add(f1);
+        u1Send.add(f1.getFriendshipId());
         u1.setSendRequests(u1Send);
         u2.setReceivedRequests(u1Send);
 
-        u2Send.add(f3);
+        u2Send.add(f3.getFriendshipId());
         u2.setSendRequests(u2Send);
         u3.setReceivedRequests(u2Send);
 
-        u3Send.add(f2);
+        u3Send.add(f2.getFriendshipId());
         u3.setSendRequests(u3Send);
         u1.setReceivedRequests(u3Send);
 
         //invitations
-        u1Inv.add(i1);
-        u2Inv.add(i2);
-        u3Inv.add(i3);
+        u1Inv.add(i1.getInvitationId());
+        u2Inv.add(i2.getInvitationId());
+        u3Inv.add(i3.getInvitationId());
 
         u1.setSendInvitations(u1Inv);
         u2.setSendInvitations(u2Inv);
@@ -88,8 +88,8 @@ public class TestMockup {
         u1.setReceivedInvitations(u3Inv);
 
         //events
-        u1e1.add(e1);
-        u2e2.add(e2);
+        u1e1.add(e1.getEventId());
+        u2e2.add(e2.getEventId());
         u1.setUserEvents(u1e1);
         u2.setUserEvents(u2e2);
 

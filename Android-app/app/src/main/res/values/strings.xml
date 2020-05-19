@@ -144,4 +144,8 @@
     <string name="registerUserValidationPsw4">New passwords must contain at least: \n1. 4 characters \n2.  one small and one capital letter \n3.  one number or special character</string>
     <string name="facebookNotAvailable">Facebook profile is not available</string>
     <string name="userNotFound">Email and password don\'t match any known user</string>
+    <string name="emailNotFound">Email don\'t match any known user</string>
+    <string name="serverToBusy">Please try later, server is too busy.</string>
+    <string name="forgottenPswSent">"We sent you a new password to your registered email!"</string>
+    <string name="confirmRegistration">You can login after verifying your email</string>
 </resources>

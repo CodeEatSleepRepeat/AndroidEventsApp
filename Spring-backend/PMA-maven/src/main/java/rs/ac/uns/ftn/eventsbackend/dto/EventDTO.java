@@ -28,6 +28,7 @@ public class EventDTO {
 	private Date end_time;
 	private FacebookPrivacy privacy;
 	private Owner owner;
+	private String imageUri;
 	
 	public EventDTO(Event event) {
 		id = event.getId();
@@ -41,6 +42,7 @@ public class EventDTO {
 		end_time = event.getEnd_time();
 		privacy = event.getPrivacy();
 		owner = event.getOwner();
+		imageUri = event.getCover().getSource();
 	}
 	
 }

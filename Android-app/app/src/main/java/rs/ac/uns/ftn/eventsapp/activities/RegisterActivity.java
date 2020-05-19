@@ -362,8 +362,8 @@ public class RegisterActivity extends AppCompatActivity {
                     if (bitmap != null) {
                         uploadImage(response.body().getId());
                     } else {
-                        addUserToDB(response.body());
-                        goToMainWindowAsAuthorized();
+                        //addUserToDB(response.body());
+                        loginAfterRegisterActivity();
                     }
                 }
             }
@@ -395,7 +395,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     Log.d("xxs", "onResponse: image uploaded success");
                 } else {
-                    addUserToDB(response.body());
+                    //addUserToDB(response.body());
+                    loginAfterRegisterActivity();
                 }
             }
 
@@ -415,6 +416,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void goToMainWindowAsAuthorized() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void loginAfterRegisterActivity() {
+        Toast.makeText(getApplicationContext(), getText(R.string.confirmRegistration), Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

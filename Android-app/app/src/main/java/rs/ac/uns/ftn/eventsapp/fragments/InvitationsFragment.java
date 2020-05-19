@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xwray.groupie.GroupAdapter;
@@ -34,6 +35,7 @@ import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
 public class InvitationsFragment extends Fragment {
 
     private ArrayList<Invitation> invitations;
+    private RecyclerView recyclerView;
 
     public InvitationsFragment() {
         // Required empty public constructor
@@ -52,10 +54,28 @@ public class InvitationsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_invitations, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_invitations, container, false);
+        recyclerView = v.findViewById(R.id.recyclerview_fragment_invitations);
+
+        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();  //TODO: implement refresh list from backend
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        return v;
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
     }
 
     @Override
@@ -74,7 +94,7 @@ public class InvitationsFragment extends Fragment {
         fabMap.hide();
 
         //pretvori add dugme u map dugme
-        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
 
         fab.setImageResource(android.R.drawable.ic_dialog_map);
         fab.hide(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
@@ -83,6 +103,21 @@ public class InvitationsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onClickMap();
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
     }
@@ -130,7 +165,7 @@ public class InvitationsFragment extends Fragment {
                 getActivity().findViewById(R.id.recyclerview_fragment_invitations);
 
         invitations = TestMockup.invitations;
-        for(Invitation invitation : invitations){
+        for (Invitation invitation : invitations) {
             adapter.add(new InvitationItem(invitation));
         }
 
@@ -166,7 +201,7 @@ public class InvitationsFragment extends Fragment {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
     }
 
-    public ArrayList<Invitation> getItems(){
+    public ArrayList<Invitation> getItems() {
         return invitations;
     }
 }

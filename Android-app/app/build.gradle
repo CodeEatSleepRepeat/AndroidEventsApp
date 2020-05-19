@@ -33,6 +33,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
+    //Google dependency for swipe to refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
     //No internet connection gif
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
 

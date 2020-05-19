@@ -2,8 +2,14 @@ package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -95,7 +102,24 @@ public class EventDetailsActivity extends AppCompatActivity {
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
         Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(dto.getEventImageURI()).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
+        Picasso.get().load(dto.getEventImageURI()).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView, new Callback.EmptyCallback() {
+            @Override
+            public void onSuccess() {
+                super.onSuccess();
+                int dominantColor = getDominantColor(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+                collapsingToolbar.setExpandedTitleColor(dominantColor);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                super.onError(e);
+                collapsingToolbar.setExpandedTitleColor(Color.BLACK);
+            }
+        });
+
+        imageView.setAlpha(0.9f);
+
         eventNameEventDetailsTextView.setText(dto.getEventName());
         eventStartEventDetailsView.setText(dto.getStartTime() + "");
         eventDescriptionEventDetailsView.setText(dto.getEventDescription());
@@ -169,6 +193,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 */
     }
 
+    public static int getDominantColor(Bitmap bitmap) {
+        try {
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+            final int color = newBitmap.getPixel(0, 0);
+            newBitmap.recycle();
+            double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+            return y >= 128 ? Color.BLACK : Color.WHITE;
+        } catch (Exception e) {
+            return Color.WHITE;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -218,7 +254,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
 }

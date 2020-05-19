@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -47,12 +48,35 @@ public class GoingEventsListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext(), R.layout.going_event_list_row));
 
-        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();  //TODO: implement refresh list from backend
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CreateEventActivity.class);
                 startActivity(intent);
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
 
@@ -67,5 +91,12 @@ public class GoingEventsListFragment extends Fragment {
 
     public List<EventDTO> getItems() {
         return items;
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
     }
 }

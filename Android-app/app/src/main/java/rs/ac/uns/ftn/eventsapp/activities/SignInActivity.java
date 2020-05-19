@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 public class SignInActivity extends AppCompatActivity {
 
-    public static String IS_ANONYMOUS = "IS_ANONYMOUS";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +59,6 @@ public class SignInActivity extends AppCompatActivity {
         //TODO: Go to main window.
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(IS_ANONYMOUS, true);
         startActivity(intent);
     }
 

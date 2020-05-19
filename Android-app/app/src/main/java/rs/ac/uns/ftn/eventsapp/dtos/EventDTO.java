@@ -17,12 +17,13 @@ public class EventDTO {
     private Date start_time;
     private Date end_time;
     private FacebookPrivacy privacy;
+    private String imageUri;
     //private Owner owner;
 
     public EventDTO() {
     }
 
-    public EventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy) {
+    public EventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, String imageUri) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -33,6 +34,7 @@ public class EventDTO {
         this.start_time = start_time;
         this.end_time = end_time;
         this.privacy = privacy;
+        this.imageUri = imageUri;
     }
 
     public Long getId() {
@@ -115,4 +117,11 @@ public class EventDTO {
         this.privacy = privacy;
     }
 
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
 }

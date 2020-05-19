@@ -368,7 +368,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (EventDTO item : items) {
-            eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), IMAGE_URI + item.getId()));
+            if (item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
+                eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), item.getImageUri()));
+            } else {
+                eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), IMAGE_URI + item.getImageUri()));
+            }
         }
         Intent intent = new Intent(this, GoogleMapActivity.class);
         intent.putExtra("EVENTS", eventsForMap);
@@ -404,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        AppDataSingleton.getInstance().delete();
+        AppDataSingleton.getInstance().deleteAll();
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

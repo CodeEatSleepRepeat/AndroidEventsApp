@@ -365,7 +365,7 @@ public class UserController {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				// slanje welcome maila sa passwordom
+				// slanje novog passworda
 				try {
 					emailService.sendForgottenPassword(u);
 				} catch (MailException | InterruptedException e) {
@@ -489,8 +489,7 @@ public class UserController {
 				}
 				
 				// image is good size
-				String newImageName = System.currentTimeMillis()
-						+ image.getOriginalFilename()/*.substring(image.getOriginalFilename().lastIndexOf("."))*/;
+				String newImageName = System.currentTimeMillis() + "";
 				String newFileUri = new File(IMAGE_FOLDER + newImageName).getAbsolutePath();
 
 				// save image to folder

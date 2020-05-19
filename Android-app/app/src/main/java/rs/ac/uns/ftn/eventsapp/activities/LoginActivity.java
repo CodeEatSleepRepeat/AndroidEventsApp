@@ -232,7 +232,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void forgotPasswordClicked() {
-        // TODO: Do something when user click forgot password
+        Intent intent = new Intent(this, ForgottenPasswordActivity.class);
+        startActivity(intent);
     }
 
     private void goToRegisterActivity() {

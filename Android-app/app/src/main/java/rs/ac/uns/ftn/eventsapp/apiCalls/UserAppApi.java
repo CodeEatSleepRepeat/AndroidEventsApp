@@ -29,5 +29,8 @@ public interface UserAppApi {
     @POST("/user/login")
     Call<User> login(@Body UserLoginDTO user);
 
+    @GET("/user/forgot/{email}")
+    Call<Void> forgotPassword(@Path("email") String email);
+
 
 }

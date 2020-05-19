@@ -52,8 +52,12 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventNameTextView.setText(item.getName());
         viewHolder.eventAddressTextView.setText(item.getPlace());
         viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
+        String imageUri = item.getImageUri();
+        if (!imageUri.equals("") && !imageUri.startsWith("http")){
+            imageUri = IMAGE_URI + imageUri;
+        }
         Picasso.get()
-                .load(IMAGE_URI + item.getId())
+                .load(imageUri)
                 .placeholder(R.drawable.ic_missing_event_icon)
                 .error(R.drawable.ic_missing_event_icon)
                 .into(viewHolder.eventImage);
@@ -70,7 +74,11 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
                 final EventDTO e = mItems.get(i);
-                EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), IMAGE_URI + e.getId(), e.getType(),
+                String imageUri = e.getImageUri();
+                if (!imageUri.equals("") && !imageUri.startsWith("http")){
+                    imageUri = IMAGE_URI + imageUri;
+                }
+                EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), imageUri, e.getType(),
                         e.getPrivacy(), e.getStart_time(), e.getEnd_time(), e.getPlace(), e.getLongitude(), e.getLatitude(), 1l);
 
                 detailsIntent.putExtra("EVENT", dto);
@@ -126,8 +134,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
     @Override
     public int getItemCount() {
-        Log.d("SIZE", mItems.size() + "");
-        return mItems.size();
+        return mItems == null ? 0 : mItems.size();
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {

@@ -20,6 +20,7 @@ import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xwray.groupie.GroupAdapter;
@@ -70,7 +71,17 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_latest_messages, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_latest_messages, container, false);
+        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();  //TODO: implement refresh list from backend
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+        return v;
     }
 
     @Override
@@ -121,6 +132,13 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         // TODO: Preci na prozor sa porukama sa izabranim korisnikom
         Intent intent = new Intent(getActivity(), ChatLogActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
     }
 
     @Override

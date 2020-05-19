@@ -17,22 +17,22 @@ public class User {
     private Integer imageWidth;
     private String email;
     private String password;
-    private List<Friendship> sendRequests;
-    private List<Friendship> receivedRequests;
-    private List<Invitation> sendInvitations;
-    private List<Invitation> receivedInvitations;
-    private List<ChatMessage> chatMessagesSent;
-    private List<ChatMessage> chatMessagesReceived;
-    private List<Event> userEvents; //added, not on backend User model
-    private List<Event> interestedEvents;
-    private List<Event> goingEvents;
-    private List<Comment> comments;
+    private List<Long> sendRequests;
+    private List<Long> receivedRequests;
+    private List<Long> sendInvitations;
+    private List<Long> receivedInvitations;
+    private List<Long> chatMessagesSent;
+    private List<Long> chatMessagesReceived;
+    private List<Long> userEvents; //added, not on backend User model
+    private List<Long> interestedEvents;
+    private List<Long> goingEvents;
+    private List<Long> comments;
     private Boolean activatedAccount;
     private Boolean syncFacebookEvents;
     private Boolean syncFacebookProfile;
 
 
-    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Friendship> sendRequests, List<Friendship> receivedRequests, List<Invitation> sendInvitations, List<Invitation> receivedInvitations, List<ChatMessage> chatMessagesSent, List<ChatMessage> chatMessagesReceived, List<Event> userEvents, List<Event> interestedEvents, List<Event> goingEvents, List<Comment> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile) {
+    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Long> sendRequests, List<Long> receivedRequests, List<Long> sendInvitations, List<Long> receivedInvitations, List<Long> chatMessagesSent, List<Long> chatMessagesReceived, List<Long> userEvents, List<Long> interestedEvents, List<Long> goingEvents, List<Long> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile) {
         this.id = id;
         this.facebookId = facebookId;
         this.name = name;
@@ -128,83 +128,83 @@ public class User {
         this.password = password;
     }
 
-    public List<Friendship> getSendRequests() {
+    public List<Long> getSendRequests() {
         return sendRequests;
     }
 
-    public void setSendRequests(List<Friendship> sendRequests) {
+    public void setSendRequests(List<Long> sendRequests) {
         this.sendRequests = sendRequests;
     }
 
-    public List<Friendship> getReceivedRequests() {
+    public List<Long> getReceivedRequests() {
         return receivedRequests;
     }
 
-    public void setReceivedRequests(List<Friendship> receivedRequests) {
+    public void setReceivedRequests(List<Long> receivedRequests) {
         this.receivedRequests = receivedRequests;
     }
 
-    public List<Invitation> getSendInvitations() {
+    public List<Long> getSendInvitations() {
         return sendInvitations;
     }
 
-    public void setSendInvitations(List<Invitation> sendInvitations) {
+    public void setSendInvitations(List<Long> sendInvitations) {
         this.sendInvitations = sendInvitations;
     }
 
-    public List<Invitation> getReceivedInvitations() {
+    public List<Long> getReceivedInvitations() {
         return receivedInvitations;
     }
 
-    public void setReceivedInvitations(List<Invitation> receivedInvitations) {
+    public void setReceivedInvitations(List<Long> receivedInvitations) {
         this.receivedInvitations = receivedInvitations;
     }
 
-    public List<ChatMessage> getChatMessagesSent() {
+    public List<Long> getChatMessagesSent() {
         return chatMessagesSent;
     }
 
-    public void setChatMessagesSent(List<ChatMessage> chatMessagesSent) {
+    public void setChatMessagesSent(List<Long> chatMessagesSent) {
         this.chatMessagesSent = chatMessagesSent;
     }
 
-    public List<ChatMessage> getChatMessagesReceived() {
+    public List<Long> getChatMessagesReceived() {
         return chatMessagesReceived;
     }
 
-    public void setChatMessagesReceived(List<ChatMessage> chatMessagesReceived) {
+    public void setChatMessagesReceived(List<Long> chatMessagesReceived) {
         this.chatMessagesReceived = chatMessagesReceived;
     }
 
-    public List<Event> getUserEvents() {
+    public List<Long> getUserEvents() {
         return userEvents;
     }
 
-    public void setUserEvents(List<Event> userEvents) {
+    public void setUserEvents(List<Long> userEvents) {
         this.userEvents = userEvents;
     }
 
-    public List<Event> getInterestedEvents() {
+    public List<Long> getInterestedEvents() {
         return interestedEvents;
     }
 
-    public void setInterestedEvents(List<Event> interestedEvents) {
+    public void setInterestedEvents(List<Long> interestedEvents) {
         this.interestedEvents = interestedEvents;
     }
 
-    public List<Event> getGoingEvents() {
+    public List<Long> getGoingEvents() {
         return goingEvents;
     }
 
-    public void setGoingEvents(List<Event> goingEvents) {
+    public void setGoingEvents(List<Long> goingEvents) {
         this.goingEvents = goingEvents;
     }
 
-    public List<Comment> getComments() {
+    public List<Long> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<Long> comments) {
         this.comments = comments;
     }
 

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -31,6 +32,7 @@ import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class HomeEventListFragment extends Fragment {
@@ -46,14 +48,39 @@ public class HomeEventListFragment extends Fragment {
         Log.d("FINISH", "" + items);
         //items = TestMockup.getInstance().events;
 
-        View v =  inflater.inflate(R.layout.fragment_list_of_events, container, false);
+        View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row);
         recyclerView.setAdapter(adapter);
 
-        if (!getActivity().getIntent().getBooleanExtra(SignInActivity.IS_ANONYMOUS, false)) {
-            FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData(); // your code
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+        if (AppDataSingleton.getInstance().isLoggedIn()) {
+
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -61,9 +88,32 @@ public class HomeEventListFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            final FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    if (dy > 0 || dy < 0 && fabMap.isShown())
+                        fabMap.hide();
+                }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        fabMap.show();
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+            });
         }
 
         return v;
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
     }
 
     @Override
@@ -72,11 +122,11 @@ public class HomeEventListFragment extends Fragment {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_home);
     }
 
-    public List<EventDTO> getItems(){
+    public List<EventDTO> getItems() {
         return items;
     }
 
-    private void getInitialEvents(){
+    private void getInitialEvents() {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")

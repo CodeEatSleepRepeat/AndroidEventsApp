@@ -90,6 +90,10 @@
             android:name=".activities.NoInternetActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ForgottenPasswordActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

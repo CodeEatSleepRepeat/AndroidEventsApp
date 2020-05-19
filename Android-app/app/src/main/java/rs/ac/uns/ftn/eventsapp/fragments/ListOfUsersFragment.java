@@ -17,6 +17,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xwray.groupie.GroupAdapter;
@@ -41,6 +42,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     private String searchText;
     private GroupAdapter adapter;
     private SearchView searchView;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,20 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_of_users, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_list_of_users, container, false);
+        recyclerView = v.findViewById(R.id.recyclerview_list_of_users);
+
+        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();  //TODO: implement refresh list from backend
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        return v;
     }
 
     @Override
@@ -73,7 +88,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     public void onStart() {
         super.onStart();
 
-        FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +96,20 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             }
         });
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
         fabMap.hide();
     }
@@ -117,6 +146,13 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     private void goToAddFriendActivity() {
         Intent intent = new Intent(getActivity(), AddFriendActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
     }
 
     @Override
