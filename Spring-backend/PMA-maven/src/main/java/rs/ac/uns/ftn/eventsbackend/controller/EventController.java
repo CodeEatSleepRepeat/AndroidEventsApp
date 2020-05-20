@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -105,15 +108,15 @@ public class EventController {
 		}
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<EventDTO>> getAll() throws IOException{
-		List<Event> events = eventService.findAll();
+	@GetMapping("/page/{num}")
+	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num){
+		Pageable pageable = PageRequest.of(num, 10);
+		List<Event> events = eventService.getAllPageable(pageable);
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
 			dtos.add(dto);
 		}
-		
 		return ResponseEntity.ok(dtos);
 	}
 	

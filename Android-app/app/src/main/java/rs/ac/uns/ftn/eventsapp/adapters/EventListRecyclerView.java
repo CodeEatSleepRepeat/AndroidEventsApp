@@ -53,7 +53,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventAddressTextView.setText(item.getPlace());
         viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
         String imageUri = item.getImageUri();
-        if (!imageUri.equals("") && !imageUri.startsWith("http")){
+        if (imageUri!=null && !imageUri.equals("") && !imageUri.startsWith("http")){
             imageUri = IMAGE_URI + imageUri;
         }
         Picasso.get()
@@ -75,7 +75,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
                 final EventDTO e = mItems.get(i);
                 String imageUri = e.getImageUri();
-                if (!imageUri.equals("") && !imageUri.startsWith("http")){
+                if (imageUri!=null && !imageUri.equals("") && !imageUri.startsWith("http")){
                     imageUri = IMAGE_URI + imageUri;
                 }
                 EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), imageUri, e.getType(),

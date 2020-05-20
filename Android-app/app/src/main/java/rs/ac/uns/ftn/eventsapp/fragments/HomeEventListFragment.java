@@ -27,30 +27,33 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
-import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 
 public class HomeEventListFragment extends Fragment {
 
+    private static final int PAGE_START = 0;
     private List<EventDTO> items = new ArrayList<>();
     private RecyclerView.Adapter adapter;
+    private LinearLayoutManager layoutManager;
+    private boolean isLoading = false;
+    private int currentPage = PAGE_START;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: data goes here
-        getInitialEvents();
+        getEventsPage(PAGE_START);
         Log.d("FINISH", "" + items);
         //items = TestMockup.getInstance().events;
 
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row);
         recyclerView.setAdapter(adapter);
 
@@ -64,18 +67,17 @@ public class HomeEventListFragment extends Fragment {
         });
 
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy < 0 && fab.isShown())
-                    fab.hide();
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+                getEventsPage(currentPage);
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    fab.show();
-                super.onScrollStateChanged(recyclerView, newState);
+            public boolean isLoading() {
+                return isLoading;
             }
         });
 
@@ -90,30 +92,32 @@ public class HomeEventListFragment extends Fragment {
             });
 
             final FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab) {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    if (dy > 0 || dy < 0 && fabMap.isShown())
-                        fabMap.hide();
+                protected void loadMoreItems() {
+                    isLoading = true;
+                    currentPage += 1;
+                    getEventsPage(currentPage);
                 }
 
                 @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                        fabMap.show();
-                    super.onScrollStateChanged(recyclerView, newState);
+                public boolean isLoading() {
+                    return isLoading;
                 }
+
             });
         }
 
         return v;
     }
 
+
     /**
      * Refresh data from server
      */
     private void refreshData() {
         //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+
     }
 
     @Override
@@ -126,20 +130,21 @@ public class HomeEventListFragment extends Fragment {
         return items;
     }
 
-    private void getInitialEvents() {
+    private void getEventsPage(int num) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInitialEvents();
+        Call<List<EventDTO>> events = e.getInitialEvents(num);
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 }
+                isLoading = false;
                 items.addAll(response.body());
                 adapter.notifyDataSetChanged();
             }

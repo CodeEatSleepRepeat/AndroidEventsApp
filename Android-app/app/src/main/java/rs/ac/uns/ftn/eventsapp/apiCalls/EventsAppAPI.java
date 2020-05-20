@@ -20,7 +20,7 @@ public interface EventsAppAPI {
     @POST("/event/upload/{id}")
     Call<EventDTO> uploadEventImg(@Body RequestBody file, @Path("id") Long id);
 
-    @GET("/event")
-    Call<List<EventDTO>> getInitialEvents();
+    @GET("/event/page/{num}")
+    Call<List<EventDTO>> getInitialEvents(@Path("num") int num);
 
 }

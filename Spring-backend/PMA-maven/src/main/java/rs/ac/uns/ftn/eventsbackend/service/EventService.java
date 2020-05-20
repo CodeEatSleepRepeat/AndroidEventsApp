@@ -3,6 +3,9 @@ package rs.ac.uns.ftn.eventsbackend.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -32,6 +35,11 @@ public class EventService {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public List<Event> getAllPageable(Pageable pageable){
+		Page<Event> page = eventRepository.findAll(pageable);
+		return page.getContent();
 	}
 
 	public Event save(Event event) {

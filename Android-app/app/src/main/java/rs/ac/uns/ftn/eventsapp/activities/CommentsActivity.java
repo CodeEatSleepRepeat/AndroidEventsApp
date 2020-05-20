@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.eventsapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.CommentsArrayAdapter;
 import rs.ac.uns.ftn.eventsapp.models.Comment;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class CommentsActivity extends AppCompatActivity {
 
@@ -48,5 +51,8 @@ public class CommentsActivity extends AppCompatActivity {
 
         CommentsArrayAdapter adapter = new CommentsArrayAdapter(this, R.layout.adapter_comments_activity, comments);
         listView.setAdapter(adapter);
+        if (AppDataSingleton.getInstance().isLoggedIn()) {
+            //TODO moze da postavi komentar samo ako je ulogovan
+        }
     }
 }

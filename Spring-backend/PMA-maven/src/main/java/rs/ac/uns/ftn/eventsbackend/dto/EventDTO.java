@@ -42,7 +42,9 @@ public class EventDTO {
 		end_time = event.getEnd_time();
 		privacy = event.getPrivacy();
 		owner = event.getOwner();
-		imageUri = event.getCover().getSource();
+		if(event.getCover()!=null) {
+			imageUri = event.getCover().getSource();
+		}
 	}
 	
 }

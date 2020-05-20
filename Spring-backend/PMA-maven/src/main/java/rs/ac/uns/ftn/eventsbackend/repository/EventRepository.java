@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +43,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	 */
 	@Query(value = "SELECT e FROM Event e WHERE e.facebookId = ?1")
 	Event findByFacebookId(String facebookId);
+	
+	Page<Event> findAll(Pageable pageable);
 }
