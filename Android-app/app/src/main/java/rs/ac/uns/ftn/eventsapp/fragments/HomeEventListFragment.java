@@ -45,7 +45,6 @@ public class HomeEventListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: data goes here
         getEventsPage(PAGE_START);
         Log.d("FINISH", "" + items);
         //items = TestMockup.getInstance().events;
@@ -67,7 +66,7 @@ public class HomeEventListFragment extends Fragment {
         });
 
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab) {
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab, null) {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
@@ -92,7 +91,7 @@ public class HomeEventListFragment extends Fragment {
             });
 
             final FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
-            recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab) {
+            recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab, fabMap) {
                 @Override
                 protected void loadMoreItems() {
                     isLoading = true;
@@ -131,7 +130,6 @@ public class HomeEventListFragment extends Fragment {
     }
 
     private void getEventsPage(int num) {
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())

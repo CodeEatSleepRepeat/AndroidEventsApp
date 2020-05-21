@@ -45,4 +45,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Event findByFacebookId(String facebookId);
 	
 	Page<Event> findAll(Pageable pageable);
+	//Page<Event> findMyEvents(Pageable pageable);
 }

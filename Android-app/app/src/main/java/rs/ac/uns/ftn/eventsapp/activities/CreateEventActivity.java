@@ -57,8 +57,12 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.OwnerCreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.models.Owner;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -420,6 +424,13 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             facebookPrivacy = FacebookPrivacy.PRIVATE;
         }
 
+        OwnerCreateEventDTO owner = new OwnerCreateEventDTO();
+        User user = AppDataSingleton.getInstance().getLoggedUser();
+        owner.setUserId(user.getId());
+        if(user.getFacebookId()!=null) {
+            owner.setFacebookId(user.getFacebookId());
+        }
+
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -427,7 +438,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
                 descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy));
+                endDateTime, facebookPrivacy, owner));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
@@ -435,10 +446,16 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                 }
                 Log.d("TAG", response.body().getId().toString());
-                try {
-                    uploadImage(response.body().getId());
-                } catch (URISyntaxException ex) {
-                    ex.printStackTrace();
+                if(imgUri!=null) {
+                    try {
+
+                        uploadImage(response.body().getId());
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }else{
+                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }
 

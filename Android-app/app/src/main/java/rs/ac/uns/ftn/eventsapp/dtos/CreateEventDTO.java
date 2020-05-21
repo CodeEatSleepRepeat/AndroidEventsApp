@@ -4,6 +4,7 @@ import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.dtos.OwnerCreateEventDTO;
 
 public class CreateEventDTO {
 
@@ -16,13 +17,14 @@ public class CreateEventDTO {
     private String start_time;
     private String end_time;
     private FacebookPrivacy privacy;
-    //private Owner owner;
+    private OwnerCreateEventDTO owner;
 
 
     public CreateEventDTO() {
     }
 
-    public CreateEventDTO(double latitude, double longitude, String name, String place, String description, EventType type, String start_time, String end_time, FacebookPrivacy privacy) {
+    public CreateEventDTO(double latitude, double longitude, String name, String place, String description,
+                          EventType type, String start_time, String end_time, FacebookPrivacy privacy, OwnerCreateEventDTO owner) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
@@ -32,6 +34,7 @@ public class CreateEventDTO {
         this.start_time = start_time;
         this.end_time = end_time;
         this.privacy = privacy;
+        this.owner = owner;
     }
 
     public double getLatitude() {
@@ -104,5 +107,13 @@ public class CreateEventDTO {
 
     public void setPrivacy(FacebookPrivacy privacy) {
         this.privacy = privacy;
+    }
+
+    public OwnerCreateEventDTO getOwnerCreateEventDTO() {
+        return owner;
+    }
+
+    public void setOwnerCreateEventDTO(OwnerCreateEventDTO owner) {
+        this.owner = owner;
     }
 }

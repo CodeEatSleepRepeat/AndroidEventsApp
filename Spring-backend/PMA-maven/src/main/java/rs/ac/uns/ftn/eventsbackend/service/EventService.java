@@ -16,10 +16,6 @@ public class EventService {
 
 	@Autowired
 	private EventRepository eventRepository;
-
-	public List<Event> findAll(){
-		return eventRepository.findAll();
-	}
 	
 	public Event findById(Long id) {
 		try {
@@ -40,6 +36,10 @@ public class EventService {
 	public List<Event> getAllPageable(Pageable pageable){
 		Page<Event> page = eventRepository.findAll(pageable);
 		return page.getContent();
+	}
+	
+	public List<Event> getMyEvents(Pageable pageable, Long id){
+		return eventRepository.findAll();
 	}
 
 	public Event save(Event event) {

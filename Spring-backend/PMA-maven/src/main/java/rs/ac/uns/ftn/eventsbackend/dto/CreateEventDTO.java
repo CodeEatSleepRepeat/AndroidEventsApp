@@ -37,6 +37,6 @@ public class CreateEventDTO {
 	private Date end_time;
 	@NotNull
 	private FacebookPrivacy privacy;
-	private Owner owner;
+	private OwnerCreateEventDTO owner;
 
 }

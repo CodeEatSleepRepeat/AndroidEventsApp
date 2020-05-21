@@ -39,7 +39,10 @@ import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
+import rs.ac.uns.ftn.eventsbackend.model.Owner;
+import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
+import rs.ac.uns.ftn.eventsbackend.service.UserService;
 
 @CrossOrigin
 @RequestMapping("/event")
@@ -54,6 +57,9 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
+	
+	@Autowired
+	private UserService userService; 
 
 	/**
 	 * Upload event cover image to server for storage
@@ -120,6 +126,18 @@ public class EventController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+	@GetMapping("/myevents/{id}/{num}")
+	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num){
+		Pageable pageable = PageRequest.of(num, 10);
+		List<Event> events = eventService.getMyEvents(pageable, id);
+		List<EventDTO> dtos = new ArrayList<>();
+		for (Event event : events) {
+			EventDTO dto = new EventDTO(event);
+			dtos.add(dto);
+		}
+		return ResponseEntity.ok(dtos);
+	}
+	
 	@GetMapping("/image/{name}")
 	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException{
 		File f = new File(IMAGE_FOLDER + name);
@@ -143,8 +161,10 @@ public class EventController {
 	@PostMapping
 	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto){
 		System.out.println("create");
-		Event e = eventService.save(new Event(dto));
-		return ResponseEntity.ok(new EventDTO(e));
+		User user = userService.findById(dto.getOwner().getUserId());
+		Event e = new Event(dto);
+		e.setOwner(new Owner(user, dto.getOwner().getFacebookId()));
+		return ResponseEntity.ok(new EventDTO(eventService.save(e)));
 	}
 
 }

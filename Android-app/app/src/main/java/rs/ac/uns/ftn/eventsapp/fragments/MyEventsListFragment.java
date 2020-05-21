@@ -2,9 +2,11 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -18,36 +20,43 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
+import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 
 public class MyEventsListFragment extends Fragment {
 
-    List<EventDTO> items = new ArrayList<>();
+    private static final int PAGE_START = 0;
+    private List<EventDTO> items = new ArrayList<>();
+    private RecyclerView.Adapter adapter;
+    private LinearLayoutManager layoutManager;
+    private boolean isLoading = false;
+    private int currentPage = PAGE_START;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: data goes here
-        /*items = TestMockup.getInstance().events;
-        ArrayList<Event> temp = new ArrayList<>();
-        for (Event e : items){
-            if (e.getAuthor().getId()!=1l){
-                temp.add(e);
-            }
-        }
-        items = temp;*/
+        getEventsPage(PAGE_START);
 
         View v =  inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row));
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new EventListRecyclerView(items, this.getContext(), R.layout.myevent_item_row);
+        recyclerView.setAdapter(adapter);
 
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+        final FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,18 +64,17 @@ public class MyEventsListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab, fabMap) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy < 0 && fab.isShown())
-                    fab.hide();
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+                getEventsPage(currentPage);
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    fab.show();
-                super.onScrollStateChanged(recyclerView, newState);
+            public boolean isLoading() {
+                return isLoading;
             }
         });
 
@@ -97,5 +105,31 @@ public class MyEventsListFragment extends Fragment {
      */
     private void refreshData() {
         //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+    }
+
+    private void getEventsPage(int num) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<List<EventDTO>> events = e.getInitialEvents(num);
+        events.enqueue(new Callback<List<EventDTO>>() {
+            @Override
+            public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+                isLoading = false;
+                items.addAll(response.body());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<EventDTO>> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
     }
 }
