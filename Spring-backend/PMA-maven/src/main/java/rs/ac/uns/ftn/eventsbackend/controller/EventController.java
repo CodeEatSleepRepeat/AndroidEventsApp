@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -104,8 +105,8 @@ public class EventController {
 		}
 	}
 	
-	@GetMapping("/page/{num}")
-	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num){
+	@PostMapping("/page/{num}")
+	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO){
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getAllPageable(pageable);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -116,10 +117,34 @@ public class EventController {
 		return ResponseEntity.ok(dtos);
 	}
 	
-	@GetMapping("/myevents/{id}/{num}")
-	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num){
+	@PostMapping("/myevents/{id}/{num}")
+	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getMyEvents(pageable, id);
+		List<EventDTO> dtos = new ArrayList<>();
+		for (Event event : events) {
+			EventDTO dto = new EventDTO(event);
+			dtos.add(dto);
+		}
+		return ResponseEntity.ok(dtos);
+	}
+	
+	@PostMapping("/goingevents/{id}/{num}")
+	public ResponseEntity<List<EventDTO>> goingEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
+		Pageable pageable = PageRequest.of(num, 10);
+		List<Event> events = eventService.getGoingEvents(pageable, id);
+		List<EventDTO> dtos = new ArrayList<>();
+		for (Event event : events) {
+			EventDTO dto = new EventDTO(event);
+			dtos.add(dto);
+		}
+		return ResponseEntity.ok(dtos);
+	}
+	
+	@PostMapping("/interestedevents/{id}/{num}")
+	public ResponseEntity<List<EventDTO>> interestedEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
+		Pageable pageable = PageRequest.of(num, 10);
+		List<Event> events = eventService.getInterestedEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
@@ -146,6 +171,18 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Event> getById(@PathVariable Long id){
 		return ResponseEntity.ok(eventService.findById(id));
+	}
+	
+	@GetMapping("/going/{eventId}/{userId}")
+	public ResponseEntity<EventDTO> goingToEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+		Event e = eventService.addToGoing(eventId, userId);
+		return ResponseEntity.ok(new EventDTO(e));		
+	}
+	
+	@GetMapping("/interested/{eventId}/{userId}")
+	public ResponseEntity<EventDTO> interestedInEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+		Event e = eventService.addToInterested(eventId, userId);
+		return ResponseEntity.ok(new EventDTO(e));		
 	}
 	
 	@PostMapping

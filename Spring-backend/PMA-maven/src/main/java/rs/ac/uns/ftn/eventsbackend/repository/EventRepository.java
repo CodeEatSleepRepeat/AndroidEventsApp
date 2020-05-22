@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
+import rs.ac.uns.ftn.eventsbackend.model.User;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
@@ -45,5 +46,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Event findByFacebookId(String facebookId);
 	
 	Page<Event> findAll(Pageable pageable);
-	//Page<Event> findMyEvents(Pageable pageable);
+	Page<Event> findByOwner(User user, Pageable pageable);
+	Page<Event> findByGoingId(Long id, Pageable pageable);
+	Page<Event> findByInterestedId(Long id, Pageable pageable);
 }

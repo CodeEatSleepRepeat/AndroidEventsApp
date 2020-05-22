@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +25,21 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -51,18 +62,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView seeAllInterestedEventDetailsTextView;
     private TextView seeAllAuthorsEventsEventDetailsTextView;
     private TextView seeAllSimilarPostsEventDetailsTextView;
+    private Button goingBtn;
+    private Button interestedBtn;
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
 
-        //load image from file system just for testing
-        /*String uri = "content://media/external/downloads/24";
-
-        ImageView imageView = findViewById(R.id.image_user_user_detail);
-        Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(uri).into(imageView);
-        Log.d(TAG, "setViewPic2: " + imageView.toString());*/
     }
 
     @Override
@@ -98,6 +104,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeAllInterestedEventDetailsTextView = findViewById(R.id.seeAllInterestedEventDetailsTextView);
         seeAllAuthorsEventsEventDetailsTextView = findViewById(R.id.seeAllOrganizedEventsEventDetailsTextView);
         seeAllSimilarPostsEventDetailsTextView = findViewById(R.id.seeAllSimilarPostsEventDetailsTextView);
+        goingBtn = findViewById(R.id.goingEventDetailsBtn);
+        interestedBtn = findViewById(R.id.interestedEventDetailsBtn);
+
+        if(AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getAuthor())){
+            goingBtn.setVisibility(View.INVISIBLE);
+            interestedBtn.setVisibility(View.INVISIBLE);
+        }
 
         idEvent = dto.getEventId();
         collapsingToolbar.setTitle(dto.getEventName());
@@ -176,6 +189,20 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
 
+        goingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goingToEvent();
+            }
+        });
+
+        interestedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                interestedInEvent();
+            }
+        });
+
 /*
             //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
             ImageView imageView = findViewById(R.id.imageViewasdf);
@@ -203,6 +230,54 @@ public class EventDetailsActivity extends AppCompatActivity {
         } catch (Exception e) {
             return Color.WHITE;
         }
+    }
+
+    public void goingToEvent(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.goingToEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                }
+                Log.d("TAG", response.body().getId().toString());
+                Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void interestedInEvent(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.interestedInEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                }
+                Log.d("TAG", response.body().getId().toString());
+                Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

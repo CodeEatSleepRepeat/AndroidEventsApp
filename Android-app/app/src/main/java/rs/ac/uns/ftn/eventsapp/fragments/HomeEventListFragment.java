@@ -30,6 +30,7 @@ import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 
@@ -135,7 +136,7 @@ public class HomeEventListFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInitialEvents(num);
+        Call<List<EventDTO>> events = e.getInitialEvents(num, new SearchFilterEventsDTO());
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {

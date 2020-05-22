@@ -79,7 +79,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                     imageUri = IMAGE_URI + imageUri;
                 }
                 EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), imageUri, e.getType(),
-                        e.getPrivacy(), e.getStart_time(), e.getEnd_time(), e.getPlace(), e.getLongitude(), e.getLatitude(), 1l);
+                        e.getPrivacy(), e.getStart_time(), e.getEnd_time(), e.getPlace(), e.getLongitude(), e.getLatitude(), e.getOwner());
 
                 detailsIntent.putExtra("EVENT", dto);
                 context.startActivity(detailsIntent);

@@ -142,7 +142,6 @@ public class Event {
 		start_time = dto.getStart_time();
 		end_time = dto.getEnd_time();
 		privacy = dto.getPrivacy();
-		//owner = dto.getOwner();	
 	}
 	
 }

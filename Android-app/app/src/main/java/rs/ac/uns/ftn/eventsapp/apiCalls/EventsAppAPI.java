@@ -6,11 +6,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 
 public interface EventsAppAPI {
 
@@ -20,7 +20,22 @@ public interface EventsAppAPI {
     @POST("/event/upload/{id}")
     Call<EventDTO> uploadEventImg(@Body RequestBody file, @Path("id") Long id);
 
-    @GET("/event/page/{num}")
-    Call<List<EventDTO>> getInitialEvents(@Path("num") int num);
+    @POST("/event/page/{num}")
+    Call<List<EventDTO>> getInitialEvents(@Path("num") int num, @Body SearchFilterEventsDTO searchFilterEventsDTO);
+
+    @POST("/event/myevents/{id}/{num}")
+    Call<List<EventDTO>> getMyEvents(@Path("id") Long id, @Path("num") int num, @Body SearchFilterEventsDTO searchFilterEventsDTO);
+
+    @POST("/event/goingevents/{id}/{num}")
+    Call<List<EventDTO>> getGoingEvents(@Path("id") Long id, @Path("num") int num, @Body SearchFilterEventsDTO searchFilterEventsDTO);
+
+    @POST("/event/interestedevents/{id}/{num}")
+    Call<List<EventDTO>> getInterestedEvents(@Path("id") Long id, @Path("num") int num, @Body SearchFilterEventsDTO searchFilterEventsDTO);
+
+    @GET("/event/going/{eventId}/{userId}")
+    Call<EventDTO> goingToEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
+
+    @GET("/event/interested/{eventId}/{userId}")
+    Call<EventDTO> interestedInEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
 
 }
