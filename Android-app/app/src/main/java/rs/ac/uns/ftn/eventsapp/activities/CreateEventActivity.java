@@ -2,15 +2,11 @@ package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,10 +30,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,7 +40,6 @@ import java.util.Locale;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,11 +50,8 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.OwnerCreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
-import rs.ac.uns.ftn.eventsapp.models.Owner;
-import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -424,13 +414,6 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             facebookPrivacy = FacebookPrivacy.PRIVATE;
         }
 
-        OwnerCreateEventDTO owner = new OwnerCreateEventDTO();
-        User user = AppDataSingleton.getInstance().getLoggedUser();
-        owner.setUserId(user.getId());
-        if(user.getFacebookId()!=null) {
-            owner.setFacebookId(user.getFacebookId());
-        }
-
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -438,7 +421,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
                 descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy, owner));
+                endDateTime, facebookPrivacy, AppDataSingleton.getInstance().getLoggedUser().getId()));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {

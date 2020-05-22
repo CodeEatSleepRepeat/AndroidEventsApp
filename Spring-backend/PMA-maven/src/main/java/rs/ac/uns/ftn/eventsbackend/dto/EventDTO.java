@@ -9,7 +9,6 @@ import lombok.Setter;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
-import rs.ac.uns.ftn.eventsbackend.model.Owner;
 
 @Getter
 @Setter
@@ -27,7 +26,7 @@ public class EventDTO {
 	private Date start_time;
 	private Date end_time;
 	private FacebookPrivacy privacy;
-	private Owner owner;
+	private Long owner;
 	private String imageUri;
 	
 	public EventDTO(Event event) {
@@ -41,7 +40,7 @@ public class EventDTO {
 		start_time = event.getStart_time();
 		end_time = event.getEnd_time();
 		privacy = event.getPrivacy();
-		owner = event.getOwner();
+		owner = event.getOwner().getId();
 		if(event.getCover()!=null) {
 			imageUri = event.getCover().getSource();
 		}

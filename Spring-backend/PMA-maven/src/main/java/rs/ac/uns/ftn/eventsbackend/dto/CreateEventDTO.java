@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
-import rs.ac.uns.ftn.eventsbackend.model.Owner;
 
 @Getter
 @Setter
@@ -37,6 +36,7 @@ public class CreateEventDTO {
 	private Date end_time;
 	@NotNull
 	private FacebookPrivacy privacy;
-	private OwnerCreateEventDTO owner;
+	@NotNull
+	private Long owner;
 
 }

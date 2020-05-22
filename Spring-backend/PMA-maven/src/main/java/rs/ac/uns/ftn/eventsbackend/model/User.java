@@ -95,6 +95,11 @@ public class User {
 	@JoinTable(name = "GoingEvents", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
 			@JoinColumn(name = "eventId") })
 	private List<Event> goingEvents;
+	
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
+	@OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Event> userEvents;
 
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)

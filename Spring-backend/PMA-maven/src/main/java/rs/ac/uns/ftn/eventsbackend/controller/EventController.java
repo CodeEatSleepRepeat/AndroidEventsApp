@@ -3,21 +3,13 @@ package rs.ac.uns.ftn.eventsbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +30,6 @@ import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
-import rs.ac.uns.ftn.eventsbackend.model.Owner;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
 import rs.ac.uns.ftn.eventsbackend.service.UserService;
@@ -161,9 +151,9 @@ public class EventController {
 	@PostMapping
 	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto){
 		System.out.println("create");
-		User user = userService.findById(dto.getOwner().getUserId());
+		User user = userService.findById(dto.getOwner());	//null?
 		Event e = new Event(dto);
-		e.setOwner(new Owner(user, dto.getOwner().getFacebookId()));
+		e.setOwner(user);
 		return ResponseEntity.ok(new EventDTO(eventService.save(e)));
 	}
 

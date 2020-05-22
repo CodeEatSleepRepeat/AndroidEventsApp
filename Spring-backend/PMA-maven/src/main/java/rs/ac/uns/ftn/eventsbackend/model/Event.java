@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -79,9 +80,9 @@ public class Event {
 
 	private double longitude;
 
-	//@NotNull
-	@OneToOne(cascade = { CascadeType.ALL }, orphanRemoval = true)
-	private Owner owner;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User owner;
 
 	@ManyToMany(mappedBy = "interestedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<User> interested;
@@ -143,4 +144,5 @@ public class Event {
 		privacy = dto.getPrivacy();
 		//owner = dto.getOwner();	
 	}
+	
 }

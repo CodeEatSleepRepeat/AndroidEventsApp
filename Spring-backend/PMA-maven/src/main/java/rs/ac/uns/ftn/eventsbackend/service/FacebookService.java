@@ -17,7 +17,6 @@ import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventData;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEvents;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
-import rs.ac.uns.ftn.eventsbackend.model.Owner;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
 @Service
@@ -200,7 +199,7 @@ public class FacebookService {
 				} else {
 					//ovo je novi event
 					dbEvent = EventConverter.convert(fbEvent);
-					dbEvent.setOwner(new Owner(newUser, fbEvent.getOwner().getId()));
+					dbEvent.setOwner(newUser);
 					dbEvent = eventService.save(dbEvent);
 				}
 			}

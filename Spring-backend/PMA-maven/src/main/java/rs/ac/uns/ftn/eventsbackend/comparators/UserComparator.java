@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.eventsbackend.comparators;
 
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventOwner;
-import rs.ac.uns.ftn.eventsbackend.model.Owner;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
 public class UserComparator {
@@ -25,7 +24,7 @@ public class UserComparator {
 		return true;
 	}
 
-	public static Boolean compare(CustomFacebookEventOwner fbOwner, Owner owner) {
+	public static Boolean compare(CustomFacebookEventOwner fbOwner, User owner) {
 		return compare(fbOwner.getId(), owner.getFacebookId());
 	}
 
