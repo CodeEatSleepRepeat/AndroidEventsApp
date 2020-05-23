@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,28 +10,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.ChatMessage;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
@@ -41,7 +45,14 @@ import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 
 public class LatestMessagesFragment extends Fragment implements Filterable {
-
+    public static String EXTRA_USER_NAME = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_NAME";
+    public static String EXTRA_USER_IMAGE_PATH = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_IMAGE_PATH";
+    public static String EXTRA_USER_EMAIL = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_EMAIL";
+    public static String EXTRA_USER_FIREBASE_UID = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_FIREBASE_UID";
     public static String SEARCH_TEXT_LIST_OF_USERS_LATEST_MESSAGES = "rs.ac.uns.ftn.eventsapp" +
             ".fragments" +
             ".LatestMessagesFragment.SEARCH_TEXT_LIST_OF_USERS_LATEST_MESSAGES";
@@ -50,11 +61,12 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     private List<User> userListAll = new ArrayList<User>();
     private String searchText ="";
     private GroupAdapter adapter;
+    private Map<String, ChatMessage> latestMessagesMap =new HashMap<String, ChatMessage>();
+    private FirebaseUserDTO chatPartnerUser;
+    private Query emailQuery;
 
     public LatestMessagesFragment() {
-        // Required empty public constructor
     }
-
 
     public static LatestMessagesFragment newInstance(String param1, String param2) {
         LatestMessagesFragment fragment = new LatestMessagesFragment();
@@ -74,13 +86,14 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
         View v = inflater.inflate(R.layout.fragment_latest_messages, container, false);
         final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();  //TODO: implement refresh list from backend
-                pullToRefresh.setRefreshing(false);
-            }
-        });
+        if(pullToRefresh != null)
+            pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshData();  //TODO: implement refresh list from backend
+                    pullToRefresh.setRefreshing(false);
+                }
+            });
         return v;
     }
 
@@ -88,7 +101,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fillLatestMessages();
         getAllFriendUsers();
 
         // ukoliko korisnik npr rotira telefon, prehodno stanje mu ucitavam
@@ -103,6 +115,8 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     @Override
     public void onStart() {
         super.onStart();
+
+        listenForLatestMessages();
 
         FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
         fab.hide();
@@ -127,11 +141,15 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         outState.putString(SEARCH_TEXT_LIST_OF_USERS_LATEST_MESSAGES, searchText);
     }
 
-
     private void onAdapterItemClick(){
-        // TODO: Preci na prozor sa porukama sa izabranim korisnikom
         Intent intent = new Intent(getActivity(), ChatLogActivity.class);
-        startActivity(intent);
+        intent.putExtra(EXTRA_USER_FIREBASE_UID, chatPartnerUser.getUid());
+        //TODO: ova 3 ispod idu od usera iz baze bas... tako da kasnije to izmeni...
+        intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
+        intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
+        intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
+        getActivity().startActivity(intent);
+
     }
 
     /**
@@ -147,39 +165,49 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_messages);
     }
 
-
-    private void fillLatestMessages(){
+    private void listenForLatestMessages(){
         adapter = new GroupAdapter();
         RecyclerView recyclerViewLatestMessages =
                 getActivity().findViewById(R.id.recyclerview_list_of_latest_messages);
 
-//        recyclerViewLatestMessages.addItemDecoration(new DividerItemDecoration(getActivity(),
-//                DividerItemDecoration.VERTICAL));
+        String currentUserUid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference usersLatestMessagesRef = FirebaseDatabase.getInstance()
+                .getReference("/latest-messages/" + currentUserUid);
 
-        adapter.add(new LatestMessageItem(new ChatMessage(
-                1l,
-                "Pa ja ovo prvi put vidim!",
-                2l,
-                4l,
-                System.currentTimeMillis()/1000,
-                false
-                )));
-        adapter.add(new LatestMessageItem(new ChatMessage(
-                2l,
-                "Pa ja ovo drugi put vidim!",
-                54l,
-                43l,
-                System.currentTimeMillis()/1000,
-                true
-        )));
-        adapter.add(new LatestMessageItem(new ChatMessage(
-                4l,
-                "Pa ja ovo treci put vidim!",
-                22l,
-                43l,
-                System.currentTimeMillis()/1000,
-                true
-        )));
+        usersLatestMessagesRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
+                if(chatMessage == null)
+                    return;
+                latestMessagesMap.put(dataSnapshot.getKey(),chatMessage);
+                refreshRecyclerViewMessages();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
+                if(chatMessage == null)
+                    return;
+                latestMessagesMap.put(dataSnapshot.getKey(),chatMessage);
+                refreshRecyclerViewMessages();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -190,6 +218,20 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
         recyclerViewLatestMessages.setAdapter(adapter);
 
+    }
+
+    private void refreshRecyclerViewMessages(){
+        adapter.clear();
+        for(ChatMessage message : latestMessagesMap.values()){
+            String chatPartnerUid = "";
+            if(message.getFromId().equals(FirebaseAuth.getInstance().getUid())){
+                chatPartnerUid = message.getToId();
+            }
+            else{
+                chatPartnerUid = message.getFromId();
+            }
+            findChatPartnerInfo(chatPartnerUid, message);
+        }
     }
 
     private void getAllFriendUsers(){
@@ -225,7 +267,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     /*
      * Filter za filtriranje korisnika
      * po njihovom username-u
@@ -234,7 +275,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     public Filter getFilter() {
         return filter;
     }
-
 
     private Filter filter = new Filter() {
         //Ovo se pokrece u background niti...
@@ -266,7 +306,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
             userList.clear();
             adapter.clear();
             if(((Collection<? extends User>) results.values) == null){
-                fillLatestMessages();
+                listenForLatestMessages();
             }
             else{
                 userList.addAll((Collection<? extends User>) results.values);
@@ -277,4 +317,41 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
         }
     };
+
+    private void findChatPartnerInfo(String chatPartnerId, final ChatMessage message){
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        emailQuery = usersRef.orderByChild("uid").equalTo(chatPartnerId);
+        emailQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+
+            private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
+                emailQuery.removeEventListener(this);
+                chatPartnerUser = dataSnapshot.getValue(FirebaseUserDTO.class);
+                adapter.add(new LatestMessageItem(message, chatPartnerUser));
+            }
+        });
+    }
 }

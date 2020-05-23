@@ -1,20 +1,25 @@
 package rs.ac.uns.ftn.eventsapp.models;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 public class ChatMessage {
 
-    private Long id;
+    private String id;
     private String text;
-    private Long fromId;
-    private Long toId;
-    private Long timestamp;
+    private String fromId;
+    private String toId;
+    private Long date;
     private Boolean seen;
 
-    public ChatMessage(Long id, String text, Long fromId, Long toId, Long timestamp, Boolean seen){
+    public ChatMessage(){}
+
+    public ChatMessage(String id, String text, String fromId, String toId, Long date, Boolean seen){
         this.id = id;
         this.text = text;
         this.fromId = fromId;
         this.toId = toId;
-        this.timestamp = timestamp;
+        this.date = date;
         this.seen = seen;
     }
 
@@ -26,11 +31,11 @@ public class ChatMessage {
         this.seen = seen;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,27 +47,27 @@ public class ChatMessage {
         this.text = text;
     }
 
-    public Long getFromId() {
+    public String getFromId() {
         return fromId;
     }
 
-    public void setFromId(Long fromId) {
+    public void setFromId(String fromId) {
         this.fromId = fromId;
     }
 
-    public Long getToId() {
+    public String getToId() {
         return toId;
     }
 
-    public void setToId(Long toId) {
+    public void setToId(String toId) {
         this.toId = toId;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public Long getDate() {
+        return date;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(Long date) {
+        this.date = date;
     }
 }

@@ -9,14 +9,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
-
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserDetailActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class UserSimpleItem extends Item<GroupieViewHolder>{
@@ -26,10 +33,14 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             ".EXTRA_USER_IMAGE_PATH";
     public static String EXTRA_USER_EMAIL = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
             ".EXTRA_USER_EMAIL";
+    public static String EXTRA_USER_FIREBASE_UID = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_FIREBASE_UID";
 
     private User user;
     private Boolean setAddButton;
     private Boolean onClickGoToChatRoom;
+    private Query emailQuery;
+    private RecyclerView.ViewHolder viewHolder;
 
     public UserSimpleItem(User user, Boolean setAddButton, Boolean onClickGoToChatRoom){
 
@@ -45,6 +56,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_item);
         Context itemViewContext = viewHolder.itemView.getContext();
         Button addButton = viewHolder.itemView.findViewById(R.id.btn_add_simple_user_item);
+        this.viewHolder = viewHolder;
         if(!setAddButton){
             addButton.setVisibility(View.GONE);
         }
@@ -69,7 +81,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             @Override
             public void onClick(View v) {
                 if(onClickGoToChatRoom){
-                    goToChatRoom(viewHolder);
+                    findChatPartnerAndGoToChatRoom(viewHolder);
                 }
                 else{
                     goToUserDetails(viewHolder);
@@ -82,7 +94,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             @Override
             public void onClick(View v) {
                 if(onClickGoToChatRoom){
-                    goToChatRoom(viewHolder);
+                    findChatPartnerAndGoToChatRoom(viewHolder);
                 }
                 else{
                     goToUserDetails(viewHolder);
@@ -106,9 +118,50 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         viewHolder.itemView.getContext().startActivity(intent);
     }
 
-    private void goToChatRoom(GroupieViewHolder viewHolder){
-        Intent intent = new Intent(viewHolder.itemView.getContext(), ChatLogActivity.class);
-        viewHolder.itemView.getContext().startActivity(intent);
+    private void findChatPartnerAndGoToChatRoom(final GroupieViewHolder viewHolder){
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        emailQuery = usersRef.orderByChild("email").equalTo(user.getEmail());
+        emailQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+
+            private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
+                emailQuery.removeEventListener(this);
+                FirebaseUserDTO foundUser = dataSnapshot.getValue(FirebaseUserDTO.class);
+
+                Intent intent = new Intent(viewHolder.itemView.getContext(), ChatLogActivity.class);
+                intent.putExtra(EXTRA_USER_FIREBASE_UID, foundUser.getUid());
+                intent.putExtra(EXTRA_USER_NAME, user.getName());
+                intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getImageUri());
+                intent.putExtra(EXTRA_USER_EMAIL, user.getEmail());
+
+                viewHolder.itemView.getContext().startActivity(intent);
+            }
+        });
+
     }
 
     private void addFriendAction(GroupieViewHolder viewHolder) {

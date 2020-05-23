@@ -15,8 +15,6 @@ public class ChatLogActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        getSupportActionBar().setTitle("Veljko the man");
-
     }
 
     @Override

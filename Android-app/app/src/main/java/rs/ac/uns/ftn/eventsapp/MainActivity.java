@@ -27,6 +27,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -408,6 +409,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
+        userFirebaseInstance.signOut();
         AppDataSingleton.getInstance().deleteAll();
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
