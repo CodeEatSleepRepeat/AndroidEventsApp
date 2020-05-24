@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.appevents.suggestedevents.ViewOnClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -106,12 +107,20 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 viewHolder.itemView.findViewById(R.id.image_goind_item_invitation);
         ImageView imageDeclineAction =
                 viewHolder.itemView.findViewById(R.id.image_not_interested_item_invitation);
+        ImageView deleteEvent =
+                viewHolder.itemView.findViewById(R.id.deleteEvent);
+        ImageView updateEvent =
+                viewHolder.itemView.findViewById(R.id.updateEvent);
+        final ImageView notInterested =
+                viewHolder.itemView.findViewById(R.id.image_not_interested_item_invitation);
+        ImageView notGoing =
+                viewHolder.itemView.findViewById(R.id.image_not_going_item_invitation);
 
         if (imageInterestedAction != null) {
             imageInterestedAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    interestedInEvent(viewHolder, i, item);
+                    interestedInEvent(viewHolder, item);
                 }
             });
         }
@@ -120,7 +129,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             imageGoingAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    goingToEvent(viewHolder, i, item);
+                    goingToEvent(viewHolder, item);
                 }
             });
         }
@@ -131,6 +140,43 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 public void onClick(View v) {
                     Toast.makeText(viewHolder.itemView.getContext(), "A jbga, nista onda drugi put",
                             Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if(deleteEvent!=null){
+            deleteEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteMyEvent(viewHolder, item);
+                }
+            });
+        }
+
+        if(updateEvent!=null){
+            updateEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Event updated",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if(notInterested!=null){
+            notInterested.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    removeFromInterested(viewHolder, item);
+                }
+            });
+        }
+
+        if(notGoing!=null){
+            notGoing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeFromGoing(viewHolder, item);
                 }
             });
         }
@@ -158,7 +204,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         }
     }
 
-    public void interestedInEvent(@NonNull final EventViewHolder viewHolder, final int i, final EventDTO item){
+    public void interestedInEvent(@NonNull final EventViewHolder viewHolder, final EventDTO item){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -184,7 +230,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         });
     }
 
-    public void goingToEvent(@NonNull final EventViewHolder viewHolder, final int i, final EventDTO event){
+    public void goingToEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -201,6 +247,87 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                     mItems.remove(event);
                     notifyDataSetChanged();
                     Toast.makeText(viewHolder.itemView.getContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(viewHolder.itemView.getContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removeFromInterested(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.removeInterestedEvent(event.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (response.code()!=200) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                }else {
+                    Log.d("TAG", response.body().getId().toString());
+                    mItems.remove(event);
+                    notifyDataSetChanged();
+                    Toast.makeText(viewHolder.itemView.getContext(), "Removed from interested!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(viewHolder.itemView.getContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removeFromGoing(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.removeGoingEvent(event.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (response.code()!=200) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                }else {
+                    Log.d("TAG", response.body().getId().toString());
+                    mItems.remove(event);
+                    notifyDataSetChanged();
+                    Toast.makeText(viewHolder.itemView.getContext(), "Removed from going!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(viewHolder.itemView.getContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void deleteMyEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.removeMyEvent(AppDataSingleton.getInstance().getLoggedUser().getId(), event.getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (response.code()!=200) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                }else {
+                    Log.d("TAG", response.body().getId().toString());
+                    mItems.remove(event);
+                    notifyDataSetChanged();
+                    Toast.makeText(viewHolder.itemView.getContext(), "Event deleted!", Toast.LENGTH_LONG).show();
                 }
             }
 

@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (EventDTO item : items) {
-            if (item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
+            if (item.getImageUri()==null || item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
                 eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), item.getImageUri()));
             } else {
                 eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), IMAGE_URI + item.getImageUri()));

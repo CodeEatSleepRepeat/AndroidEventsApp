@@ -45,8 +45,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	@Query(value = "SELECT e FROM Event e WHERE e.facebookId = ?1")
 	Event findByFacebookId(String facebookId);
 	
-	Page<Event> findAll(Pageable pageable);
-	Page<Event> findByOwner(User user, Pageable pageable);
-	Page<Event> findByGoingId(Long id, Pageable pageable);
-	Page<Event> findByInterestedId(Long id, Pageable pageable);
+	Page<Event> findAllByIsDeleted(Boolean b, Pageable pageable);
+	Page<Event> findByOwnerAndIsDeleted(User user, Boolean b, Pageable pageable);
+	Page<Event> findByGoingIdAndIsDeleted(Long id, Boolean b, Pageable pageable);
+	Page<Event> findByInterestedIdAndIsDeleted(Long id, Boolean b, Pageable pageable);
 }

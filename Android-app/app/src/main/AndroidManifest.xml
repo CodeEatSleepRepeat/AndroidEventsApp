@@ -19,7 +19,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
-        <activity android:name=".activities.SettingsUnAuthUserActivity"></activity>
+        <activity android:name=".activities.UpdateEventActivity"></activity>
+        <activity android:name=".activities.SettingsUnAuthUserActivity" />
         <activity
             android:name=".activities.GoogleMapActivity"
             android:label="@string/map" />
@@ -69,8 +70,8 @@
             android:label="@string/nav_item_going" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.EventDetailsActivity"

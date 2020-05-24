@@ -81,7 +81,7 @@
             android:src="@drawable/ic_interested" />
 
         <ImageView
-            android:id="@+id/image_not_interested_item_invitation"
+            android:id="@+id/image_not_going_item_invitation"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_not_interested" />

@@ -92,19 +92,6 @@ public class EventController {
 
 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
-	/**
-	 * Delete old event image when updating event details (not from REST Call!) ->
-	 * this goes to update and delete Event
-	 * 
-	 * @param userImageURI
-	 */
-	private void removeImage(@PathVariable String userImageURI) {
-		if (!userImageURI.equals("")) {
-			File oldImage = new File(IMAGE_FOLDER + userImageURI);
-			oldImage.delete();
-		}
-	}
 	
 	@PostMapping("/page/{num}")
 	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO){
