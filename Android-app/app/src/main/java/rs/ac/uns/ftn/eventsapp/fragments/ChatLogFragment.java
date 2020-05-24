@@ -90,21 +90,6 @@ public class ChatLogFragment extends Fragment {
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
         currentUser = new FirebaseUserDTO(uid, loggedUser.getName(), loggedUser.getImageUri(),
                 loggedUser.getEmail());
-//        DatabaseReference loggedUserRef =
-//                FirebaseDatabase.getInstance().getReference("/users/" + uid);
-//        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                currentUser = dataSnapshot.getValue(FirebaseUserDTO.class);
-//
-//                getMessages(recyclerView);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     private void getChatPartnerFromFirebase() {
@@ -135,10 +120,10 @@ public class ChatLogFragment extends Fragment {
 
                 if(chatMessage != null){
                     if(chatMessage.getFromId().equals(FirebaseAuth.getInstance().getUid())){
-                        adapter.add(new MessageToChatPartnerItem(chatMessage.getText(), currentUser));
+                        adapter.add(new MessageToChatPartnerItem(chatMessage, currentUser));
                     }
                     else{
-                        adapter.add(new MessageFromChatPartnerItem(chatMessage.getText(), chatPartner));
+                        adapter.add(new MessageFromChatPartnerItem(chatMessage, chatPartner));
                     }
                 }
 
