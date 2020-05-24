@@ -46,7 +46,13 @@ public class InterestedEventsListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getEventsPage(PAGE_START);
+        /*if(currentPage==-1){
+            currentPage = PAGE_START;
+        }
+        if(items==null) {
+            items = new ArrayList<>();
+            getEventsPage(PAGE_START);
+        }*/
 
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
@@ -94,6 +100,9 @@ public class InterestedEventsListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_interested);
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START);
     }
 
     public List<EventDTO> getItems() {

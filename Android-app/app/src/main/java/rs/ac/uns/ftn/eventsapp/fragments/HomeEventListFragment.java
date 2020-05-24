@@ -46,7 +46,13 @@ public class HomeEventListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getEventsPage(PAGE_START);
+        /*if(currentPage==-1){
+            currentPage = PAGE_START;
+        }
+        if(items==null) {
+            items = new ArrayList<>();
+            getEventsPage(PAGE_START);
+        }*/
         Log.d("FINISH", "" + items);
         //items = TestMockup.getInstance().events;
 
@@ -124,6 +130,9 @@ public class HomeEventListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_home);
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START);
     }
 
     public List<EventDTO> getItems() {

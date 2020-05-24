@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -185,13 +186,35 @@ public class EventController {
 		return ResponseEntity.ok(new EventDTO(e));		
 	}
 	
+	@GetMapping("/remove/interested/{eventId}/{userId}")
+	public ResponseEntity<EventDTO> removeInterestedEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+		Event e = eventService.removeFromInterested(eventId, userId);
+		return ResponseEntity.ok(new EventDTO(e));		
+	}
+	
+	@GetMapping("/remove/going/{eventId}/{userId}")
+	public ResponseEntity<EventDTO> removeGoingEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+		Event e = eventService.removeFromGoing(eventId, userId);
+		return ResponseEntity.ok(new EventDTO(e));		
+	}
+	
 	@PostMapping
-	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto){
+	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto) throws Exception{
 		System.out.println("create");
-		User user = userService.findById(dto.getOwner());	//null?
+		User user = userService.findById(dto.getOwner());
 		Event e = new Event(dto);
-		e.setOwner(user);
-		return ResponseEntity.ok(new EventDTO(eventService.save(e)));
+		if(user!=null) {
+			e.setOwner(user);
+			return ResponseEntity.ok(new EventDTO(eventService.save(e)));
+		}
+		throw new Exception("User not found!");
+	}
+	
+	@DeleteMapping("/{userId}/{eventId}")
+	public ResponseEntity<EventDTO> delete(@PathVariable Long userId, @PathVariable Long eventId) throws Exception{
+		System.out.println("delete");
+		Event e = eventService.delete(userId, eventId);
+		return ResponseEntity.ok(new EventDTO(e));
 	}
 
 }

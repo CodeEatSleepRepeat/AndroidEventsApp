@@ -26,18 +26,24 @@ import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 public class SimilarEventsActivity extends AppCompatActivity {
 
     private static final int PAGE_START = 0;
-    private List<EventDTO> items = new ArrayList<>();
+    private static List<EventDTO> items = null;
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
     private boolean isLoading = false;
-    private int currentPage = PAGE_START;
+    private static int currentPage = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_similar_events);
 
-        getEventsPage(PAGE_START);
+        if(currentPage==-1){
+            currentPage = PAGE_START;
+        }
+        if(items==null) {
+            items = new ArrayList<>();
+            getEventsPage(PAGE_START);
+        }
 
         RecyclerView recyclerView = findViewById(R.id.similarEventsRecyclerView);
         layoutManager = new LinearLayoutManager(this);

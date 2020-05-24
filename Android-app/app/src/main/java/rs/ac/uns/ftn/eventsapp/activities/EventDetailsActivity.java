@@ -266,11 +266,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                if (response.code()!=200) {
+                    Toast.makeText(getApplicationContext(), "You are already interested in this event", Toast.LENGTH_LONG).show();
+                }else {
+                    Log.d("TAG", response.body().getId().toString());
+                    Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
                 }
-                Log.d("TAG", response.body().getId().toString());
-                Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
             }
 
             @Override
