@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
@@ -169,6 +171,25 @@ public class EventService {
 			File oldImage = new File(IMAGE_FOLDER + imageName);
 			oldImage.delete();
 		}
+	}
+	
+	public Event update(Long userId, UpdateEventDTO dto) throws Exception {
+		Optional<User> user = userRepository.findById(userId);
+		Optional<Event> event = eventRepository.findById(dto.getId());
+		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
+			event.get().setLatitude(dto.getLatitude());
+			event.get().setLongitude(dto.getLongitude());
+			event.get().setPlace(dto.getPlace());
+			event.get().setName(dto.getName());
+			event.get().setDescription(dto.getDescription());
+			event.get().setType(dto.getType());
+			event.get().setStart_time(dto.getStart_time());
+			event.get().setEnd_time(dto.getEnd_time());
+			event.get().setPrivacy(dto.getPrivacy());
+			event.get().setUpdated_time(new Date());
+			return eventRepository.save(event.get());
+		}
+		throw new Exception("Event does not exist!");
 	}
 	
 }

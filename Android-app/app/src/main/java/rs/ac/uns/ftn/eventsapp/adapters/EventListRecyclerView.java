@@ -28,6 +28,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.UpdateEventActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
@@ -72,7 +73,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
 
 
         //postavljanje listenera za going/interested/cancel dugmice
-        setOnClickListeners(viewHolder, i, item);
+        setOnClickListeners(viewHolder, item);
 
         LinearLayout invitationBody = viewHolder.itemView.findViewById(R.id.event_row_body);
         invitationBody.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +101,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
      *
      * @param viewHolder
      */
-    private void setOnClickListeners(@NonNull final EventViewHolder viewHolder, final int i, final EventDTO item) {
+    private void setOnClickListeners(@NonNull final EventViewHolder viewHolder, final EventDTO item) {
         ImageView imageInterestedAction =
                 viewHolder.itemView.findViewById(R.id.image_interested_item_invitation);
         ImageView imageGoingAction =
@@ -157,8 +158,19 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             updateEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "Event updated",
-                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(v.getContext(), UpdateEventActivity.class);
+                    intent.putExtra("EventId", item.getId());
+                    intent.putExtra("EventLat", Double.toString(item.getLatitude()));
+                    intent.putExtra("EventLng", Double.toString(item.getLongitude()));
+                    intent.putExtra("EventPlace", item.getPlace());
+                    intent.putExtra("EventName", item.getName());
+                    intent.putExtra("EventDes", item.getDescription());
+                    intent.putExtra("EventStart", item.getStart_time().toString());
+                    intent.putExtra("EventEnd", item.getEnd_time().toString());
+                    intent.putExtra("EventCategory", item.getType());
+                    intent.putExtra("EventPrivacy", item.getPrivacy());
+                    intent.putExtra("EventImg", item.getImageUri());
+                    v.getContext().startActivity(intent);
                 }
             });
         }

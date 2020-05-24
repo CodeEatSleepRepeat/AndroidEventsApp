@@ -148,7 +148,7 @@
                 android:maxLength="64" />
 
             <EditText
-                android:id="@+id/eventDescriptionEditText"
+                android:id="@+id/eventDescriptionUpdateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/eventNameUpdateEditText"
@@ -165,7 +165,7 @@
                 android:id="@+id/categoryUpdateEventTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/eventDescriptionEditText"
+                android:layout_below="@+id/eventDescriptionUpdateEditText"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="18dp"
                 android:text="@string/categoryFilter" />

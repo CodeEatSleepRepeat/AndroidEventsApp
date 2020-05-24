@@ -145,6 +145,7 @@
     <string name="forgottenPswSent">"We sent you a new password to your registered email!"</string>
     <string name="confirmRegistration">You can login after verifying your email</string>
     <string name="latestMessageMessagePrefixInOurMessage">You: </string>
+    <string name="updateEvent">Update event</string>
 
 
     <string name="localhost_uri">http://10.0.2.2:8080</string>
