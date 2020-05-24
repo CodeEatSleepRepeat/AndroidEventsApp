@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseLogin;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -139,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
-                        .baseUrl("http://10.0.2.2:8080")
+                        .baseUrl(getString(R.string.localhost_uri))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
@@ -156,8 +157,12 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         } else {
                             Log.d("TAG", response.body().getId().toString());
-                            addUserToDB(response.body());
-                            goToMainWindowAsAuthorized();
+                            User loggedUser = response.body();
+                            addUserToDB(loggedUser);
+                            FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
+                            firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(),
+                                    loggedUser.getPassword());
+                            //goToMainWindowAsAuthorized();
                         }
                     }
 
@@ -193,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Instantiate the backend request
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -213,8 +218,12 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d("TAG", response.body().getId().toString());
-                    addUserToDB(response.body());
-                    goToMainWindowAsAuthorized();
+                    User loggedUser = response.body();
+                    addUserToDB(loggedUser);
+                    FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
+                    firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(),
+                            loggedUser.getPassword());
+                    //goToMainWindowAsAuthorized();
                 }
             }
 

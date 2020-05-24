@@ -18,6 +18,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseRegister;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -68,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private MediaType mediaType;
     private Retrofit retrofit;
+    private Uri imageData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
-                        .baseUrl("http://10.0.2.2:8080")
+                        .baseUrl(getString(R.string.localhost_uri))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
@@ -175,7 +177,8 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             addUserToDB(response.body());
-                            goToMainWindowAsAuthorized();
+                            registerOnFirebase(null, response.body(), true);
+                            //goToMainWindowAsAuthorized();
                         }
                     }
 
@@ -287,7 +290,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null) {
-            Uri imageData = data.getData();
+            imageData = data.getData();
             if (imageData != null) {
                 addImage(imageData);
             }
@@ -343,7 +346,7 @@ public class RegisterActivity extends AppCompatActivity {
         UserRegisterDTO registerUser = new UserRegisterDTO(email.getText().toString().trim(), psw1.getText().toString().trim(), username.getText().toString().trim());
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -359,11 +362,15 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d("TAG", response.body().getId().toString());
+                    //nakon uspesne registracije registrujemo ga i na firebase
+                    FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
+                    User registeredUser = response.body();
+                    registerOnFirebase(bitmap, registeredUser, false);
                     if (bitmap != null) {
-                        uploadImage(response.body().getId());
+                        uploadImage(registeredUser.getId());
                     } else {
                         //addUserToDB(response.body());
-                        loginAfterRegisterActivity();
+                        //loginAfterRegisterActivity();
                     }
                 }
             }
@@ -376,9 +383,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);
@@ -396,7 +404,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("xxs", "onResponse: image uploaded success");
                 } else {
                     //addUserToDB(response.body());
-                    loginAfterRegisterActivity();
+                    //loginAfterRegisterActivity();
                 }
             }
 
@@ -420,12 +428,20 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void loginAfterRegisterActivity() {
-        Toast.makeText(getApplicationContext(), getText(R.string.confirmRegistration), Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+
+    private void registerOnFirebase(Bitmap imageBitmap, User registeredUser,
+                                    Boolean isFacebookLogin){
+        //nakon uspesne registracije registrujemo ga i na firebase
+        FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
+        if (bitmap != null) {
+            firebaseRegister.performRegister(registeredUser.getEmail(),
+                    registeredUser.getPassword(), registeredUser.getName(), imageData, isFacebookLogin);
+
+        } else {
+            firebaseRegister.performRegister(registeredUser.getEmail(),
+                    registeredUser.getPassword(), registeredUser.getName(), null, isFacebookLogin);
+        }
     }
 
 }

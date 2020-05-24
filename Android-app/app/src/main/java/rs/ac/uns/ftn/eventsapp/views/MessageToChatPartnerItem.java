@@ -8,13 +8,14 @@ import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
     private String chatMessage;
-    private User user;
+    private FirebaseUserDTO user;
 
-    public MessageToChatPartnerItem(String chatMessage, User user){
+    public MessageToChatPartnerItem(String chatMessage, FirebaseUserDTO user){
         this.chatMessage = chatMessage;
         this.user = user;
     }
@@ -27,7 +28,7 @@ public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
         textMessage.setText(chatMessage);
         // TODO: Ovde treba sliak usera da se izvuce
         Picasso.get()
-                .load(R.drawable.ic_veljko)
+                .load(user.getProfileImageUrl())
                 .placeholder(R.drawable.ic_veljko)
                 .error(R.drawable.ic_veljko)
                 .into(imageUser);
