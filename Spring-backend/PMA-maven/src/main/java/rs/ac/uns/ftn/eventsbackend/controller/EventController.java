@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -218,6 +220,13 @@ public class EventController {
 	public ResponseEntity<EventDTO> delete(@PathVariable Long userId, @PathVariable Long eventId) throws Exception{
 		System.out.println("delete");
 		Event e = eventService.delete(userId, eventId);
+		return ResponseEntity.ok(new EventDTO(e));
+	}
+	
+	@PutMapping("/{userId}")
+	public ResponseEntity<EventDTO> update(@PathVariable Long userId, @RequestBody UpdateEventDTO dto) throws Exception{
+		System.out.println("update");
+		Event e = eventService.update(userId, dto);
 		return ResponseEntity.ok(new EventDTO(e));
 	}
 

@@ -1,5 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -18,10 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -54,7 +54,7 @@ import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
-public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class UpdateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final int GALLERY_REQUEST = 123;
@@ -91,22 +91,57 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private MediaType mediaType;
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
+        setContentView(R.layout.activity_update_event);
+        createButton = findViewById(R.id.updateEventBtn);
+        placeEditText = findViewById(R.id.placeUpdateEventEditText);
+        placeEditText.setText(getIntent().getStringExtra("EventPlace"));
+        nameEditText = findViewById(R.id.eventNameUpdateEditText);
+        nameEditText.setText(getIntent().getStringExtra("EventName"));
+        descriptionEditText = findViewById(R.id.eventDescriptionUpdateEditText);
+        descriptionEditText.setText(getIntent().getStringExtra("EventDes"));
+        privateCB = findViewById(R.id.privateEventUpdateEventCB);
 
-        createButton = findViewById(R.id.createEventBtn);
-        placeEditText = findViewById(R.id.placeCreateEventEditText);
-        nameEditText = findViewById(R.id.eventNameEditText);
-        descriptionEditText = findViewById(R.id.eventDescriptionEditText);
-        privateCB = findViewById(R.id.privateEventCreateEventCB);
+        charityCB = findViewById(R.id.charityUpdateEventRB);
+        educationalCB = findViewById(R.id.educationalUpdateEventRB);
+        talksCB = findViewById(R.id.talksUpdateEventRB);
+        musicCB = findViewById(R.id.musicUpdateEventRB);
+        partyCB = findViewById(R.id.partyUpdateEventRB);
+        sportsCB = findViewById(R.id.sportsUpdateEventRB);
 
-        Toolbar toolbar = findViewById(R.id.toolbarCreateEvent);
+        String privacy = getIntent().getSerializableExtra("EventPrivacy").toString();
+        if(privacy.equals("PRIVATE")){
+            privateCB.setChecked(true);
+        }
+
+        String category = getIntent().getSerializableExtra("EventCategory").toString();
+        if(category.equals("CHARITY")){
+            charityCB.setChecked(true);
+        }else if(category.equals("EDUCATIONAL")){
+            educationalCB.setChecked(true);
+        }else if(category.equals("TALKS")){
+            talksCB.setChecked(true);
+        }else if(category.equals("MUSIC")){
+            musicCB.setChecked(true);
+        }else if(category.equals("PARTY")){
+            partyCB.setChecked(true);
+        }else{
+            sportsCB.setChecked(true);
+        }
+
+        Log.d("LAT", getIntent().getStringExtra("EventLat"));
+        Log.d("LNG", getIntent().getStringExtra("EventLng"));
+        lat = Double.parseDouble(getIntent().getStringExtra("EventLat"));
+        lng = Double.parseDouble(getIntent().getStringExtra("EventLng"));
+        Log.d("START TIME", getIntent().getStringExtra("EventStart"));
+
+        Toolbar toolbar = findViewById(R.id.toolbarUpdateEvent);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mMapView = findViewById(R.id.createEventMapView);
+        mMapView = findViewById(R.id.updateEventMapView);
         if (savedInstanceState != null) {
             lat = savedInstanceState.getDouble("lat");
             lng = savedInstanceState.getDouble("lng");
@@ -114,17 +149,11 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
         initGoogleMap(savedInstanceState);
 
-        startingDateEditText = findViewById(R.id.startingDateCreateEventEditText);
-        startingTimeEditText = findViewById(R.id.startingTimeCreateEventEditText);
-        endingDateEditText = findViewById(R.id.endingDateCreateEventEditText);
-        endingTimeEditText = findViewById(R.id.endingTimeCreateEventEditText);
+        startingDateEditText = findViewById(R.id.startingDateUpdateEventEditText);
+        startingTimeEditText = findViewById(R.id.startingTimeUpdateEventEditText);
+        endingDateEditText = findViewById(R.id.endingDateUpdateEventEditText);
+        endingTimeEditText = findViewById(R.id.endingTimeUpdateEventEditText);
 
-        charityCB = findViewById(R.id.charityCreateEventRB);
-        educationalCB = findViewById(R.id.educationalCreateEventRB);
-        talksCB = findViewById(R.id.talksCreateEventRB);
-        musicCB = findViewById(R.id.musicCreateEventRB);
-        partyCB = findViewById(R.id.partyCreateEventRB);
-        sportsCB = findViewById(R.id.sportsCreateEventRB);
 
         charityCB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +254,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         startingTimeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(CreateEventActivity.this, startingTime,
+                new TimePickerDialog(UpdateEventActivity.this, startingTime,
                         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
             }
         });
@@ -233,7 +262,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         startingDateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CreateEventActivity.this, startingDate,
+                new DatePickerDialog(UpdateEventActivity.this, startingDate,
                         calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -277,7 +306,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         endingTimeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(CreateEventActivity.this, endingTime,
+                new TimePickerDialog(UpdateEventActivity.this, endingTime,
                         calendar2.get(Calendar.HOUR_OF_DAY), calendar2.get(Calendar.MINUTE), true).show();
             }
         });
@@ -285,7 +314,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         endingDateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CreateEventActivity.this, endingDate,
+                new DatePickerDialog(UpdateEventActivity.this, endingDate,
                         calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH),
                         calendar2.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -295,9 +324,9 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         /*
          * Klikom na sliku se salje intent(zahtev) za izbor slike
          * */
-        imgView = findViewById(R.id.eventImageCreateEventImgView);
+        imgView = findViewById(R.id.eventImageUpdateEventImgView);
 
-        imageHolder = findViewById(R.id.imageHolderCreateEvent);
+        imageHolder = findViewById(R.id.imageHolderUpdateEvent);
         imageHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,12 +337,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-        clearImage = findViewById(R.id.clearImageCreateEvent);
+        clearImage = findViewById(R.id.clearImageUpdateEvent);
         clearImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findViewById(R.id.cameraImageView).setVisibility(View.VISIBLE);
-                findViewById(R.id.addPhotoTextView).setVisibility(View.VISIBLE);
+                findViewById(R.id.cameraUpdateImageView).setVisibility(View.VISIBLE);
+                findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.VISIBLE);
                 imgUri = null;
                 bitmap = null;
                 mediaType = null;
@@ -325,8 +354,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             String s = savedInstanceState.getString("uri");
             if (s != null) {
                 imgView.setImageURI(Uri.parse(s));
-                findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
-                findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
+                findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
+                findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
             }
         }
 
@@ -437,7 +466,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                         ex.printStackTrace();
                     }
                 }else{
-                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
             }
@@ -469,7 +498,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     }
                     Toast.makeText(getApplicationContext(), R.string.eventCreated, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
 
@@ -494,8 +523,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 e.printStackTrace();
             }
             imgUri = imageData.getPath();
-            findViewById(R.id.cameraImageView).setVisibility(View.INVISIBLE);
-            findViewById(R.id.addPhotoTextView).setVisibility(View.INVISIBLE);
+            findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
+            findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
             imgView.setImageURI(imageData);
             clearImage.bringToFront();
         }

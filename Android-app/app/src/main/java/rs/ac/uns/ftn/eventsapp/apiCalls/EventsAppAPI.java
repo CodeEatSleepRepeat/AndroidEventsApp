@@ -5,6 +5,7 @@ import java.util.List;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -35,7 +36,16 @@ public interface EventsAppAPI {
     @GET("/event/going/{eventId}/{userId}")
     Call<EventDTO> goingToEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
 
+    @GET("/event/remove/going/{eventId}/{userId}")
+    Call<EventDTO> removeGoingEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
+
     @GET("/event/interested/{eventId}/{userId}")
     Call<EventDTO> interestedInEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
+
+    @GET("/event/remove/interested/{eventId}/{userId}")
+    Call<EventDTO> removeInterestedEvent(@Path("eventId") Long eventId, @Path("userId") Long userId);
+
+    @DELETE("/event/{userId}/{eventId}")
+    Call<EventDTO> removeMyEvent(@Path("userId") Long userId, @Path("eventId") Long eventId);
 
 }

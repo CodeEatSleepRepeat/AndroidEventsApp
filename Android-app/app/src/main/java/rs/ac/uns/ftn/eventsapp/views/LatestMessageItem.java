@@ -45,13 +45,18 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
 
 
         textUserUsername.setText(chatPartnerUser.getUsername());
-        textMessage.setText(chatMessage.getText());
+        Boolean isMessageByMe = chatMessage.getFromId().equals(FirebaseAuth.getInstance().getUid());
+        if(isMessageByMe)
+            textMessage.setText(viewHolder.itemView.getContext().getString(R.string.latestMessageMessagePrefixInOurMessage) + " " + chatMessage.getText());
+        else
+            textMessage.setText(chatMessage.getText());
+
         DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,
                 SimpleDateFormat.SHORT);
         messageTime.setText(dateFormat.format(new Date(chatMessage.getDate())));
 
         Boolean isChatMessageForUsAndUnseen = !chatMessage.getSeen()
-                        && chatMessage.getToId().equals(FirebaseAuth.getInstance().getUid());
+                        && !isMessageByMe;
         if(isChatMessageForUsAndUnseen){
             textUserUsername.setTypeface(null, Typeface.BOLD);
             textUserUsername.setTextColor(Color.rgb(0,0,0));

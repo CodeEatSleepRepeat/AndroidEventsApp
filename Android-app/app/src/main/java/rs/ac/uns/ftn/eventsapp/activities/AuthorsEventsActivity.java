@@ -89,7 +89,7 @@ public class AuthorsEventsActivity extends AppCompatActivity {
 
     private void getEventsPage(int num) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
