@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,11 +20,11 @@ public class Friendship {
 	private Long id;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private User requestSender;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private User requestReceiver;
 
 	@NotNull

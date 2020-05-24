@@ -14,4 +14,9 @@ public class UserSyncChangeDTO {
 	@NotNull
 	private Boolean sync;
 
+	public UserSyncChangeDTO(@NonNull String email, @NotNull Boolean sync) {
+		super();
+		this.email = email;
+		this.sync = sync;
+	}
 }

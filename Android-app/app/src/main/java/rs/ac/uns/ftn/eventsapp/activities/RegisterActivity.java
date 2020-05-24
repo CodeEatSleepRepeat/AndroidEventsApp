@@ -1,27 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rs.ac.uns.ftn.eventsapp.MainActivity;
-import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
-import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
-import rs.ac.uns.ftn.eventsapp.firebase.FirebaseRegister;
-import rs.ac.uns.ftn.eventsapp.models.User;
-import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -48,9 +29,24 @@ import com.facebook.login.widget.LoginButton;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rs.ac.uns.ftn.eventsapp.MainActivity;
+import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
+import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseRegister;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -177,8 +173,8 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             addUserToDB(response.body());
-                            registerOnFirebase(null, response.body(), true);
-                            //goToMainWindowAsAuthorized();
+                            //registerOnFirebase(null, response.body(), true);    //TODO: ne sme da blokira dalji tok programa - moze biti poslat na login na backendu!
+                            goToMainWindowAsAuthorized();
                         }
                     }
 
@@ -363,14 +359,14 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     //nakon uspesne registracije registrujemo ga i na firebase
-                    FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
+                    //FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
                     User registeredUser = response.body();
-                    registerOnFirebase(bitmap, registeredUser, false);
+                    //registerOnFirebase(bitmap, registeredUser, false);    //TODO: ne sme da blokira dalji tok programa
                     if (bitmap != null) {
                         uploadImage(registeredUser.getId());
                     } else {
-                        //addUserToDB(response.body());
-                        //loginAfterRegisterActivity();
+                        addUserToDB(response.body());
+                        loginAfterRegisterActivity();
                     }
                 }
             }
@@ -403,8 +399,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     Log.d("xxs", "onResponse: image uploaded success");
                 } else {
-                    //addUserToDB(response.body());
-                    //loginAfterRegisterActivity();
+                    addUserToDB(response.body());
+                    loginAfterRegisterActivity();
                 }
             }
 
@@ -429,9 +425,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
     private void registerOnFirebase(Bitmap imageBitmap, User registeredUser,
-                                    Boolean isFacebookLogin){
+                                    Boolean isFacebookLogin) {
         //nakon uspesne registracije registrujemo ga i na firebase
         FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
         if (bitmap != null) {
@@ -444,4 +439,11 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private void loginAfterRegisterActivity() {
+        Toast.makeText(getApplicationContext(), getText(R.string.confirmRegistration), Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 }

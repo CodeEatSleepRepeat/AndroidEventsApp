@@ -35,6 +35,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -122,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupFacebookLogin() {
         callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.fullyInitialize();
 
         LoginButton loginButton = findViewById(R.id.login_button_login);
         loginButton.setPermissions(Arrays.asList(EMAIL, EVENTS));
@@ -159,10 +161,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("TAG", response.body().getId().toString());
                             User loggedUser = response.body();
                             addUserToDB(loggedUser);
-                            FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
-                            firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(),
-                                    loggedUser.getPassword());
-                            //goToMainWindowAsAuthorized();
+                            //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
+                            //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa - moze biti interno poslat na register!
+                            goToMainWindowAsAuthorized();
                         }
                     }
 
@@ -175,9 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancel() {
-                // App code
-            }
+            public void onCancel() {}
 
             @Override
             public void onError(FacebookException exception) {
@@ -220,10 +219,9 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("TAG", response.body().getId().toString());
                     User loggedUser = response.body();
                     addUserToDB(loggedUser);
-                    FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
-                    firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(),
-                            loggedUser.getPassword());
-                    //goToMainWindowAsAuthorized();
+                    //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
+                    //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa
+                    goToMainWindowAsAuthorized();
                 }
             }
 

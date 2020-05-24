@@ -151,6 +151,7 @@ public class HomeEventListFragment extends Fragment {
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 isLoading = false;
                 items.addAll(response.body());

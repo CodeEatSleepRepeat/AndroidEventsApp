@@ -77,6 +77,9 @@ public class EventController {
 				Cover c = new Cover();
 				c.setSource(newImageName);
 				Event e = eventService.findById(id);
+				if (e.getCover() != null) {
+					removeImage(e.getCover().getSource());
+				}
 				e.setCover(c);
 				eventService.save(e);
 				return new ResponseEntity<>(new EventDTO(e), HttpStatus.CREATED);
@@ -101,7 +104,8 @@ public class EventController {
 	 */
 	private void removeImage(@PathVariable String userImageURI) {
 		if (!userImageURI.equals("")) {
-			File oldImage = new File(IMAGE_FOLDER + userImageURI);
+			String uri = userImageURI.startsWith("http") ? userImageURI : IMAGE_FOLDER + userImageURI;
+			File oldImage = new File(uri);
 			oldImage.delete();
 		}
 	}

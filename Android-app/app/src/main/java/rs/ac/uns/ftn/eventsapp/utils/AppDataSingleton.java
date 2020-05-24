@@ -4,15 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import java.util.List;
-
+import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.database.UserSQLiteHelper;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class AppDataSingleton {
+
+    public static String IMAGE_URI = "/event/image/";
+    public static String PROFILE_IMAGE_URI = "/user/image/";
 
     private User loggedUser;
     //TODO: ovde dodati ostale klase koje se cuvaju (npr. lista korisnikovih eventova)
@@ -27,6 +27,10 @@ public class AppDataSingleton {
     }
 
     public void setContext(Context context) {
+        if (IMAGE_URI.startsWith("/")) {
+            IMAGE_URI = context.getString(R.string.localhost_uri) + IMAGE_URI;
+            PROFILE_IMAGE_URI = context.getString(R.string.localhost_uri) + PROFILE_IMAGE_URI;
+        }
         dbUserHelper = new UserSQLiteHelper(context);
         mDatabase = dbUserHelper.getWritableDatabase();
     }

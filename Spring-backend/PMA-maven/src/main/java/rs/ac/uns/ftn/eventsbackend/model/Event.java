@@ -80,20 +80,20 @@ public class Event {
 
 	private double longitude;
 
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	//@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private User owner;
 
-	@ManyToMany(mappedBy = "interestedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "interestedEvents", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<User> interested;
 
-	@ManyToMany(mappedBy = "goingEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "goingEvents", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<User> going;
 
-	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Invitation> userInvitation;
 	
-	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Comment> comments;
 
 	@JsonProperty("updated_time")
