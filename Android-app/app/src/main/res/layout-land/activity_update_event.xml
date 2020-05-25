@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.UpdateEventActivity">
+    <ScrollView
+        android:id="@+id/scrollViewUpdateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarUpdateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/endingDateUpdateEventEditText"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/endingDateUpdateEventImgView"
+                android:backgroundTint="@color/colorPrimary"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/endingDateFilter"
+                android:inputType="date" />
+
+            <CheckBox
+                android:id="@+id/privateEventUpdateEventCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/endingDateUpdateEventImgView"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/privateEventCreateEvent" />
+
+            <ImageView
+                android:id="@+id/endingDateUpdateEventImgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="71dp"
+                android:layout_marginTop="29dp"
+                android:layout_toEndOf="@+id/startingTimeUpdateEventEditText"
+                app:srcCompat="@drawable/ic_calendar" />
+
+            <EditText
+                android:id="@+id/startingTimeUpdateEventEditText"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/startingDateUpdateEventEditText"
+                android:backgroundTint="@color/colorPrimary"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/startingTimeFilter"
+                android:inputType="time" />
+
+            <EditText
+                android:id="@+id/endingTimeUpdateEventEditText"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/endingDateUpdateEventEditText"
+                android:backgroundTint="@color/colorPrimary"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/endingTimeFilter"
+                android:inputType="time" />
+
+            <EditText
+                android:id="@+id/startingDateUpdateEventEditText"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/startingDateUpdateEventImgView"
+                android:backgroundTint="@color/colorPrimary"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/startingDateFilter"
+                android:inputType="date" />
+
+            <ImageView
+                android:id="@+id/startingDateUpdateEventImgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radioGroupUpdate"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="32dp"
+                app:srcCompat="@drawable/ic_calendar" />
+
+            <TextView
+                android:id="@+id/selectLocationUpdateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@+id/toolbarUpdateEvent"
+                android:layout_marginTop="2dp"
+                android:text="Select a location"
+                android:textAlignment="center"
+                android:textSize="25dp" />
+
+            <rs.ac.uns.ftn.eventsapp.fragments.CustomMapView
+                android:id="@+id/updateEventMapView"
+                android:layout_width="match_parent"
+                android:layout_height="232dp"
+                android:layout_below="@id/selectLocationUpdateTextView" />
+
+            <EditText
+                android:id="@+id/eventNameUpdateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/placeUpdateEventEditText"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:hint="@string/eventName"
+                android:inputType="textPersonName"
+                android:maxLength="64" />
+
+            <EditText
+                android:id="@+id/eventDescriptionUpdateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventNameUpdateEditText"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/eventDescription"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:id="@+id/categoryUpdateEventTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventDescriptionUpdateEditText"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/categoryFilter" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/categoryUpdateEventTextView"
+                android:layout_marginStart="95dp"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/educationalUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="-2dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/educational"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+
+                    <CheckBox
+                        android:id="@+id/talksUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="-2dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/talks"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+
+                    <CheckBox
+                        android:id="@+id/sportsUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="-2dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/sports"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+
+                    <CheckBox
+                        android:id="@+id/musicUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="-2dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/music"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+
+                    <CheckBox
+                        android:id="@+id/partyUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="-2dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/party"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+
+                    <CheckBox
+                        android:id="@+id/charityUpdateEventRB"
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/filter_radio_btn"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/charity"
+                        android:textColor="@drawable/filter_radio_btn_text" />
+                </LinearLayout>
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/updateEventBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageHolderUpdateEvent"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/createEvent"
+                android:textColor="@color/colorWhite" />
+
+            <FrameLayout
+                android:id="@+id/imageHolderUpdateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_below="@id/privateEventUpdateEventCB"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/colorGray"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/clearImageUpdateEvent"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="right"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_close_white" />
+
+                <ImageView
+                    android:id="@+id/eventImageUpdateEventImgView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center" />
+
+                <ImageView
+                    android:id="@+id/cameraUpdateImageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:src="@drawable/ic_add_photo_camera" />
+
+                <TextView
+                    android:id="@+id/addPhotoUpdateTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="ADD COVER PHOTO" />
+
+
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/placeUpdateEventEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/updateEventMapView"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:ems="10"
+                android:hint="@string/eventPlace"
+                android:inputType="textPersonName" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

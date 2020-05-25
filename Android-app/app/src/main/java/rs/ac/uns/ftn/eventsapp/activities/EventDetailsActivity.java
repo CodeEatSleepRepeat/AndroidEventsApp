@@ -234,7 +234,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void goingToEvent(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -242,11 +242,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                if (response.code()!=200) {
+                    Toast.makeText(getApplicationContext(), "You are already going to this event", Toast.LENGTH_LONG).show();
                 }
-                Log.d("TAG", response.body().getId().toString());
-                Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+                else {
+                    Log.d("TAG", response.body().getId().toString());
+                    Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -258,7 +260,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void interestedInEvent(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);

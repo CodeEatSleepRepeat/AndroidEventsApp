@@ -23,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.facebook.login.LoginManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -59,14 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
     private static final int LAUNCH_USER_PROFILE_ACTIVITY = 5001;
-    private static final String IMAGE_URI = "http://10.0.2.2:8080/event/image/";
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ChipGroup chipGroup;
-
-    private User loggedUser;
 
     //private NoInternetDialog noInternetDialog;
 
@@ -76,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.home_screen);
 
         AppDataSingleton.getInstance().setContext(this);
-        loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -153,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             changeNavBarUnauthorized();
         } else {
             setNavigationListenerAuthorizedUser(navigationView, toolbar);
-            changeNavBarProfile(loggedUser.getName(), loggedUser.getImageUri());
+            changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
         }
     }
 
@@ -369,10 +366,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (EventDTO item : items) {
-            if (item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
+            if (item.getImageUri()==null || item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
                 eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), item.getImageUri()));
             } else {
-                eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), IMAGE_URI + item.getImageUri()));
+                eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), AppDataSingleton.IMAGE_URI + item.getImageUri()));
             }
         }
         Intent intent = new Intent(this, GoogleMapActivity.class);
@@ -390,11 +387,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
 
         Intent intent = new Intent(this, UserProfileActivity.class);
-        intent.putExtra("userId", loggedUser.getId());
-        intent.putExtra("userName", loggedUser.getName());
-        intent.putExtra("email", loggedUser.getEmail());
-        intent.putExtra("password", loggedUser.getPassword());
-        intent.putExtra("profileImageUrl", loggedUser.getImageUri());
+        intent.putExtra("userId", AppDataSingleton.getInstance().getLoggedUser().getId());
+        intent.putExtra("userName", AppDataSingleton.getInstance().getLoggedUser().getName());
+        intent.putExtra("email", AppDataSingleton.getInstance().getLoggedUser().getEmail());
+        intent.putExtra("password", AppDataSingleton.getInstance().getLoggedUser().getPassword());
+        intent.putExtra("profileImageUrl", AppDataSingleton.getInstance().getLoggedUser().getImageUri());
+        intent.putExtra("fbId", AppDataSingleton.getInstance().getLoggedUser().getFacebookId());
         startActivityForResult(intent, LAUNCH_USER_PROFILE_ACTIVITY);
     }
 
@@ -412,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
         userFirebaseInstance.signOut();
         AppDataSingleton.getInstance().deleteAll();
+        LoginManager.getInstance().logOut();
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -481,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
-            changeNavBarProfile(loggedUser.getName(), loggedUser.getImageUri());
+            changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
         }
 
     }
@@ -691,8 +690,13 @@ public class MainActivity extends AppCompatActivity {
 
         userName.setText(name);
         if (!imgUri.equals("")) {
+
             Picasso.get().setLoggingEnabled(true);
-            Picasso.get().load(Uri.parse(imgUri)).into(userImage);
+            if (imgUri.startsWith("http")){
+                Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_user_icon).into(userImage);
+            } else {
+                Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imgUri)).placeholder(R.drawable.ic_user_icon).into(userImage);
+            }
         } else {
             userImage.setImageResource(R.drawable.ic_user_icon);
         }

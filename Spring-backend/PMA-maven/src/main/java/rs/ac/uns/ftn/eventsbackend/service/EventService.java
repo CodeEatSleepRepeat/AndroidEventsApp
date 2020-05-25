@@ -1,16 +1,21 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
@@ -18,6 +23,9 @@ import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 
 @Service
 public class EventService {
+	
+	@Value("${eventImages}")
+	private String IMAGE_FOLDER;
 
 	@Autowired
 	private EventRepository eventRepository;
@@ -42,26 +50,26 @@ public class EventService {
 	}
 	
 	public List<Event> getAllPageable(Pageable pageable){
-		Page<Event> page = eventRepository.findAll(pageable);
+		Page<Event> page = eventRepository.findAllByIsDeleted(false, pageable);
 		return page.getContent();
 	}
 	
 	public List<Event> getMyEvents(Pageable pageable, Long id) throws Exception{
 		Optional<User> user = userRepository.findById(id);
 		if(user.isPresent()) {
-			Page<Event> page = eventRepository.findByOwner(user.get(), pageable);
+			Page<Event> page = eventRepository.findByOwnerAndIsDeleted(user.get(), false, pageable);
 			return page.getContent();
 		}
 		throw new Exception("User with id " + id + " not found!");
 	}
 	
 	public List<Event> getGoingEvents(Pageable pageable, Long id) throws Exception{
-		Page<Event> page = eventRepository.findByGoingId(id, pageable);
+		Page<Event> page = eventRepository.findByGoingIdAndIsDeleted(id, false, pageable);
 		return page.getContent();
 	}
 	
 	public List<Event> getInterestedEvents(Pageable pageable, Long id) throws Exception{
-		Page<Event> page = eventRepository.findByInterestedId(id, pageable);
+		Page<Event> page = eventRepository.findByInterestedIdAndIsDeleted(id, false, pageable);
 		return page.getContent();
 	}
 	
@@ -150,7 +158,36 @@ public class EventService {
 		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
 			event.get().setIsDeleted(true);
 			eventRepository.save(event.get());
+			if(event.get().getCover()!=null) {
+				removeImage(event.get().getCover().getSource());
+			}
 			return event.get();
+		}
+		throw new Exception("Event does not exist!");
+	}
+	
+	private void removeImage(String imageName) {
+		if (!imageName.equals("")) {
+			File oldImage = new File(IMAGE_FOLDER + imageName);
+			oldImage.delete();
+		}
+	}
+	
+	public Event update(Long userId, UpdateEventDTO dto) throws Exception {
+		Optional<User> user = userRepository.findById(userId);
+		Optional<Event> event = eventRepository.findById(dto.getId());
+		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
+			event.get().setLatitude(dto.getLatitude());
+			event.get().setLongitude(dto.getLongitude());
+			event.get().setPlace(dto.getPlace());
+			event.get().setName(dto.getName());
+			event.get().setDescription(dto.getDescription());
+			event.get().setType(dto.getType());
+			event.get().setStart_time(dto.getStart_time());
+			event.get().setEnd_time(dto.getEnd_time());
+			event.get().setPrivacy(dto.getPrivacy());
+			event.get().setUpdated_time(new Date());
+			return eventRepository.save(event.get());
 		}
 		throw new Exception("Event does not exist!");
 	}

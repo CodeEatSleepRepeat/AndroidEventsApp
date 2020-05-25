@@ -1,15 +1,17 @@
 package rs.ac.uns.ftn.eventsbackend.controller;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +20,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
 import rs.ac.uns.ftn.eventsbackend.dto.*;
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
@@ -48,20 +55,6 @@ public class UserController {
 	@Autowired
 	private EmailService emailService;
 
-	/************ METODE ZA TESTIRANJE *************/
-
-	/***
-	 * Test za kontroler - ping metoda
-	 * 
-	 * @return HttpStatus = 202 -> sve je ok
-	 */
-	@RequestMapping(value = "/ping", method = RequestMethod.GET)
-	public ResponseEntity<String> ping() {
-		System.out.println("Server is pinged");
-		return new ResponseEntity<String>("hello from server", HttpStatus.ACCEPTED);
-	}
-
-	/*******************************************************************/
 
 	/**
 	 * Prijava korisnika koji ima FB nalog povezan sa ovom aplikacijom i koristi FB
@@ -250,6 +243,11 @@ public class UserController {
 		if (fbProfile == null) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
+		
+		if (userService.findByEmail(fbProfile.getEmail()) != null) {
+			//pogresno je otisao ovde, treba na login
+			return login(accessToken);
+		}
 
 		// kreiranje i cuvanje novog usera u bazi
 		String psw = UUID.randomUUID().toString();
@@ -289,30 +287,32 @@ public class UserController {
 	}
 
 	/**
-	 * Update basic user info in database (name, password and user image)
+	 * Update basic user info in database (name, password and delete user image)
 	 * 
 	 * @param user
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<User> update(@RequestBody UserProfileChangeDTO user) {
+		System.out.println("update user");
+		
 		User dbUser = userService.findByEmail(user.getEmail());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		if (user.getName() != null && user.getName().trim().equals("")) {
+		if (user.getName() != null && !user.getName().trim().equals("")) {
 			// promeni ime
 			dbUser.setName(user.getName().trim());
 		}
-		if (user.getImageUri() != null) {
+		if (user.getImageUri() != null && user.getImageUri().equals("")) {
 			// obrisi staru sliku ako postoji na serveru
 			removeImage(dbUser.getImageUri());
 
 			// promeni sliku
-			dbUser.setImageUri(user.getImageUri().trim());
+			dbUser.setImageUri("");
 		}
-		if (user.getPasswordNew1() != null && user.getPasswordNew1().trim().equals("")) {
+		if (user.getPasswordNew1() != null && !user.getPasswordNew1().trim().equals("")) {
 			// promeni password ako je dobar
 			if (!dbUser.getPassword().equals(user.getPasswordOld())
 					|| !user.getPasswordNew1().equals(user.getPasswordNew2())) {
@@ -376,29 +376,34 @@ public class UserController {
 	 * @param user to be deleted
 	 * @return OK if deleted, else NOT_FOUND
 	 */
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public ResponseEntity<Void> delete(@RequestBody UserLoginDTO user) {
-
+		System.out.println("delete");
+		
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
+		//TODO: dodati brisanje ili redefinisanje ownera eventova
+		
 		userService.delete(dbUser.getId());
 		removeImage(dbUser.getImageUri());
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	
 	/**
-	 * Prijava korisnika koji ima FB nalog povezan sa ovom aplikacijom i koristi FB
-	 * dugme
+	 * Odvezivanje FB naloga sa Events app nalogom - brisanje podesavanja fb i brisanje fb eventova
 	 * 
-	 * @param accessToken - Token dobijen preko FB OAuth 2.0 protokola
-	 * @return logged user
+	 * @param UserLoginDTO user - email i password za autentifikaciju
+	 * @return novi user
 	 */
-	@RequestMapping(value = "/unlink/{email}", method = RequestMethod.POST)
+	@RequestMapping(value = "/unlink", method = RequestMethod.POST)
 	public ResponseEntity<User> unlink(@RequestBody UserLoginDTO user) {
+		System.out.println("unlink fb");
+		
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -461,12 +466,12 @@ public class UserController {
 		return new ResponseEntity<User>(dbUser, HttpStatus.OK);
 	}
 
-	@GetMapping("/image/{name}")
-	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
-		byte [] imageBytes = userService.getImage(IMAGE_FOLDER, name);
-
-		return ResponseEntity.ok(imageBytes);
-	}
+//	@GetMapping("/image/{name}")
+//	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
+//		byte [] imageBytes = userService.getImage(IMAGE_FOLDER, name);
+//
+//		return ResponseEntity.ok(imageBytes);
+//	}
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) throws Exception {
@@ -498,6 +503,26 @@ public class UserController {
 		return ResponseEntity.ok(foundUsersDTO);
 	}
 
+	@GetMapping("/image/{name}")
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException{
+		System.out.println("get user image");
+		
+		try{
+			File f = new File(IMAGE_FOLDER + name);
+			FileInputStream fis = new FileInputStream(f);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			for(int readNum; (readNum = fis.read(buf))!=-1;) {
+				baos.write(buf, 0, readNum);
+			}
+			byte[] bytes = baos.toByteArray();
+			fis.close();
+			baos.close();
+			return new ResponseEntity<byte[]>(bytes, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+		}
+	}
 	/**
 	 * Upload user image to server for storage
 	 * 
@@ -506,7 +531,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/upload/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<User> uploadImage(@PathVariable Long id, @RequestPart(name = "image") MultipartFile image) {
-
+		System.out.println("upload user image");
+		
 		if (image != null && !image.isEmpty()) {
 			if (!MIME_IMAGE_TYPES.contains(image.getContentType())) {
 				// sent file is not valid type
@@ -525,8 +551,12 @@ public class UserController {
 				// save image to folder
 				image.transferTo(new File(newFileUri));
 				
+				if (user.getImageUri() != null) {
+					removeImage(user.getImageUri());
+				}
 				user.setImageUri(newImageName);
 				user = userService.save(user);
+				System.out.println("new user image: " + user.getImageUri());
 				return new ResponseEntity<>(user, HttpStatus.CREATED);
 
 			} catch (Exception e) {
@@ -546,9 +576,10 @@ public class UserController {
 	 * 
 	 * @param userImageURI
 	 */
-	private void removeImage(@PathVariable String userImageURI) {
+	private void removeImage(@PathVariable String userImageURI) {		
 		if (!userImageURI.equals("")) {
-			File oldImage = new File(IMAGE_FOLDER + userImageURI);
+			String uri = userImageURI.startsWith("http") ? userImageURI : IMAGE_FOLDER + userImageURI;
+			File oldImage = new File(uri);
 			oldImage.delete();
 		}
 	}

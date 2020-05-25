@@ -48,7 +48,7 @@
     <string name="action_register">Register</string>
     <string name="sign_in_continue_as_anonymous">Continue As Anonymous</string>
     <string name="login_registration_email_hint">Email</string>
-    <string name="registration_username_hint">Username</string>
+    <string name="registration_username_hint">Profile name</string>
     <string name="login_registration_password_hint">Password</string>
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_continue_with_social_media">Continue with social media</string>
@@ -66,7 +66,7 @@
     <string name="reset">Reset</string>
     <string name="menu_remove_friend">Remove friend</string>
     <string name="title_add_friend">Add friend</string>
-    <string name="msg_search_by_username">Search by username</string>
+    <string name="msg_search_by_username">Search by profile name</string>
     <string name="action_serach">Search</string>
     <string name="title_pref_application">Application</string>
     <string name="title_pref_language">Language</string>
@@ -83,11 +83,10 @@
         value</string>
     <string name="title_pref_default_map_zoom">Default map zoom</string>
     <string name="msg_pref_defauilt_map_zoom">Choose an default map zoom for map feature</string>
-    <string name="title_pref_facebook_events">Facebook events</string>
-    <string name="msg_pref_facebook_events">Update user events with users\'s facebook
-        events</string>
-    <string name="title_pref_sync_data_facebook">Sync your data from Facebook</string>
-    <string name="msg_pref__sync_data_facebook">Synchronization of your profile image, email and username</string>
+    <string name="title_pref_facebook_events">Sync with your Facebook events</string>
+    <string name="msg_pref_facebook_events">Manage your Facebook events with the Event app</string>
+    <string name="title_pref_sync_data_facebook">Sync with your Facebook profile</string>
+    <string name="msg_pref__sync_data_facebook">Set your profile image and name using Facebook</string>
     <string name="see_on_map">See on map</string>
     <string name="see_all">See all</string>
     <string name="see_comments">See comments</string>
@@ -142,14 +141,13 @@
     <string name="userNotFound">Email and password don\'t match any known user</string>
     <string name="emailNotFound">Email don\'t match any known user</string>
     <string name="serverToBusy">Please try later, server is too busy.</string>
-    <string name="forgottenPswSent">"We sent you a new password to your registered email!"</string>
+    <string name="forgottenPswSent">We sent you a new password to your registered email!</string>
     <string name="confirmRegistration">You can login after verifying your email</string>
     <string name="latestMessageMessagePrefixInOurMessage">You: </string>
+    <string name="updateEvent">Update event</string>
 
 
-
-
-    <string name="localhost_uri">http://192.168.0.108:8080</string>
+    <string name="localhost_uri">http://10.0.2.2:8080</string>
     <string name="facebook_app_id">xxx</string>
     <string name="fb_login_protocol_scheme">xxx</string>
 </resources>

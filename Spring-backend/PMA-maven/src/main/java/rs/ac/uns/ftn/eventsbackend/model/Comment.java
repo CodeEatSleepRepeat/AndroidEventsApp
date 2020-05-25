@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsbackend.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,11 +32,11 @@ public class Comment {
 	private String text;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private User user;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private Event event;
 
 	@JsonProperty("timestamp")
