@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -53,6 +55,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
@@ -120,7 +123,15 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         endingDateEditText = findViewById(R.id.endingDateUpdateEventEditText);
         endingTimeEditText = findViewById(R.id.endingTimeUpdateEventEditText);
 
+        imgView = findViewById(R.id.eventImageUpdateEventImgView);
+        imageHolder = findViewById(R.id.imageHolderUpdateEvent);
+        clearImage = findViewById(R.id.clearImageUpdateEvent);
+
         eventId = Long.valueOf(getIntent().getStringExtra("EventId"));
+
+        if(getIntent().getStringExtra("EventImg")!=null && savedInstanceState==null){
+            getCurrentEventImage(eventId);
+        }
 
         String privacy = getIntent().getSerializableExtra("EventPrivacy").toString();
         if(privacy.equals("PRIVATE")){
@@ -389,9 +400,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         /*
          * Klikom na sliku se salje intent(zahtev) za izbor slike
          * */
-        imgView = findViewById(R.id.eventImageUpdateEventImgView);
 
-        imageHolder = findViewById(R.id.imageHolderUpdateEvent);
         imageHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -402,7 +411,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-        clearImage = findViewById(R.id.clearImageUpdateEvent);
+
         clearImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -525,7 +534,6 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 Log.d("TAG", response.body().getId().toString());
                 if(imgUri!=null) {
                     try {
-
                         uploadImage(response.body().getId());
                     } catch (URISyntaxException ex) {
                         ex.printStackTrace();
@@ -688,6 +696,38 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    private void getCurrentEventImage(Long id){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<StringDTO> s = e.getEventUpdateImage(id);
+        s.enqueue(new Callback<StringDTO>() {
+            @Override
+            public void onResponse(Call<StringDTO> call, Response<StringDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                }
+                String ba = response.body().getString();
+                if(ba!=null) {
+                    byte[] b = Base64.decode(ba, Base64.DEFAULT);
+                    bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                    mediaType = MediaType.parse("image/*");
+                    imgView.setImageBitmap(bitmap);
+                    findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
+                    clearImage.bringToFront();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StringDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

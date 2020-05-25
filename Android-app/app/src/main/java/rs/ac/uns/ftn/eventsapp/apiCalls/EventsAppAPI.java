@@ -13,6 +13,7 @@ import retrofit2.http.Path;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 
 public interface EventsAppAPI {
@@ -52,5 +53,8 @@ public interface EventsAppAPI {
 
     @PUT("/event/{userId}")
     Call<EventDTO> updateEvent(@Path("userId") Long userId, @Body UpdateEventDTO dto);
+
+    @GET("/event/test/{id}")
+    Call<StringDTO> getEventUpdateImage(@Path("id") Long id);
 
 }
