@@ -204,8 +204,11 @@ public class ChatLogFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 latestMessageOfThisChatLog.removeEventListener(this);
                 ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
-                chatMessage.setSeen(true);
-                latestMessageOfThisChatLog.setValue(chatMessage);
+                if(chatMessage != null){
+                    chatMessage.setSeen(true);
+                    latestMessageOfThisChatLog.setValue(chatMessage);
+                }
+
             }
 
             @Override

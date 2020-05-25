@@ -44,7 +44,7 @@ import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
-import rs.ac.uns.ftn.eventsapp.firebase.FirebaseRegister;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -173,7 +173,6 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             addUserToDB(response.body());
-                            //registerOnFirebase(null, response.body(), true);    //TODO: ne sme da blokira dalji tok programa - moze biti poslat na login na backendu!
                             goToMainWindowAsAuthorized();
                         }
                     }
@@ -358,10 +357,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d("TAG", response.body().getId().toString());
-                    //nakon uspesne registracije registrujemo ga i na firebase
-                    //FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
                     User registeredUser = response.body();
-                    //registerOnFirebase(bitmap, registeredUser, false);    //TODO: ne sme da blokira dalji tok programa
                     if (bitmap != null) {
                         uploadImage(registeredUser.getId());
                     } else {
@@ -424,20 +420,6 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-    private void registerOnFirebase(Bitmap imageBitmap, User registeredUser,
-                                    Boolean isFacebookLogin) {
-        //nakon uspesne registracije registrujemo ga i na firebase
-        FirebaseRegister firebaseRegister = new FirebaseRegister(RegisterActivity.this);
-        if (bitmap != null) {
-            firebaseRegister.performRegister(registeredUser.getEmail(),
-                    registeredUser.getPassword(), registeredUser.getName(), imageData, isFacebookLogin);
-
-        } else {
-            firebaseRegister.performRegister(registeredUser.getEmail(),
-                    registeredUser.getPassword(), registeredUser.getName(), null, isFacebookLogin);
-        }
-    }
 
     private void loginAfterRegisterActivity() {
         Toast.makeText(getApplicationContext(), getText(R.string.confirmRegistration), Toast.LENGTH_LONG).show();

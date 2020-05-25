@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.views;
 
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.ChatMessage;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
     private ChatMessage chatMessage;
@@ -40,12 +42,13 @@ public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
         messageTime.setText(dateFormat.format(new Date(chatMessage.getDate())));
         messageTime.setVisibility(View.INVISIBLE);
 
+        bindUserImageToUI(imageUser);
         // TODO: Ovde treba sliak usera da se izvuce
-        Picasso.get()
-                .load(user.getProfileImageUrl())
-                .placeholder(R.drawable.ic_veljko)
-                .error(R.drawable.ic_veljko)
-                .into(imageUser);
+//        Picasso.get()
+//                .load(user.getProfileImageUrl())
+//                .placeholder(R.drawable.ic_veljko)
+//                .error(R.drawable.ic_veljko)
+//                .into(imageUser);
 
         textMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +59,24 @@ public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
                     messageTime.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private void bindUserImageToUI(ImageView imageUser) {
+        String userImageUrl = user.getProfileImageUrl();
+        if (userImageUrl != null && !userImageUrl.equals("")) {
+            try {
+                if (userImageUrl.startsWith("http")){
+                    Picasso.get().load(Uri.parse(userImageUrl)).placeholder(R.drawable.ic_user_icon).into(imageUser);
+                } else {
+                    Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + userImageUrl)).placeholder(R.drawable.ic_user_icon).into(imageUser);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                imageUser.setImageResource(R.drawable.ic_user_icon);
+            }
+        } else {
+            imageUser.setImageResource(R.drawable.ic_user_icon);
+        }
     }
 
     @Override
