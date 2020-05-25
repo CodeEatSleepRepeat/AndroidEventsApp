@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,7 +41,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     private List<EventDTO> mItems;
     private Context context;
     private int listRowResourceLayout;
-    private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public EventListRecyclerView(List<EventDTO> items, Context context, @NonNull int listRowResourceLayout) {
         mItems = items;
@@ -159,7 +160,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), UpdateEventActivity.class);
-                    intent.putExtra("EventId", item.getId());
+                    intent.putExtra("EventId", String.valueOf(item.getId()));
                     intent.putExtra("EventLat", Double.toString(item.getLatitude()));
                     intent.putExtra("EventLng", Double.toString(item.getLongitude()));
                     intent.putExtra("EventPlace", item.getPlace());

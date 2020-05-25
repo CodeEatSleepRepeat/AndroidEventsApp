@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -149,6 +150,13 @@ public class EventService {
 	
 	public Event save(Event event) {
 		event.setIsDeleted(false);
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getStart_time());
+        cal.add(Calendar.HOUR_OF_DAY, -2);
+        event.setStart_time(cal.getTime());
+        cal.setTime(event.getEnd_time());
+        cal.add(Calendar.HOUR_OF_DAY, -2);
+        event.setEnd_time(cal.getTime());
 		return eventRepository.save(event);
 	}
 	
@@ -177,14 +185,19 @@ public class EventService {
 		Optional<User> user = userRepository.findById(userId);
 		Optional<Event> event = eventRepository.findById(dto.getId());
 		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
+			Calendar cal = Calendar.getInstance();
+	        cal.setTime(dto.getStart_time());
+	        cal.add(Calendar.HOUR_OF_DAY, -2);
+	        event.get().setStart_time(cal.getTime());
+	        cal.setTime(dto.getEnd_time());
+	        cal.add(Calendar.HOUR_OF_DAY, -2);
+	        event.get().setEnd_time(cal.getTime());
 			event.get().setLatitude(dto.getLatitude());
 			event.get().setLongitude(dto.getLongitude());
 			event.get().setPlace(dto.getPlace());
 			event.get().setName(dto.getName());
 			event.get().setDescription(dto.getDescription());
 			event.get().setType(dto.getType());
-			event.get().setStart_time(dto.getStart_time());
-			event.get().setEnd_time(dto.getEnd_time());
 			event.get().setPrivacy(dto.getPrivacy());
 			event.get().setUpdated_time(new Date());
 			return eventRepository.save(event.get());

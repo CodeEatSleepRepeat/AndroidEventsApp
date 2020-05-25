@@ -33,8 +33,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -50,6 +53,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
@@ -89,9 +93,10 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     private Retrofit retrofit;
     private Bitmap bitmap;
     private MediaType mediaType;
+    private Long eventId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_event);
         createButton = findViewById(R.id.updateEventBtn);
@@ -109,6 +114,13 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         musicCB = findViewById(R.id.musicUpdateEventRB);
         partyCB = findViewById(R.id.partyUpdateEventRB);
         sportsCB = findViewById(R.id.sportsUpdateEventRB);
+
+        startingDateEditText = findViewById(R.id.startingDateUpdateEventEditText);
+        startingTimeEditText = findViewById(R.id.startingTimeUpdateEventEditText);
+        endingDateEditText = findViewById(R.id.endingDateUpdateEventEditText);
+        endingTimeEditText = findViewById(R.id.endingTimeUpdateEventEditText);
+
+        eventId = Long.valueOf(getIntent().getStringExtra("EventId"));
 
         String privacy = getIntent().getSerializableExtra("EventPrivacy").toString();
         if(privacy.equals("PRIVATE")){
@@ -134,7 +146,66 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         Log.d("LNG", getIntent().getStringExtra("EventLng"));
         lat = Double.parseDouble(getIntent().getStringExtra("EventLat"));
         lng = Double.parseDouble(getIntent().getStringExtra("EventLng"));
-        Log.d("START TIME", getIntent().getStringExtra("EventStart"));
+
+        if(savedInstanceState==null) {
+            Log.d("START TIME", getIntent().getStringExtra("EventStart"));
+            DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+            Date date = null;
+            try {
+                date = formatter.parse(getIntent().getStringExtra("EventStart"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            calendar.setTime(date);
+            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+            Log.d("formatedDate", formatedDate);
+            String formatedTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            startingDateEditText.setText(formatedDate);
+            startingTimeEditText.setText(formatedTime);
+
+            Date date2 = null;
+            try {
+                date2 = formatter.parse(getIntent().getStringExtra("EventEnd"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            calendar2.setTime(date2);
+            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "/" + (calendar2.get(Calendar.MONTH) + 1) + "/" + calendar2.get(Calendar.YEAR);
+            Log.d("formatedDate2", formatedDate2);
+            String formatedTime2 = calendar2.get(Calendar.HOUR_OF_DAY) + ":" + calendar2.get(Calendar.MINUTE);
+            endingDateEditText.setText(formatedDate2);
+            endingTimeEditText.setText(formatedTime2);
+        }else{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            Date date = null;
+            try {
+                date = sdf.parse(savedInstanceState.getString("start"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            calendar.setTime(date);
+            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+            Log.d("formatedDate", formatedDate);
+            String formatedTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            startingDateEditText.setText(formatedDate);
+            startingTimeEditText.setText(formatedTime);
+
+            Date date2 = null;
+            try {
+                date2 = sdf.parse(savedInstanceState.getString("end"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            calendar2.setTime(date2);
+            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "/" + (calendar2.get(Calendar.MONTH) + 1) + "/" + calendar2.get(Calendar.YEAR);
+            Log.d("formatedDate2", formatedDate2);
+            String formatedTime2 = calendar2.get(Calendar.HOUR_OF_DAY) + ":" + calendar2.get(Calendar.MINUTE);
+            endingDateEditText.setText(formatedDate2);
+            endingTimeEditText.setText(formatedTime2);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbarUpdateEvent);
         setSupportActionBar(toolbar);
@@ -148,12 +219,6 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             imgUri = savedInstanceState.getString("uri");
         }
         initGoogleMap(savedInstanceState);
-
-        startingDateEditText = findViewById(R.id.startingDateUpdateEventEditText);
-        startingTimeEditText = findViewById(R.id.startingTimeUpdateEventEditText);
-        endingDateEditText = findViewById(R.id.endingDateUpdateEventEditText);
-        endingTimeEditText = findViewById(R.id.endingTimeUpdateEventEditText);
-
 
         charityCB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -448,9 +513,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<EventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
+        Call<EventDTO> s = e.updateEvent(AppDataSingleton.getInstance().getLoggedUser().getId(), new UpdateEventDTO(eventId, lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
                 descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy, AppDataSingleton.getInstance().getLoggedUser().getId()));
+                endDateTime, facebookPrivacy));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
@@ -565,6 +630,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
         if (mapViewBundle == null) {
             mapViewBundle = new Bundle();
@@ -577,6 +643,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         if (imgUri != null) {
             outState.putString("uri", imgUri);
         }
+        outState.putString("start", sdf.format(calendar.getTime()));
+        outState.putString("end", sdf.format(calendar2.getTime()));
         mMapView.onSaveInstanceState(mapViewBundle);
     }
 

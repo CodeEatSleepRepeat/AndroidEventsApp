@@ -257,7 +257,7 @@
                 android:layout_below="@id/imageHolderUpdateEvent"
                 android:layout_marginTop="50dp"
                 android:backgroundTint="@color/colorPrimary"
-                android:text="@string/createEvent"
+                android:text="@string/updateEvent"
                 android:textColor="@color/colorWhite" />
 
             <FrameLayout
