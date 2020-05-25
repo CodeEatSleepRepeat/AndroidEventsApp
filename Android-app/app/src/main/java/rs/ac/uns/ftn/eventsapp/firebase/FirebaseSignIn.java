@@ -35,6 +35,7 @@ public class FirebaseSignIn {
     private String username;
     private String email;
     private String password;
+    private String userImageURI;
 
 
     public FirebaseSignIn(Context context){
@@ -42,10 +43,11 @@ public class FirebaseSignIn {
     }
 
     public void performSignIn(final String email, String password,
-                              final String username, final Uri userImageURI){
+                              final String username, final String userImageURI){
         this.username = username;
         this.email = email;
         this.password = password;
+        this.userImageURI = userImageURI;
 
         Boolean isEmptyDataContainedInParameters =
                 email.isEmpty() || password.isEmpty() || username.isEmpty();
@@ -61,10 +63,10 @@ public class FirebaseSignIn {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(FIREBASE_REGISTER_TAG, "User created on firebase");
-                            if(userImageURI != null)
-                                uploadImageToFirebase(userImageURI);
-                            else
-                                saveOrUpdateUserInFirebase("", username, email);
+//                            if(userImageURI != null)
+//                                uploadImageToFirebase(userImageURI);
+//                            else
+                                saveOrUpdateUserInFirebase(userImageURI, username, email);
                         } else {
                             InformAboutRegisterFailure(task);
                         }

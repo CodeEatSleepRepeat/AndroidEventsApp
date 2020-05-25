@@ -261,7 +261,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseSignIn firebaseSignIn = new FirebaseSignIn(LoginActivity.this);
 
         firebaseSignIn.performSignIn(registeredUser.getEmail(),
-                registeredUser.getPassword(), registeredUser.getName(), null);
+                registeredUser.getPassword(), registeredUser.getName(), registeredUser.getImageUri());
     }
 
 }
