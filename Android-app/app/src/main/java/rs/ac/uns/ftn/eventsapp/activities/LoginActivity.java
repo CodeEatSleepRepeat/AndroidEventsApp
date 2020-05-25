@@ -10,7 +10,7 @@ import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
-import rs.ac.uns.ftn.eventsapp.firebase.FirebaseLogin;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -25,12 +25,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -161,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("TAG", response.body().getId().toString());
                             User loggedUser = response.body();
                             addUserToDB(loggedUser);
+                            signInToFirebase(loggedUser);
                             //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                             //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa - moze biti interno poslat na register!
                             goToMainWindowAsAuthorized();
@@ -219,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("TAG", response.body().getId().toString());
                     User loggedUser = response.body();
                     addUserToDB(loggedUser);
+                    signInToFirebase(loggedUser);
                     //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                     //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa
                     goToMainWindowAsAuthorized();
@@ -260,5 +256,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void signInToFirebase(User registeredUser) {
+        //nakon uspesne registracije registrujemo ga i na firebase
+        FirebaseSignIn firebaseSignIn = new FirebaseSignIn(LoginActivity.this);
+
+        firebaseSignIn.performSignIn(registeredUser.getEmail(),
+                registeredUser.getPassword(), registeredUser.getName(), null);
+    }
 
 }

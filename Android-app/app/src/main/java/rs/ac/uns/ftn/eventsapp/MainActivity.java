@@ -223,7 +223,14 @@ public class MainActivity extends AppCompatActivity {
                         onClickNavItem(ListOfUsersFragment.class);
                         break;
                     case R.id.navigation_item_messages:
-                        onClickNavItem(LatestMessagesFragment.class);
+                        Boolean isUserLoggedToFirebaseMessageService =
+                                FirebaseAuth.getInstance().getCurrentUser() != null;
+                        if(isUserLoggedToFirebaseMessageService)
+                            onClickNavItem(LatestMessagesFragment.class);
+                        else
+                            Toast.makeText(MainActivity.this,"Message system is not avaible at the " +
+                                            "moment",
+                                    Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_item_logout:
                         logout();

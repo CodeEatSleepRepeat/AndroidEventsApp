@@ -26,7 +26,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.LoginActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 
-public class FirebaseRegister {
+public class FirebaseSignIn {
 
     public static String FIREBASE_REGISTER_TAG = "rs.ac.uns.ftn.eventsapp.firebase.FirebaseRegister";
 
@@ -34,21 +34,22 @@ public class FirebaseRegister {
     private Context activityContext;
     private String username;
     private String email;
-    private Boolean isFacebookRegister;
+    private String password;
 
 
-    public FirebaseRegister(Context context){
+    public FirebaseSignIn(Context context){
         activityContext = context;
     }
 
-    public void performRegister(final String email, String password,
-                                final String username, final Uri userImageURI, Boolean isFacebookRegister){
+    public void performSignIn(final String email, String password,
+                              final String username, final Uri userImageURI){
         this.username = username;
-        this.isFacebookRegister = isFacebookRegister;
         this.email = email;
+        this.password = password;
 
         Boolean isEmptyDataContainedInParameters =
                 email.isEmpty() || password.isEmpty() || username.isEmpty();
+
         if(isEmptyDataContainedInParameters){
             Toast.makeText(activityContext, "Please enter all fields", Toast.LENGTH_SHORT).show();
             return;
@@ -116,10 +117,7 @@ public class FirebaseRegister {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if(isFacebookRegister)
-                            goToMainWindowAsAuthorized();
-                        else
-                            loginAfterRegisterActivity();
+                            //goToMainWindowAsAuthorized();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -131,23 +129,50 @@ public class FirebaseRegister {
     }
 
     private void InformAboutRegisterFailure(@NonNull Task<AuthResult> task) {
-        Log.w(FIREBASE_REGISTER_TAG, "createUserWithEmail:failure", task.getException());
-        Toast.makeText(activityContext, "Authentication failed.",
+        // if user is already registered then perform login
+        if(task.getException().toString().contains("The email address is already in use by another account")){
+            loginWithEmailAndPassword(email,password);
+            return;
+        }
+        Log.w(FIREBASE_REGISTER_TAG, "createUserWithEmail:failure",
+                task.getException());
+        Toast.makeText(activityContext, "Register into message system failed.",
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void loginAfterRegisterActivity() {
-        Toast.makeText(activityContext, activityContext.getText(R.string.confirmRegistration),
-                Toast.LENGTH_LONG).show();
+    public void loginWithEmailAndPassword(String email,String password){
+        firebaseAuthInstance.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener((Activity) activityContext, new OnCompleteListener<AuthResult>() {
 
-        Intent intent = new Intent(activityContext, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activityContext.startActivity(intent);
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("salepare", "LOGIN SUCCESSFUL! TO!");
+                        } else {
+                            InformAboutLoginFailure(task);
+                        }
+                    }
+                });
     }
 
-    private void goToMainWindowAsAuthorized() {
-        Intent intent = new Intent(activityContext, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activityContext.startActivity(intent);
+    private void InformAboutLoginFailure(@NonNull Task<AuthResult> task) {
+        Log.w(FIREBASE_REGISTER_TAG, "signInWithEmail:failure", task.getException());
+        Toast.makeText(activityContext, "Message system authentication failed.",
+                Toast.LENGTH_SHORT).show();
     }
+
+//    private void loginAfterRegisterActivity() {
+//        Toast.makeText(activityContext, activityContext.getText(R.string.confirmRegistration),
+//                Toast.LENGTH_LONG).show();
+//
+//        Intent intent = new Intent(activityContext, LoginActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        activityContext.startActivity(intent);
+//    }
+//
+//    private void goToMainWindowAsAuthorized() {
+//        Intent intent = new Intent(activityContext, MainActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        activityContext.startActivity(intent);
+//    }
 }
