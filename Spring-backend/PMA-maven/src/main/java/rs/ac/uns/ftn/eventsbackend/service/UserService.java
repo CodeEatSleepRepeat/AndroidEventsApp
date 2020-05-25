@@ -1,16 +1,33 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
+import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
+import rs.ac.uns.ftn.eventsbackend.repository.FriendshipRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
+
+import javax.jws.soap.SOAPBinding;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private FriendshipRepository friendshipRepository;
+
 
 	public User findByCredentials(String email, String password) {
 		User user = userRepository.findByEmail(email);
@@ -53,5 +70,61 @@ public class UserService {
 
 	public void delete(Long userId) {
 		userRepository.deleteById(userId);
+	}
+
+    public byte[] getImage(String imageFolder, String name) throws IOException {
+		File f = new File(imageFolder + name);
+		FileInputStream fis = new FileInputStream(f);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		for(int readNum; (readNum = fis.read(buf))!=-1;) {
+			baos.write(buf, 0, readNum);
+		}
+		byte[] bytes = baos.toByteArray();
+		fis.close();
+		baos.close();
+		return bytes;
+    }
+
+	public User getById(Long userId) throws Exception {
+		Optional<User> foundUserOptional;
+
+		foundUserOptional = userRepository.findById(userId);
+		if(!foundUserOptional.isPresent())
+			throw new Exception("User not found with ID:" + userId);
+
+		return foundUserOptional.get();
+	}
+
+	public List<User> findAllFriendsOfUser(Long userId) {
+		Optional<User> foundUser = userRepository.findById(userId);
+		List<User> usersFriends = new ArrayList<User>();
+		if(foundUser.get() == null){
+			usersFriends = Collections.emptyList();
+		}
+		else {
+			for(Friendship friendship : foundUser.get().getSendRequests()){
+				if(friendship.getStatus().equals(FriendshipStatus.ACCEPTED))
+					usersFriends.add(friendship.getRequestReceiver());
+			}
+			for(Friendship friendship : foundUser.get().getReceivedRequests()){
+				if(friendship.getStatus().equals(FriendshipStatus.ACCEPTED))
+					usersFriends.add(friendship.getRequestSender());
+			}
+		}
+
+		return usersFriends;
+	}
+
+	public List<User> findAllWhichContainsUsernamePageable(String username, Pageable pageable) {
+		Page<User> foundUsersPage = userRepository.findByNameContaining(username, pageable);
+
+		List<User> foundUsers = foundUsersPage.getContent();
+		if(foundUsersPage == null){
+			return Collections.emptyList();
+		}
+		else{
+			return foundUsers;
+		}
 	}
 }

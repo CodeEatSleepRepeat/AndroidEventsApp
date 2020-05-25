@@ -1,8 +1,12 @@
 package rs.ac.uns.ftn.eventsbackend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
+import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -19,5 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByFacebookId(String facebookId);
 
 	public boolean existsByEmail(String email);
+
+    Page<User> findByNameContaining(String username, Pageable pageable);
 
 }

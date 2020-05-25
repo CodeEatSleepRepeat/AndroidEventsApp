@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.controller;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -13,23 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
-import rs.ac.uns.ftn.eventsbackend.dto.UserLoginDTO;
-import rs.ac.uns.ftn.eventsbackend.dto.UserProfileChangeDTO;
-import rs.ac.uns.ftn.eventsbackend.dto.UserRegisterDTO;
-import rs.ac.uns.ftn.eventsbackend.dto.UserSyncChangeDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.*;
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.service.EmailService;
@@ -468,6 +461,43 @@ public class UserController {
 		return new ResponseEntity<User>(dbUser, HttpStatus.OK);
 	}
 
+	@GetMapping("/image/{name}")
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
+		byte [] imageBytes = userService.getImage(IMAGE_FOLDER, name);
+
+		return ResponseEntity.ok(imageBytes);
+	}
+
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) throws Exception {
+		User foundUser = userService.getById(userId);
+		UserDTO foundUserDTO = new UserDTO(foundUser);
+		return ResponseEntity.ok(foundUserDTO);
+	}
+
+	@GetMapping("/friendsOf/{userId}")
+	public ResponseEntity<List<UserDTO>> getFriendsOfUser(@PathVariable Long userId) throws Exception {
+		List<User> userFriends = userService.findAllFriendsOfUser(userId);
+		List<UserDTO> userFriendsDTO = new ArrayList<UserDTO>();
+		for(User user : userFriends){
+			UserDTO userFriendDTO = new UserDTO(user);
+			userFriendsDTO.add(userFriendDTO);
+		}
+		return ResponseEntity.ok(userFriendsDTO);
+	}
+
+	@GetMapping("/containsUsername/{username}/page/{num}")
+	public ResponseEntity<List<UserDTO>> getUsersWhichContainsUsername(@PathVariable int num, @PathVariable String username){
+		Pageable pageable = PageRequest.of(num, 15);
+		List<User> foundUsers = userService.findAllWhichContainsUsernamePageable(username, pageable);
+		List<UserDTO> foundUsersDTO = new ArrayList<UserDTO>();
+		for(User user : foundUsers){
+			UserDTO userDTO = new UserDTO(user);
+			foundUsersDTO.add(userDTO);
+		}
+		return ResponseEntity.ok(foundUsersDTO);
+	}
+
 	/**
 	 * Upload user image to server for storage
 	 * 
@@ -522,4 +552,6 @@ public class UserController {
 			oldImage.delete();
 		}
 	}
+
+
 }
