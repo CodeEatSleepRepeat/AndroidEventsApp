@@ -209,7 +209,7 @@ INSERT INTO cover(id, fb_id, offset_x, offset_y, source) VALUES
 --
 -- Inserting data into table event
 --
-INSERT INTO event(id, attending_countfb, can_guests_invite, created_time, declined_count, description, end_time, facebook_id, guest_list_enabledfb, interested_count, is_deleted, is_canceled, is_online, latitude, longitude, maybe_count, name, place, privacy, start_time, timezone, type, updated_time, updated_timefb, cover_id, owner_id) VALUES
+INSERT INTO event(id, attending_countfb, can_guests_invite, created_time, declined_count, description, end_time, facebook_id, guest_list_enabledfb, interested_count, sync_status, is_canceled, is_online, latitude, longitude, maybe_count, name, place, privacy, start_time, timezone, type, updated_time, updated_timefb, cover_id, owner_id) VALUES
 (1, 10, True, '2020-01-01 00:00:01', 6, 'Pariatur veniam eveniet blanditiis quae vero delectus sed omnis qui. Voluptatem omnis eius atque fuga ea unde quidem voluptas ut. Suscipit corrupti tempora vel sed voluptatem quam est sunt ut. Optio sint aut, in quasi perspiciatis non adipisci nobis qui. Et itaque necessitatibus quia aperiam natus et nulla repellat facere; unde ut cumque, corrupti quos ut magni beatae sint quia.\r\nMolestiae architecto nobis voluptatem autem velit veniam quia iure est. Porro repellendus aut sed sit, error sint placeat et non! Qui voluptatem sunt porro vitae sed sint rem iste unde; fugiat accusantium nobis neque ut distinctio atque unde autem nemo. Repudiandae explicabo quidem non omnis laudantium nulla voluptatem error veritatis. Architecto est aut voluptatem provident est dicta consequatur sed nisi. Sapiente iste enim sed quo iusto, laborum harum fuga quasi.', '2020-05-18 13:47:02', NULL, NULL, 16, False, True, True, 0, 136, 8, 'Tenoperivase', '2757 Old Church Highway, Penobscot Building, Denver, Colorado, 06870', 1, '2020-01-02 12:10:01', 'Western Standard Time', 6, '2020-01-01 22:44:01', '2003-05-25 06:16:50', 1, 5),
 (2, 47, False, '2020-01-01 01:02:01', 5, 'Expedita sit quia in ut dolore aperiam harum optio accusantium. In rerum, distinctio quia dignissimos dolores sint magni quis magnam.\r\nEt sed dolor dicta assumenda ex unde error, reiciendis ratione. Ea adipisci, tenetur omnis quis ut consequuntur eius ut perspiciatis? Quisquam nostrum deserunt, ab maiores quo et minus cum ut. Aut assumenda ipsam perferendis tenetur porro nemo alias nam perspiciatis; eius unde veritatis reprehenderit commodi error ab a ut doloremque.', '2020-05-19 12:45:35', NULL, NULL, 1, False, False, True, 83, -70, 5, 'Binanor', '734 SW Chapel Hill Road, Santa Fe, New Mexico, 87595', 0, '2020-01-02 22:30:01', 'Gambier Islands', 5, '2020-01-02 13:12:01', '1972-07-27 02:33:33', 2, 7),
 (3, 6, False, '2020-01-01 02:04:01', 4, 'Facere iste neque sint deserunt distinctio et autem iste ad. Et doloribus minima et id omnis dolorum consequatur consequuntur cumque. Sint doloremque sunt sint voluptatem molestias facere optio aut et. Aut ratione, omnis quas est accusamus est nam id repudiandae! Aliquam veritatis voluptatem, aspernatur quas illo iste nostrum consequatur sit. Dolor iste et molestiae natus exercitationem harum quam eaque quo; facere dolorum voluptate quaerat eius distinctio voluptatum enim in tempora.', '2020-05-18 13:47:02', NULL, NULL, 6, False, False, False, 6, 6, 7, 'Minidipifen', '50 Woodland Loop, Appartment 79, Austin, TX, 09126', 0, '2020-01-03 02:38:01', 'Australian Eastern Standard Time', 1, '2020-01-03 00:34:01', '2004-05-04 04:13:49', 3, 9),
@@ -499,14 +499,14 @@ INSERT INTO owner(id, facebook_id, user_id) VALUES
 --
 -- Inserting data into table user
 --
-INSERT INTO user(id, activated_account, email, facebook_id, image_height, image_uri, image_width, name, password, sync_facebook_events, sync_facebook_profile) VALUES
-(1, True, 'wmgnztsc13@example.com', '', NULL, '1589079312837\r\n', NULL, 'Larry892', 'a46U46K7Izco^9b6m', False, False),
-(2, False, 'Randall_Bragg@nowhere.com', '', NULL, '1589642898537\r\n', NULL, 'Edgar1967', 'lFz3Zp3@v0A6KFMOg986%Q046e83Huh35', False, False),
-(3, False, 'ohtzpym5997@example.com', '', NULL, '1589800708774\r\n', NULL, 'Frankie187', 'b2X+Qxup32z22fB6i7m27Qg022ZT10nT', False, False),
-(4, False, 'Stack94@nowhere.com', '', NULL, '1589100212607\r\n', NULL, 'Penni2017', 'HLagKlWxrvtI5767Jh436Qqm8xsDwdf9@l!O147ZsSe539K6e8BO+X9C&a355', False, False),
-(5, True, 'zdyjo8@example.com', '', NULL, '1589356999678\r\n', NULL, 'Gerald822', 'lqJX7@Z8uBLF$X3=H06!plm8FDJ1D6WJtw125f', False, False),
-(6, True, 'Jamey_Ledesma247@nowhere.com', '', NULL, '1589031455623\r\n', NULL, 'Jamie2012', 'q6GYa4cZ25I', False, False),
-(7, True, 'Julian@example.com', '', NULL, '1589891466605\r\n', NULL, 'Branden2000', 'ATe7vDO+16+i7QJ6!4', False, False),
-(8, False, 'KatriceYounger@example.com', '', NULL, '1589960113173\r\n', NULL, 'Cleopatra2003', '49!e6DeaXX#UN7Sz5', False, False),
-(9, False, 'Henley@example.com', '', NULL, '1589693264893\r\n', NULL, 'Mayola946', 'jQWERCDX6MHOKY9+QUBU', False, False),
-(10, True, 'Addie.AOrozco829@nowhere.com', '', NULL, '1589171110569\r\n', NULL, 'John58', '63B@=m%l5^5a0j508dWAm92bs0', False, False);
+INSERT INTO user(id, activated_account, email, facebook_id, image_height, image_uri, image_width, name, password, sync_facebook_events, sync_facebook_profile, sync_status, updated_time) VALUES
+(1, True, 'wmgnztsc13@example.com', '', NULL, '1589079312837', NULL, 'Larry892', 'a46U46K7Izco^9b6m', False, False, 0, '2020-01-01 00:00:01'),
+(2, False, 'Randall_Bragg@nowhere.com', '', NULL, '1589642898537', NULL, 'Edgar1967', 'lFz3Zp3@v0A6KFMOg986%Q046e83Huh35', False, False, 0, '2020-01-01 00:00:01'),
+(3, False, 'ohtzpym5997@example.com', '', NULL, '1589800708774', NULL, 'Frankie187', 'b2X+Qxup32z22fB6i7m27Qg022ZT10nT', False, False, 0, '2020-01-01 00:00:01'),
+(4, False, 'Stack94@nowhere.com', '', NULL, '1589100212607', NULL, 'Penni2017', 'HLagKlWxrvtI5767Jh436Qqm8xsDwdf9@l!O147ZsSe539K6e8BO+X9C&a355', False, False, 0, '2020-01-01 00:00:01'),
+(5, True, 'zdyjo8@example.com', '', NULL, '1589356999678', NULL, 'Gerald822', 'lqJX7@Z8uBLF$X3=H06!plm8FDJ1D6WJtw125f', False, False, 0, '2020-01-01 00:00:01'),
+(6, True, 'Jamey_Ledesma247@nowhere.com', '', NULL, '1589031455623', NULL, 'Jamie2012', 'q6GYa4cZ25I', False, False, 0, '2020-01-01 00:00:01'),
+(7, True, 'Julian@example.com', '', NULL, '1589891466605', NULL, 'Branden2000', 'ATe7vDO+16+i7QJ6!4', False, False, 0, '2020-01-01 00:00:01'),
+(8, False, 'KatriceYounger@example.com', '', NULL, '1589960113173', NULL, 'Cleopatra2003', '49!e6DeaXX#UN7Sz5', False, False, 0, '2020-01-01 00:00:01'),
+(9, False, 'Henley@example.com', '', NULL, '1589693264893', NULL, 'Mayola946', 'jQWERCDX6MHOKY9+QUBU', False, False, 0, '2020-01-01 00:00:01'),
+(10, True, 'Addie.AOrozco829@nowhere.com', '', NULL, '1589171110569', NULL, 'John58', '63B@=m%l5^5a0j508dWAm92bs0', False, False, 0, '2020-01-01 00:00:01');

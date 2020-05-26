@@ -5,8 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
-import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {

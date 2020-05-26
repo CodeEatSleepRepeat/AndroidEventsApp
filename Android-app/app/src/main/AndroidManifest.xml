@@ -19,7 +19,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
-        <activity android:name=".activities.UpdateEventActivity"
+
+        <receiver android:name=".sync.SyncReceiverInitTask" />
+
+        <service android:name=".sync.SyncUserService" />
+
+        <activity
+            android:name=".activities.UpdateEventActivity"
             android:label="@string/updateEvent"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SettingsUnAuthUserActivity" />

@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.eventsbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,9 +53,9 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
-	
+
 	@Autowired
-	private UserService userService; 
+	private UserService userService;
 
 	/**
 	 * Upload event cover image to server for storage
@@ -86,7 +85,7 @@ public class EventController {
 					removeImage(e.getCover().getSource());
 				}
 				e.setCover(c);
-				eventService.save(e);
+				eventService.update(e);
 				return new ResponseEntity<>(new EventDTO(e), HttpStatus.CREATED);
 
 			} catch (Exception e) {
@@ -114,9 +113,10 @@ public class EventController {
 			oldImage.delete();
 		}
 	}
-	
+
 	@PostMapping("/page/{num}")
-	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO){
+	public ResponseEntity<List<EventDTO>> eventsPageable(@PathVariable int num,
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getAllPageable(pageable);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -126,9 +126,10 @@ public class EventController {
 		}
 		return ResponseEntity.ok(dtos);
 	}
-	
+
 	@PostMapping("/myevents/{id}/{num}")
-	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
+	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num,
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getMyEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -138,9 +139,10 @@ public class EventController {
 		}
 		return ResponseEntity.ok(dtos);
 	}
-	
+
 	@PostMapping("/goingevents/{id}/{num}")
-	public ResponseEntity<List<EventDTO>> goingEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
+	public ResponseEntity<List<EventDTO>> goingEventsPageable(@PathVariable Long id, @PathVariable int num,
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getGoingEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -150,9 +152,10 @@ public class EventController {
 		}
 		return ResponseEntity.ok(dtos);
 	}
-	
+
 	@PostMapping("/interestedevents/{id}/{num}")
-	public ResponseEntity<List<EventDTO>> interestedEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception{
+	public ResponseEntity<List<EventDTO>> interestedEventsPageable(@PathVariable Long id, @PathVariable int num,
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getInterestedEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -162,14 +165,14 @@ public class EventController {
 		}
 		return ResponseEntity.ok(dtos);
 	}
-	
+
 	@GetMapping("/image/{name}")
-	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException{
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
 		File f = new File(IMAGE_FOLDER + name);
 		FileInputStream fis = new FileInputStream(f);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buf = new byte[1024];
-		for(int readNum; (readNum = fis.read(buf))!=-1;) {
+		for (int readNum; (readNum = fis.read(buf)) != -1;) {
 			baos.write(buf, 0, readNum);
 		}
 		byte[] bytes = baos.toByteArray();
@@ -177,72 +180,83 @@ public class EventController {
 		baos.close();
 		return ResponseEntity.ok(bytes);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Event> getById(@PathVariable Long id){
+	public ResponseEntity<Event> getById(@PathVariable Long id) {
 		return ResponseEntity.ok(eventService.findById(id));
 	}
-	
+
 	@GetMapping("/going/{eventId}/{userId}")
-	public ResponseEntity<EventDTO> goingToEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+	public ResponseEntity<EventDTO> goingToEvent(@PathVariable Long eventId, @PathVariable Long userId)
+			throws Exception {
 		Event e = eventService.addToGoing(eventId, userId);
-		return ResponseEntity.ok(new EventDTO(e));		
+		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@GetMapping("/interested/{eventId}/{userId}")
-	public ResponseEntity<EventDTO> interestedInEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+	public ResponseEntity<EventDTO> interestedInEvent(@PathVariable Long eventId, @PathVariable Long userId)
+			throws Exception {
 		Event e = eventService.addToInterested(eventId, userId);
-		return ResponseEntity.ok(new EventDTO(e));		
+		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@GetMapping("/remove/interested/{eventId}/{userId}")
-	public ResponseEntity<EventDTO> removeInterestedEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+	public ResponseEntity<EventDTO> removeInterestedEvent(@PathVariable Long eventId, @PathVariable Long userId)
+			throws Exception {
 		Event e = eventService.removeFromInterested(eventId, userId);
-		return ResponseEntity.ok(new EventDTO(e));		
+		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@GetMapping("/remove/going/{eventId}/{userId}")
-	public ResponseEntity<EventDTO> removeGoingEvent(@PathVariable Long eventId, @PathVariable Long userId) throws Exception{
+	public ResponseEntity<EventDTO> removeGoingEvent(@PathVariable Long eventId, @PathVariable Long userId)
+			throws Exception {
 		Event e = eventService.removeFromGoing(eventId, userId);
-		return ResponseEntity.ok(new EventDTO(e));		
+		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto) throws Exception{
+	public ResponseEntity<EventDTO> create(@RequestBody CreateEventDTO dto) throws Exception {
 		System.out.println("create");
 		User user = userService.findById(dto.getOwner());
 		Event e = new Event(dto);
-		if(user!=null) {
+		if (user != null) {
 			e.setOwner(user);
 			return ResponseEntity.ok(new EventDTO(eventService.save(e)));
 		}
 		throw new Exception("User not found!");
 	}
-	
+
 	@DeleteMapping("/{userId}/{eventId}")
-	public ResponseEntity<EventDTO> delete(@PathVariable Long userId, @PathVariable Long eventId) throws Exception{
+	public ResponseEntity<EventDTO> delete(@PathVariable Long userId, @PathVariable Long eventId) throws Exception {
 		System.out.println("delete");
 		Event e = eventService.delete(userId, eventId);
 		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@PutMapping("/{userId}")
-	public ResponseEntity<EventDTO> update(@PathVariable Long userId, @RequestBody UpdateEventDTO dto) throws Exception{
+	public ResponseEntity<EventDTO> update(@PathVariable Long userId, @RequestBody UpdateEventDTO dto)
+			throws Exception {
 		System.out.println("update");
 		Event e = eventService.update(userId, dto);
 		return ResponseEntity.ok(new EventDTO(e));
 	}
-	
+
 	@GetMapping("/test/{id}")
-	public ResponseEntity<StringDTO> getImageForUpdate(@PathVariable Long id) throws IOException{
+	public ResponseEntity<StringDTO> getImageForUpdate(@PathVariable Long id) throws IOException {
 		Event e = eventService.findById(id);
-		File f = new File(IMAGE_FOLDER + e.getCover().getSource());
-		byte[] b = new byte[(int) f.length()];
-		FileInputStream fis = new FileInputStream(f);
-		fis.read(b);
-		String s = new String(Base64.getEncoder().encodeToString(b));
-		return ResponseEntity.ok(new StringDTO(s));
-		
+		try {
+			File f = new File(IMAGE_FOLDER + e.getCover().getSource());
+
+			byte[] b = new byte[(int) f.length()];
+			FileInputStream fis = new FileInputStream(f);
+			fis.read(b);
+			String s = new String(Base64.getEncoder().encodeToString(b));
+			fis.close();
+			return ResponseEntity.ok(new StringDTO(s));
+		} catch (Exception ex) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 	}
 
 }

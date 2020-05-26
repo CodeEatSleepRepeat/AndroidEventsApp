@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ import lombok.Data;
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 
 @Entity
 @Data
@@ -108,7 +110,7 @@ public class Event {
 	@CreationTimestamp
 	private Date created_time;
 	
-	private Boolean isDeleted;
+	private SyncStatus syncStatus;
 
 	// FB attributes
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -130,6 +132,8 @@ public class Event {
 		going = new ArrayList<User>();
 		interested = new ArrayList<User>();
 		userInvitation = new ArrayList<Invitation>();
+		this.syncStatus = SyncStatus.UPDATE;
+		this.updated_time = new Timestamp(System.currentTimeMillis());
 	}
 	
 	public Event(CreateEventDTO dto) {
@@ -142,6 +146,13 @@ public class Event {
 		start_time = dto.getStart_time();
 		end_time = dto.getEnd_time();
 		privacy = dto.getPrivacy();
+		this.syncStatus = SyncStatus.ADD;
+		this.updated_time = new Timestamp(System.currentTimeMillis());
+	}
+	
+	public void setSyncStatus(SyncStatus syncStatus) {
+		this.syncStatus = syncStatus;
+		this.updated_time = new Timestamp(System.currentTimeMillis());
 	}
 	
 }

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.tools.InternetConnectionType;
 
 public class NoInternetActivity extends Activity {
 
@@ -33,10 +34,10 @@ public class NoInternetActivity extends Activity {
     }
 
     private void checkInternetConnection() {
-        NetworkInfo activeNetwork = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        int networkStatus = InternetConnectionType.getConnectivityStatus(this);
 
-        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
-            startMainActivity();
+        if (networkStatus != InternetConnectionType.TYPE_NOT_CONNECTED) {
+            startSplashScreen();
         } else {
             // nema interneta
             startActivity(new Intent(NoInternetActivity.this, NoInternetActivity.class));
@@ -44,8 +45,8 @@ public class NoInternetActivity extends Activity {
         }
     }
 
-    private void startMainActivity() {
-        startActivity(new Intent(NoInternetActivity.this, MainActivity.class));
+    private void startSplashScreen() {
+        startActivity(new Intent(NoInternetActivity.this, SplashScreenActivity.class));
         finish(); // da ne bi mogao da ode back na splash
     }
 }

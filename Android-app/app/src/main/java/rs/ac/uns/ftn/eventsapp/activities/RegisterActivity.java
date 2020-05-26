@@ -25,10 +25,12 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.GsonBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,7 +46,7 @@ import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
-import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
+import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -156,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
                         .baseUrl(getString(R.string.localhost_uri))
-                        .addConverterFactory(GsonConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
                 Call<User> call = api.register(accessToken.getToken());
@@ -173,6 +175,8 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             addUserToDB(response.body());
+                            addUserEventsToDB();
+                            //TODO: dodati sta sve treba
                             goToMainWindowAsAuthorized();
                         }
                     }
@@ -200,7 +204,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void addUserToDB(User user) {
         AppDataSingleton.getInstance().setContext(this);
-        AppDataSingleton.getInstance().create(user);
+        AppDataSingleton.getInstance().createUser(user);
+    }
+
+    private void addUserEventsToDB() {
+        AppDataSingleton.getInstance().setContext(this);
+        AppDataSingleton.getInstance().createUserEvents(new ArrayList<Event>());
     }
 
     /**
@@ -257,12 +266,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isValidName(CharSequence target) {
-        String regex = "^\\p{L}+[\\p{L} .'-]{2,}$";
+        String regex = "^\\p{L}+[\\p{L} .'-]{2,64}$";
         return (!TextUtils.isEmpty(target) && target.toString().matches(regex));
     }
 
     private boolean isValidPsw(CharSequence target) {
-        String regex = "^(?=.*[A-Z])(?=.*[a-z])((?=.*[@#$%^&+=!])|(?=.*[0-9]))(?=\\S+$).{4,}$";
+        String regex = "^(?=.*[A-Z])(?=.*[a-z])((?=.*[@#$%^&+=!])|(?=.*[0-9]))(?=\\S+$).{7,}$";
         return (!TextUtils.isEmpty(target) && target.toString().matches(regex));
     }
 
@@ -342,7 +351,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.register(registerUser);
@@ -361,7 +370,6 @@ public class RegisterActivity extends AppCompatActivity {
                     if (bitmap != null) {
                         uploadImage(registeredUser.getId());
                     } else {
-                        addUserToDB(response.body());
                         loginAfterRegisterActivity();
                     }
                 }
@@ -379,7 +387,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -395,7 +403,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     Log.d("xxs", "onResponse: image uploaded success");
                 } else {
-                    addUserToDB(response.body());
                     loginAfterRegisterActivity();
                 }
             }

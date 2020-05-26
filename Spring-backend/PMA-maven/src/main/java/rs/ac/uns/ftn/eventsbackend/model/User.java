@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +17,19 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 
 @Entity
 @Data
@@ -35,7 +42,7 @@ public class User {
 	private String facebookId;
 
 	@NotNull
-	@Size(min = 1, max = 64)
+	@Pattern(regexp = "^\\p{L}+[\\p{L} .'-]{2,64}$")
 	private String name;
 
 	@Column(length = 500)
@@ -50,7 +57,8 @@ public class User {
 	private String email;
 
 	@NotNull
-	private String password; // TODO: add password validation annotation
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])((?=.*[@#$%^&+=!])|(?=.*[0-9]))(?=\\S+$).{7,}$")
+	private String password;
 
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
@@ -111,6 +119,14 @@ public class User {
 	private Boolean syncFacebookEvents;
 
 	private Boolean syncFacebookProfile;
+	
+	private SyncStatus syncStatus;
+	
+	@JsonProperty("updated_time")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@UpdateTimestamp
+	private Timestamp updated_time;
 
 	/**
 	 * Za registraciju preko email-a, imena i passworda
@@ -141,6 +157,8 @@ public class User {
 		this.activatedAccount = false;
 		this.syncFacebookEvents = false;
 		this.syncFacebookProfile = false;
+		this.syncStatus = SyncStatus.UPDATE;
+		this.updated_time = new Timestamp(System.currentTimeMillis());
 	}
 
 	public User() {
@@ -154,5 +172,7 @@ public class User {
 		this.chatMessagesReceived = new ArrayList<ChatMessage>();
 		this.chatMessagesSent = new ArrayList<ChatMessage>();
 		this.comments = new ArrayList<Comment>();
+		this.syncStatus = SyncStatus.UPDATE;
+		this.updated_time = new Timestamp(System.currentTimeMillis());
 	}
 }

@@ -1,19 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rs.ac.uns.ftn.eventsapp.MainActivity;
-import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
-import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
-import rs.ac.uns.ftn.eventsapp.models.User;
-import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -32,8 +20,23 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rs.ac.uns.ftn.eventsapp.MainActivity;
+import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
+import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
+import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -137,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
                         .baseUrl(getString(R.string.localhost_uri))
-                        .addConverterFactory(GsonConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
                 Call<User> call = api.login(accessToken.getToken());
@@ -165,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
-                        Log.d("xxs", "onFailure: registration failed");
+                        Log.d("xxs", "onFailure: login failed");
                     }
                 });
             }
@@ -176,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "onError: " + exception.toString());
-                Toast.makeText(getApplicationContext(), "Facebbok sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Facebook sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -193,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
         // Instantiate the backend request
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.login(user);
@@ -224,14 +227,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
-                Log.d("xxs", "onFailure: registration failed");
+                Log.d("xxs", "onFailure: login failed");
             }
         });
     }
 
     private void addUserToDB(User user) {
         AppDataSingleton.getInstance().setContext(this);
-        AppDataSingleton.getInstance().create(user);
+        AppDataSingleton.getInstance().createUser(user);
+    }
+
+    private void addUserToDB(ArrayList<Event> userEvents) { //TODO: use this
+        AppDataSingleton.getInstance().setContext(this);
+        AppDataSingleton.getInstance().createUserEvents(userEvents);
     }
 
     private void forgotPasswordClicked() {

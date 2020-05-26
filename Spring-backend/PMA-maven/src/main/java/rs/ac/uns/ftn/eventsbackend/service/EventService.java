@@ -2,21 +2,17 @@ package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.File;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
@@ -51,26 +47,26 @@ public class EventService {
 	}
 	
 	public List<Event> getAllPageable(Pageable pageable){
-		Page<Event> page = eventRepository.findAllByIsDeleted(false, pageable);
+		Page<Event> page = eventRepository.findAllBySyncStatusNot(SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
 	
 	public List<Event> getMyEvents(Pageable pageable, Long id) throws Exception{
 		Optional<User> user = userRepository.findById(id);
 		if(user.isPresent()) {
-			Page<Event> page = eventRepository.findByOwnerAndIsDeleted(user.get(), false, pageable);
+			Page<Event> page = eventRepository.findByOwnerAndSyncStatusNot(user.get(), SyncStatus.DELETE, pageable);
 			return page.getContent();
 		}
 		throw new Exception("User with id " + id + " not found!");
 	}
 	
 	public List<Event> getGoingEvents(Pageable pageable, Long id) throws Exception{
-		Page<Event> page = eventRepository.findByGoingIdAndIsDeleted(id, false, pageable);
+		Page<Event> page = eventRepository.findByGoingIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
 	
 	public List<Event> getInterestedEvents(Pageable pageable, Long id) throws Exception{
-		Page<Event> page = eventRepository.findByInterestedIdAndIsDeleted(id, false, pageable);
+		Page<Event> page = eventRepository.findByInterestedIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
 	
@@ -149,7 +145,7 @@ public class EventService {
 	}
 	
 	public Event save(Event event) {
-		event.setIsDeleted(false);
+		event.setSyncStatus(SyncStatus.ADD);
 		Calendar cal = Calendar.getInstance();
         cal.setTime(event.getStart_time());
         cal.add(Calendar.HOUR_OF_DAY, -2);
@@ -164,7 +160,7 @@ public class EventService {
 		Optional<User> user = userRepository.findById(userId);
 		Optional<Event> event = eventRepository.findById(eventId);
 		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
-			event.get().setIsDeleted(true);
+			event.get().setSyncStatus(SyncStatus.DELETE);
 			eventRepository.save(event.get());
 			if(event.get().getCover()!=null) {
 				removeImage(event.get().getCover().getSource());
@@ -199,10 +195,22 @@ public class EventService {
 			event.get().setDescription(dto.getDescription());
 			event.get().setType(dto.getType());
 			event.get().setPrivacy(dto.getPrivacy());
-			event.get().setUpdated_time(new Date());
+			event.get().setSyncStatus(SyncStatus.UPDATE);
 			return eventRepository.save(event.get());
 		}
 		throw new Exception("Event does not exist!");
+	}
+
+	public Event update(Event event) {
+		event.setSyncStatus(SyncStatus.UPDATE);
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getStart_time());
+        cal.add(Calendar.HOUR_OF_DAY, -2);
+        event.setStart_time(cal.getTime());
+        cal.setTime(event.getEnd_time());
+        cal.add(Calendar.HOUR_OF_DAY, -2);
+        event.setEnd_time(cal.getTime());
+		return eventRepository.save(event);
 	}
 	
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 
 @Getter
@@ -28,6 +29,9 @@ public class EventDTO {
 	private FacebookPrivacy privacy;
 	private Long owner;
 	private String imageUri;
+	private SyncStatus syncStatus;
+	private Date updated_time;
+	
 	
 	public EventDTO(Event event) {
 		id = event.getId();
@@ -44,6 +48,8 @@ public class EventDTO {
 		if(event.getCover()!=null) {
 			imageUri = event.getCover().getSource();
 		}
+		syncStatus = event.getSyncStatus();
+		updated_time = event.getUpdated_time();
 	}
 	
 }

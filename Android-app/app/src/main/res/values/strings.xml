@@ -145,6 +145,8 @@
     <string name="confirmRegistration">You can login after verifying your email</string>
     <string name="latestMessageMessagePrefixInOurMessage">You: </string>
     <string name="updateEvent">Update event</string>
+    <string name="eventUpdated">Event updated</string>
+    <string name="preferenceSyncUser">preferenceSyncUser</string>
 
 
     <string name="localhost_uri">http://10.0.2.2:8080</string>

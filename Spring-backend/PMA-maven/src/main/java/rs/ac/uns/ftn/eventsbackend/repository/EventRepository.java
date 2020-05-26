@@ -1,13 +1,12 @@
 package rs.ac.uns.ftn.eventsbackend.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
@@ -45,8 +44,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	@Query(value = "SELECT e FROM Event e WHERE e.facebookId = ?1")
 	Event findByFacebookId(String facebookId);
 	
-	Page<Event> findAllByIsDeleted(Boolean b, Pageable pageable);
-	Page<Event> findByOwnerAndIsDeleted(User user, Boolean b, Pageable pageable);
-	Page<Event> findByGoingIdAndIsDeleted(Long id, Boolean b, Pageable pageable);
-	Page<Event> findByInterestedIdAndIsDeleted(Long id, Boolean b, Pageable pageable);
+	Page<Event> findAllBySyncStatusNot(SyncStatus s, Pageable pageable);
+	Page<Event> findByOwnerAndSyncStatusNot(User user, SyncStatus s, Pageable pageable);
+	Page<Event> findByGoingIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
+	Page<Event> findByInterestedIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
+	
+	Page<Event> findAllBySyncStatus(SyncStatus s, Pageable pageable);
+	Page<Event> findByOwnerAndSyncStatus(User user, SyncStatus s, Pageable pageable);
+	Page<Event> findByGoingIdAndSyncStatus(Long id, SyncStatus s, Pageable pageable);
+	Page<Event> findByInterestedIdAndSyncStatus(Long id, SyncStatus s, Pageable pageable);
 }

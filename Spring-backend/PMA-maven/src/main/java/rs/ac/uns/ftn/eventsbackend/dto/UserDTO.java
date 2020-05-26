@@ -1,9 +1,11 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
@@ -32,6 +34,9 @@ public class UserDTO {
 	private Boolean activatedAccount;
 	private Boolean syncFacebookEvents;
 	private Boolean syncFacebookProfile;
+
+	private SyncStatus syncStatus;
+	private Date updated_time;
 	
 	public UserDTO(User user) {
 		super();
@@ -92,6 +97,9 @@ public class UserDTO {
 		this.activatedAccount = user.getActivatedAccount();
 		this.syncFacebookEvents = user.getSyncFacebookEvents();
 		this.syncFacebookProfile = user.getSyncFacebookProfile();
+		
+		this.updated_time = user.getUpdated_time();
+		this.syncStatus = user.getSyncStatus();
 	}
 	
 }

@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
     private void logout() {
         FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
         userFirebaseInstance.signOut();
-        AppDataSingleton.getInstance().deleteAll();
+        AppDataSingleton.getInstance().deleteAllPhysical();
         LoginManager.getInstance().logOut();
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

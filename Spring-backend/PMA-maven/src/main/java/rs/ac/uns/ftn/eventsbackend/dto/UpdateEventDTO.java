@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 
 @Getter
 @Setter
@@ -38,5 +39,9 @@ public class UpdateEventDTO {
 	private Date end_time;
 	@NotNull
 	private FacebookPrivacy privacy;
+	@NotNull
+	private SyncStatus syncStatus;
+	@NotNull
+	private Date updated_time;
 
 }

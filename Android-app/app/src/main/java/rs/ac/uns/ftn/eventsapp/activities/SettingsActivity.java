@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -15,9 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.facebook.login.LoginManager;
-import com.google.firebase.auth.FirebaseAuth;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +21,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.UserSyncChangeDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.UserFBSyncChangeDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -112,9 +107,9 @@ public class SettingsActivity extends AppCompatActivity {
             UserAppApi api = retrofit.create(UserAppApi.class);
             Call<User> call;
             if (v == 1) {
-                call = api.syncFBEvents(new UserSyncChangeDTO(email, value));
+                call = api.syncFBEvents(new UserFBSyncChangeDTO(email, value));
             } else {
-                call = api.syncFBProfile(new UserSyncChangeDTO(email, value));
+                call = api.syncFBProfile(new UserFBSyncChangeDTO(email, value));
             }
             call.enqueue(new Callback<User>() {
                 @Override
@@ -122,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (!response.isSuccessful()) {
                         Log.d(TAG, "onResponse: FB sync change failed");
                     } else {
-                        AppDataSingleton.getInstance().update(response.body());
+                        AppDataSingleton.getInstance().updateUser(response.body());
                     }
                 }
 

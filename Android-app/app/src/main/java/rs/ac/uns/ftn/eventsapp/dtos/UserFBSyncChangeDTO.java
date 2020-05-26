@@ -1,11 +1,11 @@
 package rs.ac.uns.ftn.eventsapp.dtos;
 
-public class UserSyncChangeDTO {
+public class UserFBSyncChangeDTO {
 
     private String email;
     private Boolean sync;
 
-    public UserSyncChangeDTO(String email, Boolean sync) {
+    public UserFBSyncChangeDTO(String email, Boolean sync) {
         this.email = email;
         this.sync = sync;
     }

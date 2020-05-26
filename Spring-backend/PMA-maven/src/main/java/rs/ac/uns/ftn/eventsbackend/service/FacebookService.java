@@ -12,6 +12,7 @@ import lombok.var;
 import rs.ac.uns.ftn.eventsbackend.comparators.EventComparator;
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
 import rs.ac.uns.ftn.eventsbackend.converters.EventConverter;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventData;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEvents;
@@ -21,14 +22,13 @@ import rs.ac.uns.ftn.eventsbackend.model.User;
 
 @Service
 public class FacebookService {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private EventService eventService;
-	
-	
+
 	/*****************************************************************************************************/
 	/*****************************************************************************************************/
 	/******************************   ___           ___         _____  ___  ******************************/
@@ -39,34 +39,37 @@ public class FacebookService {
 	/******************************                                         ******************************/
 	/*****************************************************************************************************/
 	/*****************************************************************************************************/
-	
-	
+
 	/**
 	 * Uz pomoć FB tokena vadi listu korisnikovih dogadjaja
+	 * 
 	 * @return CustomFacebookEvents - sadrzi listu korisnikovih eventova
 	 */
-	public CustomFacebookEvents getUserEvents(String accessToken){
+	public CustomFacebookEvents getUserEvents(String accessToken) {
 		final Facebook facebook = new FacebookTemplate(accessToken);
-		if (!facebook.isAuthorized()) return null;
-		
-		final String uri = "https://graph.facebook.com/v6.0/me?fields=events.limit(20)%7Bowner%2Ccover%2Cattending_count%2Cdescription%2Cend_time%2Cguest_list_enabled%2Cid%2Cdeclined_count%2Ccan_guests_invite%2Cstart_time%2Cplace%2Cname%2Cmaybe_count%2Cis_canceled%2Ctimezone%2Ctype%2Cupdated_time%2Cinterested_count%2Cis_online%7D&access_token=" + accessToken;
-		
-		ResponseEntity<CustomFacebookEvents> fbEvents = facebook.restOperations().getForEntity(URI.create(uri), CustomFacebookEvents.class);
+		if (!facebook.isAuthorized())
+			return null;
+
+		final String uri = "https://graph.facebook.com/v6.0/me?fields=events.limit(20)%7Bowner%2Ccover%2Cattending_count%2Cdescription%2Cend_time%2Cguest_list_enabled%2Cid%2Cdeclined_count%2Ccan_guests_invite%2Cstart_time%2Cplace%2Cname%2Cmaybe_count%2Cis_canceled%2Ctimezone%2Ctype%2Cupdated_time%2Cinterested_count%2Cis_online%7D&access_token="
+				+ accessToken;
+
+		ResponseEntity<CustomFacebookEvents> fbEvents = facebook.restOperations().getForEntity(URI.create(uri),
+				CustomFacebookEvents.class);
 		return fbEvents.getBody();
 	}
-	
-	
+
 	/**
 	 * Osvezava u bazi osnovna polja modelEvent na osnovu fbEvent
+	 * 
 	 * @param fbEvent - CustomFacebookEventData
 	 * @param eventId - ID eventa u DB
 	 */
 	public void updateDbEvent(CustomFacebookEventData fbEvent, Long eventId) {
 		Event dbEvent = eventService.findById(eventId);
-		if (dbEvent==null) {
+		if (dbEvent == null) {
 			return;
 		}
-		
+
 		dbEvent.setFacebookId(fbEvent.getId());
 		dbEvent.setUpdated_timeFB(fbEvent.getUpdated_time());
 		dbEvent.setAttending_countFB(fbEvent.getAttending_count());
@@ -90,32 +93,32 @@ public class FacebookService {
 		dbEvent.getCover().setOffset_y(fbEvent.getCover().getOffset_y());
 		dbEvent.getCover().setSource(fbEvent.getCover().getSource());
 		dbEvent.getOwner().setFacebookId(fbEvent.getOwner().getId());
-		
+
 		eventService.save(dbEvent);
 	}
-	
-	
-	
+
 	/**
-	 * Proverava u bazi da li je fb event sveziji i sa promenjenim parametrima.
-	 * Prvo se proverava da li je "updated_time" fbEvent > dbEventa (koji se izvlaci iz baze)
+	 * Proverava u bazi da li je fb event sveziji i sa promenjenim parametrima. Prvo
+	 * se proverava da li je "updated_time" fbEvent > dbEventa (koji se izvlaci iz
+	 * baze)
+	 * 
 	 * @param fbEvent
-	 * @return true (ukoliko nema promena ili je obrisan) ili false (ima promena i potrebno je osveziti bazu)
+	 * @return true (ukoliko nema promena ili je obrisan) ili false (ima promena i
+	 *         potrebno je osveziti bazu)
 	 */
 	public Boolean isUpToDate(CustomFacebookEventData fbEvent) {
 		Event dbEvent = eventService.findByFacebookId(fbEvent.getId());
-		if (dbEvent==null) {
+		if (dbEvent == null) {
 			return false;
 		}
-		//nema pull eventa ukoliko je on obrisan
-		if (dbEvent.getIsDeleted()) {
+		// nema pull eventa ukoliko je on obrisan
+		if (dbEvent.getSyncStatus() == SyncStatus.DELETE) {
 			return true;
 		}
-		
+
 		return EventComparator.compare(fbEvent, dbEvent);
 	}
 
-	
 	/***********************************************************************************************/
 	/***********************************************************************************************/
 	/******************************          ___    ___   ___    ___  ******************************/
@@ -126,78 +129,82 @@ public class FacebookService {
 	/******************************                                   ******************************/
 	/***********************************************************************************************/
 	/***********************************************************************************************/
-	
+
 	/**
 	 * Metoda vraca FB profil ulogovanog korisnika
+	 * 
 	 * @param accessToken
 	 * @return
 	 */
 	public CustomFacebookProfile getFbUserProfile(String accessToken) {
 		final Facebook facebook = new FacebookTemplate(accessToken);
-		if (!facebook.isAuthorized()) return null;
-		
-		final String uri = "https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cemail%2Cpicture%7Burl%2Cheight%2Cwidth%7D&access_token=" + accessToken;
-		
-		ResponseEntity<CustomFacebookProfile> fbUser = facebook.restOperations().getForEntity(URI.create(uri), CustomFacebookProfile.class);
+		if (!facebook.isAuthorized())
+			return null;
+
+		final String uri = "https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cemail%2Cpicture%7Burl%2Cheight%2Cwidth%7D&access_token="
+				+ accessToken;
+
+		ResponseEntity<CustomFacebookProfile> fbUser = facebook.restOperations().getForEntity(URI.create(uri),
+				CustomFacebookProfile.class);
 		return fbUser.getBody();
 	}
-	
-	
+
 	/**
 	 * Proverava da li su osnovni podaci korisnika azurni sa fb
+	 * 
 	 * @param fbProfile
 	 * @return true ako se profil ne treba azurirati u suprotnom false
 	 */
 	public Boolean isUpToDate(CustomFacebookProfile fbProfile) {
 		User dbUser = userService.findByFacebookId(fbProfile.getId());
-		if (dbUser==null) {
+		if (dbUser == null) {
 			return false;
 		}
-		
+
 		return UserComparator.compare(fbProfile, dbUser);
 	}
 
-
 	/**
 	 * Azuriranje DB User profila u skladu sa FB User profilom (ime i slika)
+	 * 
 	 * @param fbProfile - CustomFacebookProfile
-	 * @param userId - Long
+	 * @param userId    - Long
 	 * @return user - DB user that is saved to db
 	 */
 	public User updateDbUser(CustomFacebookProfile fbProfile, Long userId) {
 		User dbUser = userService.findById(userId);
-		if (dbUser==null) {
+		if (dbUser == null) {
 			return null;
 		}
-		
+
 		dbUser.setFacebookId(fbProfile.getId());
 		dbUser.setName(fbProfile.getName());
 		dbUser.setEmail(fbProfile.getEmail());
 		dbUser.setImageUri(fbProfile.getPicture().getData().getUrl());
 		dbUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
 		dbUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
-		
+
 		return userService.save(dbUser);
 	}
 
-
 	/**
 	 * Preuzimanje eventova sa FB i azuriranje istih u bazi
+	 * 
 	 * @param accessToken
 	 * @param newUser
 	 */
 	public void pullEvents(String accessToken, User newUser) {
-		//povlacenje liste eventova sa fb
+		// povlacenje liste eventova sa fb
 		var events = getUserEvents(accessToken);
 		for (CustomFacebookEventData fbEvent : events.getEvents().getData()) {
 			if (!isUpToDate(fbEvent)) {
-				//da li je to postojeci event, pa ga treba samo azurirati?
+				// da li je to postojeci event, pa ga treba samo azurirati?
 				Event dbEvent = eventService.findByFacebookId(fbEvent.getId());
 				if (dbEvent != null) {
-					//event postoji
+					// event postoji
 					updateDbEvent(fbEvent, dbEvent.getId());
 				} else {
-					//ovo je novi event
+					// ovo je novi event
 					dbEvent = EventConverter.convert(fbEvent);
 					dbEvent.setOwner(newUser);
 					dbEvent = eventService.save(dbEvent);
@@ -205,6 +212,5 @@ public class FacebookService {
 			}
 		}
 	}
-	
-	
+
 }

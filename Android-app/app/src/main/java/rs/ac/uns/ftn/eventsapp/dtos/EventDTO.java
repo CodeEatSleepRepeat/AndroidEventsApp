@@ -4,6 +4,7 @@ import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 
 public class EventDTO {
 
@@ -19,11 +20,13 @@ public class EventDTO {
     private FacebookPrivacy privacy;
     private String imageUri;
     private Long owner;
+    private SyncStatus syncStatus;
+    private Date updated_time;
 
     public EventDTO() {
     }
 
-    public EventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, String imageUri, Long owner) {
+    public EventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, String imageUri, Long owner, SyncStatus syncStatus, Date updated_time) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -36,6 +39,8 @@ public class EventDTO {
         this.privacy = privacy;
         this.imageUri = imageUri;
         this.owner = owner;
+        this.syncStatus = syncStatus;
+        this.updated_time = updated_time;
     }
 
     public Long getId() {
@@ -132,5 +137,21 @@ public class EventDTO {
 
     public void setOwner(Long owner) {
         this.owner = owner;
+    }
+
+    public SyncStatus getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(SyncStatus syncStatus) {
+        this.syncStatus = syncStatus;
+    }
+
+    public Date getUpdated_time() {
+        return updated_time;
+    }
+
+    public void setUpdated_time(Date updated_time) {
+        this.updated_time = updated_time;
     }
 }

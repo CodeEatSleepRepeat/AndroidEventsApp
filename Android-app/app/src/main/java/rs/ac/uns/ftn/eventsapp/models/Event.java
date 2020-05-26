@@ -20,9 +20,10 @@ public class Event {
     private List<User> interested;
     private List<User> going;
     private List<Invitation> userInvitation;
+    private SyncStatus syncStatus;
+    private Date updated_time;
 
-
-    public Event(Long eventId, String eventName, String eventDescription, String eventImageURI, EventType eventType, Boolean openForAll, Date startTime, Date endTime, String location, Long latitude, Long longitude, User author, List<User> interested, List<User> going, List<Invitation> userInvitation) {
+    public Event(Long eventId, String eventName, String eventDescription, String eventImageURI, EventType eventType, Boolean openForAll, Date startTime, Date endTime, String location, Long latitude, Long longitude, User author, List<User> interested, List<User> going, List<Invitation> userInvitation, SyncStatus syncStatus, Date updated_time) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
@@ -38,6 +39,8 @@ public class Event {
         this.interested = interested;
         this.going = going;
         this.userInvitation = userInvitation;
+        this.syncStatus = syncStatus;
+        this.updated_time = updated_time;
     }
 
     public Long getEventId() {
@@ -158,5 +161,21 @@ public class Event {
 
     public void setUserInvitation(List<Invitation> userInvitation) {
         this.userInvitation = userInvitation;
+    }
+
+    public SyncStatus getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(SyncStatus syncStatus) {
+        this.syncStatus = syncStatus;
+    }
+
+    public Date getUpdated_time() {
+        return updated_time;
+    }
+
+    public void setUpdated_time(Date updated_time) {
+        this.updated_time = updated_time;
     }
 }

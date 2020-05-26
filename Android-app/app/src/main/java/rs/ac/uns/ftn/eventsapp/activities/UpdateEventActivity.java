@@ -1,9 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -24,17 +20,20 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,12 +52,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
-import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class UpdateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -129,27 +128,27 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
 
         eventId = Long.valueOf(getIntent().getStringExtra("EventId"));
 
-        if(getIntent().getStringExtra("EventImg")!=null && savedInstanceState==null){
+        if (getIntent().getStringExtra("EventImg") != null && savedInstanceState == null) {
             getCurrentEventImage(eventId);
         }
 
         String privacy = getIntent().getSerializableExtra("EventPrivacy").toString();
-        if(privacy.equals("PRIVATE")){
+        if (privacy.equals("PRIVATE")) {
             privateCB.setChecked(true);
         }
 
         String category = getIntent().getSerializableExtra("EventCategory").toString();
-        if(category.equals("CHARITY")){
+        if (category.equals("CHARITY")) {
             charityCB.setChecked(true);
-        }else if(category.equals("EDUCATIONAL")){
+        } else if (category.equals("EDUCATIONAL")) {
             educationalCB.setChecked(true);
-        }else if(category.equals("TALKS")){
+        } else if (category.equals("TALKS")) {
             talksCB.setChecked(true);
-        }else if(category.equals("MUSIC")){
+        } else if (category.equals("MUSIC")) {
             musicCB.setChecked(true);
-        }else if(category.equals("PARTY")){
+        } else if (category.equals("PARTY")) {
             partyCB.setChecked(true);
-        }else{
+        } else {
             sportsCB.setChecked(true);
         }
 
@@ -158,7 +157,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         lat = Double.parseDouble(getIntent().getStringExtra("EventLat"));
         lng = Double.parseDouble(getIntent().getStringExtra("EventLng"));
 
-        if(savedInstanceState==null) {
+        if (savedInstanceState == null) {
             Log.d("START TIME", getIntent().getStringExtra("EventStart"));
             DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
             Date date = null;
@@ -188,7 +187,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             String formatedTime2 = calendar2.get(Calendar.HOUR_OF_DAY) + ":" + calendar2.get(Calendar.MINUTE);
             endingDateEditText.setText(formatedDate2);
             endingTimeEditText.setText(formatedTime2);
-        }else{
+        } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             Date date = null;
             try {
@@ -524,7 +523,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.updateEvent(AppDataSingleton.getInstance().getLoggedUser().getId(), new UpdateEventDTO(eventId, lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
                 descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy));
+                endDateTime, facebookPrivacy, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
@@ -532,13 +531,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                 }
                 Log.d("TAG", response.body().getId().toString());
-                if(imgUri!=null) {
-                    try {
-                        uploadImage(response.body().getId());
-                    } catch (URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                }else{
+                if (imgUri != null) {
+                    uploadImage(response.body().getId());
+                } else {
                     Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
@@ -551,8 +546,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    private void uploadImage(Long id) throws URISyntaxException {
-        if(bitmap!=null) {
+    private void uploadImage(Long id) {
+        if (bitmap != null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(getString(R.string.localhost_uri))
                     .addConverterFactory(GsonConverterFactory.create())
@@ -570,7 +565,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                     if (!response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     }
-                    Toast.makeText(getApplicationContext(), R.string.eventCreated, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.eventUpdated, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
@@ -698,7 +693,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         mMapView.onLowMemory();
     }
 
-    private void getCurrentEventImage(Long id){
+    private void getCurrentEventImage(Long id) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -708,11 +703,12 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         s.enqueue(new Callback<StringDTO>() {
             @Override
             public void onResponse(Call<StringDTO> call, Response<StringDTO> response) {
-                if (!response.isSuccessful()) {
+                if (!response.isSuccessful() || response.body() == null) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    return;
                 }
                 String ba = response.body().getString();
-                if(ba!=null) {
+                if (ba != null) {
                     byte[] b = Base64.decode(ba, Base64.DEFAULT);
                     bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
                     mediaType = MediaType.parse("image/*");

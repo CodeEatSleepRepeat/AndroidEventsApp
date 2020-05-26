@@ -1,24 +1,23 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.FriendshipRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
-
-import javax.jws.soap.SOAPBinding;
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -117,14 +116,6 @@ public class UserService {
 	}
 
 	public List<User> findAllWhichContainsUsernamePageable(String username, Pageable pageable) {
-		Page<User> foundUsersPage = userRepository.findByNameContaining(username, pageable);
-
-		List<User> foundUsers = foundUsersPage.getContent();
-		if(foundUsersPage == null){
-			return Collections.emptyList();
-		}
-		else{
-			return foundUsers;
-		}
+		return userRepository.findByNameContaining(username, pageable).getContent();
 	}
 }

@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +11,7 @@ import rs.ac.uns.ftn.eventsapp.models.Friendship;
 import rs.ac.uns.ftn.eventsapp.models.FriendshipStatus;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 import rs.ac.uns.ftn.eventsapp.models.InvitationStatus;
+import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public class TestMockup {
@@ -45,8 +47,8 @@ public class TestMockup {
         calendar.set(2020, 9, 11, 23, 30, 0);
         Date endDate = calendar.getTime();
 
-        Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 45l, 20l, u1, null, null, null);
-        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 41l, 74l, u2, null, null, null);
+        Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 45l, 20l, u1, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis()));
+        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 41l, 74l, u2, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis()));
 
         Invitation i1 = new Invitation(1l, u1, u2, e1, InvitationStatus.ACCEPTED);
         Invitation i2 = new Invitation(1l, u2, u3, e1, InvitationStatus.ACCEPTED);
@@ -104,9 +106,9 @@ public class TestMockup {
 
         for (int i = 3; i < 50; i++) {
             if (i % 3 == 0) {
-                events.add(new Event(new Long(i), "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null));
+                events.add(new Event(new Long(i), "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
             } else {
-                events.add(new Event(new Long(i), "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null));
+                events.add(new Event(new Long(i), "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
             }
         }
         users.add(u1);

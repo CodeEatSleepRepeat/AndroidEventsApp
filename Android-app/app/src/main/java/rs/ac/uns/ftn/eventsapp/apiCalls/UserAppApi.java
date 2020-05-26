@@ -9,10 +9,11 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import rs.ac.uns.ftn.eventsapp.dtos.UserFBSyncChangeDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserProfileChangeDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.UserProfileSyncDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.UserSyncChangeDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
 public interface UserAppApi {
@@ -45,10 +46,13 @@ public interface UserAppApi {
     Call<Void> delete(@Body UserLoginDTO user);
 
     @PUT("/user/update/events")
-    Call<User> syncFBEvents(@Body UserSyncChangeDTO syncSettings);
+    Call<User> syncFBEvents(@Body UserFBSyncChangeDTO syncSettings);
 
     @PUT("/user/update/profile")
-    Call<User> syncFBProfile(@Body UserSyncChangeDTO syncSettings);
+    Call<User> syncFBProfile(@Body UserFBSyncChangeDTO syncSettings);
+
+    @POST("/user/sync")
+    Call<User> syncUser(@Body UserProfileSyncDTO data);
 
     @GET("/user/friendsOf/{userId}")
     Call<List<User>> getFriendsOfUser(@Path("userId") Long userId);

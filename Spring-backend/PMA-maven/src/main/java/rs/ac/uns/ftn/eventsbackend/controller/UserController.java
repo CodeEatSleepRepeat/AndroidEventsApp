@@ -7,11 +7,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +33,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
-import rs.ac.uns.ftn.eventsbackend.dto.*;
+import rs.ac.uns.ftn.eventsbackend.dto.UserFBSyncChangeDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UserLoginDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UserProfileChangeDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UserProfileSyncDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UserRegisterDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.gson.getFbUserProfile.CustomFacebookProfile;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.service.EmailService;
@@ -55,7 +66,6 @@ public class UserController {
 	@Autowired
 	private EmailService emailService;
 
-
 	/**
 	 * Prijava korisnika koji ima FB nalog povezan sa ovom aplikacijom i koristi FB
 	 * dugme
@@ -66,7 +76,7 @@ public class UserController {
 	@RequestMapping(value = "/login/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> login(@PathVariable String accessToken) {
 		System.out.println("login-fb");
-		
+
 		CustomFacebookProfile fbProfile = facebookService.getFbUserProfile(accessToken);
 		if (fbProfile == null) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -86,7 +96,7 @@ public class UserController {
 			dbUser.setSyncFacebookProfile(true);
 			User updatedUser = userService.save(dbUser);
 			dbUser = (updatedUser == null) ? dbUser : updatedUser;
-			
+
 			final User u = dbUser;
 			new Thread(new Runnable() {
 				@Override
@@ -133,9 +143,9 @@ public class UserController {
 	 * @return logged user
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
+	public ResponseEntity<User> login(@RequestBody @Valid UserLoginDTO user) {
 		System.out.println("login");
-		
+
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -169,7 +179,7 @@ public class UserController {
 
 			user.setActivatedAccount(true);
 			final User retVal = userService.save(user);
-			
+
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -196,9 +206,9 @@ public class UserController {
 	 * @return User newUser
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<User> register(@RequestBody UserRegisterDTO user) {
+	public ResponseEntity<User> register(@RequestBody @Valid UserRegisterDTO user) {
 		System.out.println("register");
-		
+
 		if (userService.existsByEmail(user.getEmail())) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
@@ -220,7 +230,7 @@ public class UserController {
 					}
 				}
 			}).start();
-			
+
 			return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -238,20 +248,20 @@ public class UserController {
 	@RequestMapping(value = "/register/{accessToken}", method = RequestMethod.GET)
 	public ResponseEntity<User> register(@PathVariable String accessToken) {
 		System.out.println("register-fb");
-		
+
 		CustomFacebookProfile fbProfile = facebookService.getFbUserProfile(accessToken);
 		if (fbProfile == null) {
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
-		
+
 		if (userService.findByEmail(fbProfile.getEmail()) != null) {
-			//pogresno je otisao ovde, treba na login
+			// pogresno je otisao ovde, treba na login
 			return login(accessToken);
 		}
 
 		// kreiranje i cuvanje novog usera u bazi
 		String psw = UUID.randomUUID().toString();
-		psw = psw.substring(0, psw.indexOf("-")).toUpperCase();
+		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F";
 		User newUser = new User(fbProfile.getName(), fbProfile.getEmail(), psw);
 		newUser.setFacebookId(fbProfile.getId());
 		newUser.setImageUri(fbProfile.getPicture().getData().getUrl());
@@ -268,7 +278,7 @@ public class UserController {
 
 		// povlacenje liste eventova sa fb i azuriranje iste
 		facebookService.pullEvents(accessToken, newUser);
-		
+
 		// slanje maila za aktivaciju naloga
 		final User u = newUser;
 		new Thread(new Runnable() {
@@ -281,7 +291,6 @@ public class UserController {
 				}
 			}
 		}).start();
-		
 
 		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
@@ -293,9 +302,9 @@ public class UserController {
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<User> update(@RequestBody UserProfileChangeDTO user) {
+	public ResponseEntity<User> update(@RequestBody @Valid UserProfileChangeDTO user) {
 		System.out.println("update user");
-		
+
 		User dbUser = userService.findByEmail(user.getEmail());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -322,6 +331,9 @@ public class UserController {
 			dbUser.setPassword(user.getPasswordNew1());
 		}
 
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+
 		// sacuvaj usera
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
@@ -332,13 +344,45 @@ public class UserController {
 	}
 
 	/**
+	 * Check if user profile on android is same as in server DB
+	 * 
+	 * @param user
+	 * @return updated user
+	 */
+	@RequestMapping(value = "/sync", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<User> syncUser(@RequestBody @Valid UserProfileSyncDTO data) {
+		System.out.println("sync user with last updated time: " + data.getLastSyncTime());
+
+		User dbUser = userService.findByCredentials(data.getEmail(), data.getPassword());
+		if (dbUser == null) {
+			System.out.println("sync user user not found");
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		if (data.getLastSyncTime() == null) {
+			System.out.println("sync user no last update time - sending user");
+			return new ResponseEntity<>(dbUser, HttpStatus.OK);
+		}
+
+		if (dbUser.getUpdated_time().getTime()>data.getLastSyncTime()) {
+			// need to update
+			System.out.println("sync user last update time to long ago - sending user");
+			return new ResponseEntity<>(dbUser, HttpStatus.OK);
+		}
+
+		// no need to update
+		System.out.println("sync user no need to update - sending null");
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
 	 * Resets password and send email to user
 	 * 
 	 * @param email
 	 * @return HttpStatus
 	 */
 	@RequestMapping(value = "/forgot/{email}", method = RequestMethod.GET)
-	public ResponseEntity<Void> forgotPassword(@PathVariable String email) {
+	public ResponseEntity<Void> forgotPassword(@PathVariable @Email String email) {
 		User dbUser = userService.findByEmail(email);
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -346,8 +390,10 @@ public class UserController {
 
 		// reset password of this user
 		String psw = UUID.randomUUID().toString();
-		psw = psw.substring(0, psw.indexOf("-")).toUpperCase();
+		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F";
 		dbUser.setPassword(psw);
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
 
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
@@ -366,7 +412,7 @@ public class UserController {
 				}
 			}
 		}).start();
-		
+
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -377,33 +423,33 @@ public class UserController {
 	 * @return OK if deleted, else NOT_FOUND
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public ResponseEntity<Void> delete(@RequestBody UserLoginDTO user) {
+	public ResponseEntity<Void> delete(@RequestBody @Valid UserLoginDTO user) {
 		System.out.println("delete");
-		
+
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		//TODO: dodati brisanje ili redefinisanje ownera eventova
-		
+		// TODO: dodati brisanje ili redefinisanje ownera eventova
+
 		userService.delete(dbUser.getId());
 		removeImage(dbUser.getImageUri());
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	
 	/**
-	 * Odvezivanje FB naloga sa Events app nalogom - brisanje podesavanja fb i brisanje fb eventova
+	 * Odvezivanje FB naloga sa Events app nalogom - brisanje podesavanja fb i
+	 * brisanje fb eventova
 	 * 
 	 * @param UserLoginDTO user - email i password za autentifikaciju
 	 * @return novi user
 	 */
 	@RequestMapping(value = "/unlink", method = RequestMethod.POST)
-	public ResponseEntity<User> unlink(@RequestBody UserLoginDTO user) {
+	public ResponseEntity<User> unlink(@RequestBody @Valid UserLoginDTO user) {
 		System.out.println("unlink fb");
-		
+
 		User dbUser = userService.findByCredentials(user.getEmail(), user.getPassword());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -412,6 +458,9 @@ public class UserController {
 		dbUser.setFacebookId("");
 		dbUser.setSyncFacebookEvents(false);
 		dbUser.setSyncFacebookProfile(false);
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+
 		// TODO: dodati brsanje korisnikovih eventova koji su skinuti sa FB
 
 		dbUser = userService.save(dbUser);
@@ -429,13 +478,15 @@ public class UserController {
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/update/profile", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<User> syncFBProfile(@RequestBody UserSyncChangeDTO syncSettings) {
+	public ResponseEntity<User> syncFBProfile(@RequestBody @Valid UserFBSyncChangeDTO syncSettings) {
 		User dbUser = userService.findByEmail(syncSettings.getEmail());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 		dbUser.setSyncFacebookProfile(syncSettings.getSync());
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -451,13 +502,15 @@ public class UserController {
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/update/events", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<User> syncFBEvents(@RequestBody UserSyncChangeDTO syncSettings) {
+	public ResponseEntity<User> syncFBEvents(@RequestBody @Valid UserFBSyncChangeDTO syncSettings) {
 		User dbUser = userService.findByEmail(syncSettings.getEmail());
 		if (dbUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 		dbUser.setSyncFacebookEvents(syncSettings.getSync());
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -465,13 +518,6 @@ public class UserController {
 
 		return new ResponseEntity<User>(dbUser, HttpStatus.OK);
 	}
-
-//	@GetMapping("/image/{name}")
-//	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
-//		byte [] imageBytes = userService.getImage(IMAGE_FOLDER, name);
-//
-//		return ResponseEntity.ok(imageBytes);
-//	}
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> getUser(@PathVariable Long userId) throws Exception {
@@ -486,7 +532,8 @@ public class UserController {
 	}
 
 	@GetMapping("/containsUsername/{username}/page/{num}")
-	public ResponseEntity<List<User>> getUsersWhichContainsUsername(@PathVariable int num, @PathVariable String username){
+	public ResponseEntity<List<User>> getUsersWhichContainsUsername(@PathVariable int num,
+			@PathVariable String username) {
 		System.out.println("Usao je u metodu username:" + username + " num: " + num);
 		Pageable pageable = PageRequest.of(num, 15);
 		List<User> foundUsers = userService.findAllWhichContainsUsernamePageable(username, pageable);
@@ -494,15 +541,15 @@ public class UserController {
 	}
 
 	@GetMapping("/image/{name}")
-	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException{
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
 		System.out.println("get user image");
-		
-		try{
+
+		try {
 			File f = new File(IMAGE_FOLDER + name);
 			FileInputStream fis = new FileInputStream(f);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buf = new byte[1024];
-			for(int readNum; (readNum = fis.read(buf))!=-1;) {
+			for (int readNum; (readNum = fis.read(buf)) != -1;) {
 				baos.write(buf, 0, readNum);
 			}
 			byte[] bytes = baos.toByteArray();
@@ -513,6 +560,7 @@ public class UserController {
 			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
 		}
 	}
+
 	/**
 	 * Upload user image to server for storage
 	 * 
@@ -522,7 +570,7 @@ public class UserController {
 	@RequestMapping(value = "/upload/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<User> uploadImage(@PathVariable Long id, @RequestPart(name = "image") MultipartFile image) {
 		System.out.println("upload user image");
-		
+
 		if (image != null && !image.isEmpty()) {
 			if (!MIME_IMAGE_TYPES.contains(image.getContentType())) {
 				// sent file is not valid type
@@ -531,20 +579,22 @@ public class UserController {
 			try {
 				User user = userService.findById(id);
 				if (user == null) {
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
-				
+
 				// image is good size
 				String newImageName = System.currentTimeMillis() + "";
 				String newFileUri = new File(IMAGE_FOLDER + newImageName).getAbsolutePath();
 
 				// save image to folder
 				image.transferTo(new File(newFileUri));
-				
+
 				if (user.getImageUri() != null) {
 					removeImage(user.getImageUri());
 				}
 				user.setImageUri(newImageName);
+				user.setSyncStatus(SyncStatus.UPDATE);
+				user.setUpdated_time(new Timestamp(System.currentTimeMillis()));
 				user = userService.save(user);
 				System.out.println("new user image: " + user.getImageUri());
 				return new ResponseEntity<>(user, HttpStatus.CREATED);
@@ -566,13 +616,12 @@ public class UserController {
 	 * 
 	 * @param userImageURI
 	 */
-	private void removeImage(@PathVariable String userImageURI) {		
+	private void removeImage(@PathVariable String userImageURI) {
 		if (!userImageURI.equals("")) {
 			String uri = userImageURI.startsWith("http") ? userImageURI : IMAGE_FOLDER + userImageURI;
 			File oldImage = new File(uri);
 			oldImage.delete();
 		}
 	}
-
 
 }

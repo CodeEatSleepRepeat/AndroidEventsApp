@@ -49,7 +49,7 @@
                 android:id="@+id/circle_image_view_profile"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                app:civ_border_color="@android:color/white"
+                app:civ_border_color="@android:color/black"
                 app:civ_border_width="4dp"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_select_photo_profile"
                 app:layout_constraintEnd_toEndOf="@+id/btn_select_photo_profile"

@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.facebook.login.LoginManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -318,7 +319,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 } else {
                     FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
                     userFirebaseInstance.signOut();
-                    AppDataSingleton.getInstance().deleteAll();
+                    AppDataSingleton.getInstance().deleteAllPhysical();
                     LoginManager.getInstance().logOut();
                     Intent intent = new Intent(UserProfileActivity.this, SignInActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -392,7 +393,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 } else {
                     FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
                     userFirebaseInstance.signOut();
-                    AppDataSingleton.getInstance().deleteAll();
+                    AppDataSingleton.getInstance().deleteAllPhysical();
                     LoginManager.getInstance().logOut();
                     Intent intent = new Intent(UserProfileActivity.this, SignInActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -473,7 +474,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.update(user);
@@ -498,7 +499,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         uploadImage(loggedUser.getId());
                     } else {
                         //update user in db
-                        AppDataSingleton.getInstance().update(response.body());
+                        AppDataSingleton.getInstance().updateUser(response.body());
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
                         finish();
@@ -557,19 +558,19 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private boolean isValidPsw(CharSequence target) {
-        String regex = "^(?=.*[A-Z])(?=.*[a-z])((?=.*[@#$%^&+=!])|(?=.*[0-9]))(?=\\S+$).{4,}$";
+        String regex = "^(?=.*[A-Z])(?=.*[a-z])((?=.*[@#$%^&+=!])|(?=.*[0-9]))(?=\\S+$).{7,}$";
         return (!TextUtils.isEmpty(target) && target.toString().matches(regex));
     }
 
     private boolean isValidName(CharSequence target) {
-        String regex = "^\\p{L}+[\\p{L} .'-]{2,}$";
+        String regex = "^\\p{L}+[\\p{L} .'-]{2,64}$";
         return (!TextUtils.isEmpty(target) && target.toString().matches(regex));
     }
 
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -586,7 +587,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     Log.d("xxs", "onResponse: image uploaded success");
                 } else {
                     //update user and return to last screen
-                    AppDataSingleton.getInstance().update(response.body());
+                    AppDataSingleton.getInstance().updateUser(response.body());
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
                     finish();
