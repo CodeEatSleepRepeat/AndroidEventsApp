@@ -3,9 +3,11 @@ package rs.ac.uns.ftn.eventsbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.StringDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -228,6 +231,18 @@ public class EventController {
 		System.out.println("update");
 		Event e = eventService.update(userId, dto);
 		return ResponseEntity.ok(new EventDTO(e));
+	}
+	
+	@GetMapping("/test/{id}")
+	public ResponseEntity<StringDTO> getImageForUpdate(@PathVariable Long id) throws IOException{
+		Event e = eventService.findById(id);
+		File f = new File(IMAGE_FOLDER + e.getCover().getSource());
+		byte[] b = new byte[(int) f.length()];
+		FileInputStream fis = new FileInputStream(f);
+		fis.read(b);
+		String s = new String(Base64.getEncoder().encodeToString(b));
+		return ResponseEntity.ok(new StringDTO(s));
+		
 	}
 
 }

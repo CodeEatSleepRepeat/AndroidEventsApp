@@ -8,10 +8,13 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 
 public interface EventsAppAPI {
 
@@ -47,5 +50,11 @@ public interface EventsAppAPI {
 
     @DELETE("/event/{userId}/{eventId}")
     Call<EventDTO> removeMyEvent(@Path("userId") Long userId, @Path("eventId") Long eventId);
+
+    @PUT("/event/{userId}")
+    Call<EventDTO> updateEvent(@Path("userId") Long userId, @Body UpdateEventDTO dto);
+
+    @GET("/event/test/{id}")
+    Call<StringDTO> getEventUpdateImage(@Path("id") Long id);
 
 }
