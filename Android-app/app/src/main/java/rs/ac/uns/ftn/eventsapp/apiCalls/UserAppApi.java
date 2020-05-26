@@ -1,15 +1,14 @@
 package rs.ac.uns.ftn.eventsapp.apiCalls;
 
+import java.util.List;
+
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserProfileChangeDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
@@ -50,4 +49,11 @@ public interface UserAppApi {
 
     @PUT("/user/update/profile")
     Call<User> syncFBProfile(@Body UserSyncChangeDTO syncSettings);
+
+    @GET("/user/friendsOf/{userId}")
+    Call<List<User>> getFriendsOfUser(@Path("userId") Long userId);
+
+    @GET("/user/containsUsername/{username}/page/{num}")
+    Call<List<User>> getUsersWhichContainsUsername(@Path("num") int num,
+                                                   @Path("username") String username);
 }

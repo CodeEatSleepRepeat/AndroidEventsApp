@@ -1,34 +1,52 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xwray.groupie.GroupAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class AddFriendActivity extends AppCompatActivity {
 
-    GroupAdapter adapter;
-    List<User> foundUsers;
+    private static final int PAGE_START = 0;
+    private boolean isLoading = false;
+    private int currentPage = PAGE_START;
+    private GroupAdapter adapter = new GroupAdapter();
+    private List<User> foundUsers = new ArrayList<>();
+    private RecyclerView recyclerViewFoundUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
+        recyclerViewFoundUsers = findViewById(R.id.recycler_view_list_user_add_friend);
+        recyclerViewFoundUsers.setAdapter(adapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -39,16 +57,43 @@ public class AddFriendActivity extends AppCompatActivity {
         btnSearchUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchUsers();
+                searchUsersByUsername();
             }
         });
 
+        addPaginationScrollListenerToRecyclerView();
+
         if(savedInstanceState != null){
             if(savedInstanceState.getBoolean("RESTORE")){
-                searchUsers();
+                searchUsersByUsername();
             }
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        foundUsers.clear();
+//        currentPage = PAGE_START;
+//        searchUsersByUsername();
+    }
+
+    private void addPaginationScrollListenerToRecyclerView() {
+        recyclerViewFoundUsers.addOnScrollListener(new PaginationScrollListener((LinearLayoutManager) recyclerViewFoundUsers.getLayoutManager(), null, null) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                Log.d("salepare", "usao ovde opet");
+                //currentPage += 1;
+                //searchUsersByUsername();
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
     }
 
     @Override
@@ -58,24 +103,54 @@ public class AddFriendActivity extends AppCompatActivity {
         outState.putBoolean("RESTORE", true);
     }
 
-    private void restoreFoundUsers(List<User> foundUsers){
+    private void searchUsersByUsername() {
+        EditText searchInput = findViewById(R.id.editText_username_search_add_friend);
+
+        UserAppApi userAppi;
+        userAppi = getUserApi();
+
+        Call<List<User>> userFriends =
+                userAppi.getUsersWhichContainsUsername(currentPage,
+                        searchInput.getText().toString());
+        userFriends.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+                if(response.body() != null) {
+                    foundUsers.clear();
+                    foundUsers.addAll(response.body());
+                    refreshFoundUserList();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
+
+    }
+
+    private void refreshFoundUserList() {
         adapter.clear();
         for(User user : foundUsers){
             adapter.add(new UserSimpleItem(user, true, false));
         }
+        adapter.notifyDataSetChanged();
+        isLoading = false;
     }
 
-    private void searchUsers() {
-        EditText searchInput = findViewById(R.id.editText_username_search_add_friend);
-        // dalje bi tekst odavde uzeli i ispisali usere.. ovako stavljamo mock objekte...
-        RecyclerView recyclerViewFoundUsers = findViewById(R.id.recycler_view_list_user_add_friend);
-        adapter = new GroupAdapter<>();
-        foundUsers = TestMockup.users;
-        for(User user : foundUsers){
-            adapter.add(new UserSimpleItem(user, true, false));
-        }
-
-        recyclerViewFoundUsers.setAdapter(adapter);
+    private UserAppApi getUserApi() {
+        UserAppApi userAppi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        userAppi = retrofit.create(UserAppApi.class);
+        return userAppi;
     }
 
     @Override

@@ -474,33 +474,23 @@ public class UserController {
 //	}
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) throws Exception {
+	public ResponseEntity<User> getUser(@PathVariable Long userId) throws Exception {
 		User foundUser = userService.getById(userId);
-		UserDTO foundUserDTO = new UserDTO(foundUser);
-		return ResponseEntity.ok(foundUserDTO);
+		return ResponseEntity.ok(foundUser);
 	}
 
 	@GetMapping("/friendsOf/{userId}")
-	public ResponseEntity<List<UserDTO>> getFriendsOfUser(@PathVariable Long userId) throws Exception {
+	public ResponseEntity<List<User>> getFriendsOfUser(@PathVariable Long userId) throws Exception {
 		List<User> userFriends = userService.findAllFriendsOfUser(userId);
-		List<UserDTO> userFriendsDTO = new ArrayList<UserDTO>();
-		for(User user : userFriends){
-			UserDTO userFriendDTO = new UserDTO(user);
-			userFriendsDTO.add(userFriendDTO);
-		}
-		return ResponseEntity.ok(userFriendsDTO);
+		return ResponseEntity.ok(userFriends);
 	}
 
 	@GetMapping("/containsUsername/{username}/page/{num}")
-	public ResponseEntity<List<UserDTO>> getUsersWhichContainsUsername(@PathVariable int num, @PathVariable String username){
+	public ResponseEntity<List<User>> getUsersWhichContainsUsername(@PathVariable int num, @PathVariable String username){
+		System.out.println("Usao je u metodu username:" + username + " num: " + num);
 		Pageable pageable = PageRequest.of(num, 15);
 		List<User> foundUsers = userService.findAllWhichContainsUsernamePageable(username, pageable);
-		List<UserDTO> foundUsersDTO = new ArrayList<UserDTO>();
-		for(User user : foundUsers){
-			UserDTO userDTO = new UserDTO(user);
-			foundUsersDTO.add(userDTO);
-		}
-		return ResponseEntity.ok(foundUsersDTO);
+		return ResponseEntity.ok(foundUsers);
 	}
 
 	@GetMapping("/image/{name}")
