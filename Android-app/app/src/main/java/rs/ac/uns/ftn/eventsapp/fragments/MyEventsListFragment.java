@@ -33,6 +33,7 @@ import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class MyEventsListFragment extends Fragment {
 
@@ -119,7 +120,7 @@ public class MyEventsListFragment extends Fragment {
     private void getEventsPage(int num) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<List<EventDTO>> events = e.getMyEvents(AppDataSingleton.getInstance().getLoggedUser().getId(), num, new SearchFilterEventsDTO());

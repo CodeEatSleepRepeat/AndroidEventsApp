@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +20,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
@@ -39,7 +36,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(length = 500)
 	private String facebookId;
+	
+	@Column(length = 500)
+	private String facebookToken;
 
 	@NotNull
 	@Pattern(regexp = "^\\p{L}+[\\p{L} .'-]{2,64}$")
@@ -122,11 +123,8 @@ public class User {
 	
 	private SyncStatus syncStatus;
 	
-	@JsonProperty("updated_time")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@UpdateTimestamp
-	private Timestamp updated_time;
+	private ZonedDateTime updated_time;
 
 	/**
 	 * Za registraciju preko email-a, imena i passworda
@@ -139,6 +137,7 @@ public class User {
 		super();
 		this.id = null;
 		this.facebookId = "";
+		this.facebookToken = "";
 		this.name = userName;
 		this.imageUri = "";
 		this.imageHeight = null;
@@ -158,7 +157,7 @@ public class User {
 		this.syncFacebookEvents = false;
 		this.syncFacebookProfile = false;
 		this.syncStatus = SyncStatus.UPDATE;
-		this.updated_time = new Timestamp(System.currentTimeMillis());
+		this.updated_time = ZonedDateTime.now();
 	}
 
 	public User() {
@@ -173,6 +172,6 @@ public class User {
 		this.chatMessagesSent = new ArrayList<ChatMessage>();
 		this.comments = new ArrayList<Comment>();
 		this.syncStatus = SyncStatus.UPDATE;
-		this.updated_time = new Timestamp(System.currentTimeMillis());
+		this.updated_time = ZonedDateTime.now();
 	}
 }

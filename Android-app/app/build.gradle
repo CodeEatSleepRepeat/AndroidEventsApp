@@ -76,4 +76,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:19.1.1'
     implementation 'com.google.firebase:firebase-database-ktx:19.2.1'
 
+    //time for API<26
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+
 }

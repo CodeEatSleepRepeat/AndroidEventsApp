@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.eventsbackend.repository;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,4 +56,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Page<Event> findByOwnerAndSyncStatus(User user, SyncStatus s, Pageable pageable);
 	Page<Event> findByGoingIdAndSyncStatus(Long id, SyncStatus s, Pageable pageable);
 	Page<Event> findByInterestedIdAndSyncStatus(Long id, SyncStatus s, Pageable pageable);
+	
+	@Query(value = "SELECT e FROM Event e WHERE e.owner.id = ?1 AND e.updated_time > ?2")
+	List<Event> findAllByOwnerAndUpdatedTime(Long id, ZonedDateTime updated_time);
 }

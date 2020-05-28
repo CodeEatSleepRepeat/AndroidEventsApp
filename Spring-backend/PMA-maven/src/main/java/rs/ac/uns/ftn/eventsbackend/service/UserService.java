@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
-import rs.ac.uns.ftn.eventsbackend.repository.FriendshipRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 
 @Service
@@ -24,8 +23,6 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private FriendshipRepository friendshipRepository;
 
 
 	public User findByCredentials(String email, String password) {

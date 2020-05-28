@@ -2,14 +2,15 @@ package rs.ac.uns.ftn.eventsapp.utils;
 
 import android.content.Context;
 
-import java.sql.Timestamp;
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.database.MyEventsSQLiteHelper;
 import rs.ac.uns.ftn.eventsapp.database.UserSQLiteHelper;
-import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
 
@@ -19,12 +20,12 @@ public class AppDataSingleton {
     public static String PROFILE_IMAGE_URI = "/user/image/";
 
     private User loggedUser;    //ovde se nalazi i user events samo sa id
-    private ArrayList<Event> userEvents;
-
+    private ArrayList<EventDTO> userEvents;
+    private ArrayList<EventDTO> goingEvents;
 
     private UserSQLiteHelper dbUserHelper;
     private MyEventsSQLiteHelper dbMyEventsHelper;
-
+    //TODO: add other tables like event, friendship, my events, going,...
 
     private static final AppDataSingleton ourInstance = new AppDataSingleton();
 
@@ -45,7 +46,6 @@ public class AppDataSingleton {
     }
 
 
-    //TODO: add other tables like event, friendship, my events, going,...
     public void createUser(User user) {
         if (user == null) return;
         dbUserHelper.delete();
@@ -53,12 +53,12 @@ public class AppDataSingleton {
         this.loggedUser = user;
     }
 
-    public void createUserEvents(ArrayList<Event> userEvents) {
+    public void createUserEvents(ArrayList<EventDTO> userEvents) {
         if (userEvents == null) return;
 
         dbMyEventsHelper.deleteAll();
-        for (Event e : userEvents) {
-            e.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+        for (EventDTO e : userEvents) {
+            e.setUpdated_time(ZonedDateTime.now());
             dbMyEventsHelper.create(e);
         }
         this.userEvents = userEvents;
@@ -72,7 +72,7 @@ public class AppDataSingleton {
         return loggedUser;
     }
 
-    public ArrayList<Event> getUserEvents() {
+    public ArrayList<EventDTO> getUserEvents() {
         if (userEvents != null) {
             return userEvents;
         }
@@ -80,11 +80,11 @@ public class AppDataSingleton {
         return userEvents;
     }
 
-    public Event getUserEvent(Long id) {
-        ListIterator<Event> iterator = getUserEvents().listIterator();
+    public EventDTO getUserEvent(Long id) {
+        ListIterator<EventDTO> iterator = getUserEvents().listIterator();
         while (iterator.hasNext()) {
-            Event next = iterator.next();
-            if (next.getEventId() == id) {
+            EventDTO next = iterator.next();
+            if (next.getId() == id) {
                 return next;
             }
         }
@@ -96,12 +96,12 @@ public class AppDataSingleton {
         this.loggedUser = user;
     }
 
-    public void updateUserEvent(Event event) {
+    private void updateUserEvent(EventDTO event) {
         event = dbMyEventsHelper.update(event);
-        ListIterator<Event> iterator = getUserEvents().listIterator();
+        ListIterator<EventDTO> iterator = getUserEvents().listIterator();
         while (iterator.hasNext()) {
-            Event next = iterator.next();
-            if (next.getEventId() == event.getEventId()) {
+            EventDTO next = iterator.next();
+            if (next.getId() == event.getId()) {
                 //Replace element
                 iterator.set(event);
                 return;
@@ -109,17 +109,41 @@ public class AppDataSingleton {
         }
     }
 
-    public ArrayList<Event> updateUserEvents(ArrayList<Event> userEvents) {
-        dbMyEventsHelper.deleteAll();
-        for (Event e : userEvents) {
-            e.setUpdated_time(new Timestamp(System.currentTimeMillis()));
-            e.setSyncStatus(SyncStatus.UPDATE);
-            dbMyEventsHelper.create(e);
+    private void deleteUserEventPhysical(Long id) {
+        dbMyEventsHelper.deletePhysical(id);
+        ListIterator<EventDTO> iterator = getUserEvents().listIterator();
+        while (iterator.hasNext()) {
+            EventDTO next = iterator.next();
+            if (next.getId() == id) {
+                //Remove element
+                iterator.remove();
+                return;
+            }
         }
-        this.userEvents = userEvents;
-        return this.userEvents;
     }
 
+    public void addUserEvent(EventDTO event) {
+        getUserEvents().add(event);
+        dbMyEventsHelper.create(event);
+    }
+
+    public void updateUserEvents(ArrayList<EventDTO> userEvents) {
+        for (EventDTO e : userEvents) {
+            if (e.getSyncStatus() == SyncStatus.DELETE) {
+                deleteUserEventPhysical(e.getId());
+            } else {
+                if (dbMyEventsHelper.exists(e.getId())) {
+                    updateUserEvent(e);
+                } else {
+                    addUserEvent(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * This is for logout to remove all data from SQLite
+     */
     public void deleteAllPhysical() {
         loggedUser = null;
         userEvents = new ArrayList<>();
@@ -135,7 +159,7 @@ public class AppDataSingleton {
      * @param e
      * @return
      */
-    public boolean deleteUserEventLogical(Event e) {
+    public boolean deleteUserEventLogical(EventDTO e) {
         if (dbMyEventsHelper.deleteLogical(e) != null) {
             return this.userEvents.remove(e);
         }

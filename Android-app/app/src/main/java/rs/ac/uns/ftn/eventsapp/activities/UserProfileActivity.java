@@ -50,6 +50,7 @@ import rs.ac.uns.ftn.eventsapp.dtos.UserProfileChangeDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -160,8 +161,9 @@ public class UserProfileActivity extends AppCompatActivity {
         if (imgUri == null) {
             imgUri = userImage;
         }
+
         if (imgUri != null && !imgUri.equals("")) {
-            try {
+            /*try {
                 if (imgUri.startsWith("http")){
                     Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_user_icon).into(userProfile);
                 } else {
@@ -171,6 +173,24 @@ public class UserProfileActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 userProfile.setImageResource(R.drawable.ic_user_icon);
+            }*/
+            //check if it's local image
+            try {
+                Uri uri = Uri.parse(imgUri);
+                InputStream is = getContentResolver().openInputStream(uri);
+                bitmap = BitmapFactory.decodeStream(is);
+                mediaType = MediaType.parse(getContentResolver().getType(uri));
+                userProfile.setImageURI(uri);
+            } catch (Exception e) {
+                //not local image
+                Picasso.get().setLoggingEnabled(true);
+                if (imgUri.startsWith("http")){
+                    Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_user_icon).into(userProfile);
+                } else {
+                    Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imgUri)).placeholder(R.drawable.ic_user_icon).into(userProfile);
+                }
+            } finally {
+                selectImageBtn.setVisibility(View.INVISIBLE);
             }
         } else {
             userProfile.setImageResource(R.drawable.ic_user_icon);
@@ -215,7 +235,7 @@ public class UserProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        imgUri = imageData.getPath();
+        imgUri = imageData.toString();
         userProfile.setImageURI(imageData);
         selectImageBtn.setVisibility(View.INVISIBLE);
     }
@@ -306,7 +326,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void sendUnlinkFBRequest(String email, String password) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.unlink(new UserLoginDTO(email, password));
@@ -380,7 +400,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void removeAccount(String email, String password) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<Void> call = api.delete(new UserLoginDTO(email, password));
@@ -474,7 +494,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.update(user);
@@ -570,7 +590,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);

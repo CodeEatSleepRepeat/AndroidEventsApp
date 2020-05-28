@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.login.LoginManager;
+
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.activities.NoInternetActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
@@ -41,16 +43,6 @@ public class InitTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
     }
-/*
-    private void continueLogin() {
-        // sacekaj tako da splash bude vidljiv minimum SPLASH_TIME_OUT milisekundi
-        long timeLeft = SPLASH_TIME_OUT - (System.currentTimeMillis() - startTime);
-        if (timeLeft < 0) timeLeft = 0;
-        SystemClock.sleep(timeLeft);
-
-        //pretpostavi da nema konekcije sa bazom
-        startNoInternetActivity();
-    }*/
 
     private void checkInternetConnection() {
         int networkStatus = InternetConnectionType.getConnectivityStatus(context);
@@ -58,7 +50,7 @@ public class InitTask extends AsyncTask<Void, Void, Void> {
         if (networkStatus == InternetConnectionType.TYPE_NOT_CONNECTED) {
             startNoInternetActivity();
         } else {
-            checkLastDBUser();  //TODO + sync if exists on backend
+            checkLastDBUser();
         }
     }
 
@@ -88,6 +80,7 @@ public class InitTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void startSignInActivity() {
+        LoginManager.getInstance().logOut();
         Intent intent = new Intent(context, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);

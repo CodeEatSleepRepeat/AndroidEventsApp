@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -128,10 +129,13 @@ public class UserController {
 			return new ResponseEntity<User>(dbUser, HttpStatus.OK);
 		}
 
-		// update profila ako je syncFacebookProfile=true i postoji promena FB profila
+		// update profila ako postoji promena FB profila
 		if (!UserComparator.compare(fbProfile, dbUser)) {
 			dbUser = facebookService.updateDbUser(fbProfile, dbUser.getId());
 		}
+
+		dbUser.setFacebookToken(accessToken);
+		userService.save(dbUser);
 
 		return new ResponseEntity<User>(dbUser, HttpStatus.OK);
 	}
@@ -261,7 +265,7 @@ public class UserController {
 
 		// kreiranje i cuvanje novog usera u bazi
 		String psw = UUID.randomUUID().toString();
-		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F";
+		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F7a";
 		User newUser = new User(fbProfile.getName(), fbProfile.getEmail(), psw);
 		newUser.setFacebookId(fbProfile.getId());
 		newUser.setImageUri(fbProfile.getPicture().getData().getUrl());
@@ -270,6 +274,7 @@ public class UserController {
 		newUser.setActivatedAccount(true);
 		newUser.setSyncFacebookEvents(true);
 		newUser.setSyncFacebookProfile(true);
+		newUser.setFacebookToken(accessToken);
 
 		newUser = userService.save(newUser);
 		if (newUser.getId() == null) {
@@ -332,7 +337,7 @@ public class UserController {
 		}
 
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
-		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+		dbUser.setUpdated_time(ZonedDateTime.now());
 
 		// sacuvaj usera
 		dbUser = userService.save(dbUser);
@@ -359,12 +364,23 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 
+		//sync with fb if user allows
+		if (dbUser.getSyncFacebookProfile()) {
+			CustomFacebookProfile fbProfile = facebookService.getFbUserProfile(dbUser.getFacebookToken());
+			if (fbProfile != null) {
+				// update profila ako postoji promena FB profila
+				if (!UserComparator.compare(fbProfile, dbUser)) {
+					dbUser = facebookService.updateDbUser(fbProfile, dbUser.getId());
+				}
+			}
+		}
+
 		if (data.getLastSyncTime() == null) {
 			System.out.println("sync user no last update time - sending user");
 			return new ResponseEntity<>(dbUser, HttpStatus.OK);
 		}
 
-		if (dbUser.getUpdated_time().getTime()>data.getLastSyncTime()) {
+		if (dbUser.getUpdated_time().toInstant().isAfter(Instant.ofEpochMilli(data.getLastSyncTime()))) {
 			// need to update
 			System.out.println("sync user last update time to long ago - sending user");
 			return new ResponseEntity<>(dbUser, HttpStatus.OK);
@@ -390,10 +406,10 @@ public class UserController {
 
 		// reset password of this user
 		String psw = UUID.randomUUID().toString();
-		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F";
+		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F7a";
 		dbUser.setPassword(psw);
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
-		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+		dbUser.setUpdated_time(ZonedDateTime.now());
 
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
@@ -459,7 +475,7 @@ public class UserController {
 		dbUser.setSyncFacebookEvents(false);
 		dbUser.setSyncFacebookProfile(false);
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
-		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+		dbUser.setUpdated_time(ZonedDateTime.now());
 
 		// TODO: dodati brsanje korisnikovih eventova koji su skinuti sa FB
 
@@ -486,7 +502,7 @@ public class UserController {
 
 		dbUser.setSyncFacebookProfile(syncSettings.getSync());
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
-		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+		dbUser.setUpdated_time(ZonedDateTime.now());
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -510,7 +526,7 @@ public class UserController {
 
 		dbUser.setSyncFacebookEvents(syncSettings.getSync());
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
-		dbUser.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+		dbUser.setUpdated_time(ZonedDateTime.now());
 		dbUser = userService.save(dbUser);
 		if (dbUser.getId() == null) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -594,7 +610,7 @@ public class UserController {
 				}
 				user.setImageUri(newImageName);
 				user.setSyncStatus(SyncStatus.UPDATE);
-				user.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+				user.setUpdated_time(ZonedDateTime.now());
 				user = userService.save(user);
 				System.out.println("new user image: " + user.getImageUri());
 				return new ResponseEntity<>(user, HttpStatus.CREATED);

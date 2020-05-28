@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.comparators;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventCover;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventData;
@@ -77,8 +77,8 @@ public class EventComparator {
 		return (str1 == null ? str2 == null : str1.equals(str2));
 	}
 
-	private static boolean compare(Date d1, Date d2) {
-		return (d1 == null ? d2 == null : d1.getTime() == d2.getTime());
+	private static boolean compare(ZonedDateTime d1, ZonedDateTime d2) {
+		return (d1 == null ? d2 == null : d1.equals(d2));
 	}
 
 	private static boolean compare(Long l1, Long l2) {

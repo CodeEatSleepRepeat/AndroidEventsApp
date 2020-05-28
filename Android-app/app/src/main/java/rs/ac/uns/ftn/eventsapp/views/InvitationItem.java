@@ -47,14 +47,14 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         setOnClickListeners(viewHolder);
         // TODO: Ovde postaviti pravi url lol :D
         Picasso.get()
-                .load(invitation.getEvent().getEventImageURI())
+                .load(invitation.getEvent().getImageUri())
                 .placeholder(R.drawable.ic_facebook_logo)
                 .error(R.drawable.ic_facebook_logo)
                 .into(eventImage);
 
-        eventName.setText(invitation.getEvent().getEventName());
+        eventName.setText(invitation.getEvent().getName());
         userUsername.setText("Invited by: " + invitation.getInvitationSender().getName());
-        eventDate.setText(formatter.format(invitation.getEvent().getStartTime()));
+        eventDate.setText(formatter.format(invitation.getEvent().getStart_time()));
 
     }
 
@@ -119,10 +119,10 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
         final Event e = invitation.getEvent();
-        EventDetailsDTO transferObject = new EventDetailsDTO(e.getEventId(), e.getEventName(),
-                e.getEventDescription(), e.getEventImageURI(),
-                e.getEventType(), FacebookPrivacy.PUBLIC, e.getStartTime(), e.getEndTime(),
-                e.getLocation(), e.getLongitude(), e.getLatitude(), 1l);
+        EventDetailsDTO transferObject = new EventDetailsDTO(e.getId(), e.getName(),
+                e.getDescription(), e.getImageUri(),
+                e.getType(), FacebookPrivacy.PUBLIC, e.getStart_time(), e.getEnd_time(),
+                e.getPlace(), e.getLongitude(), e.getLatitude(), 1l);
 
 //        detailsIntent.putExtra("id", e.getEventId());
 //        detailsIntent.putExtra("name", e.getEventName());

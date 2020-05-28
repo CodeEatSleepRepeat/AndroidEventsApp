@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +94,8 @@ public class FacebookService {
 		dbEvent.getCover().setOffset_y(fbEvent.getCover().getOffset_y());
 		dbEvent.getCover().setSource(fbEvent.getCover().getSource());
 		dbEvent.getOwner().setFacebookId(fbEvent.getOwner().getId());
+		dbEvent.setSyncStatus(SyncStatus.UPDATE);
+		dbEvent.setUpdated_time(ZonedDateTime.now());
 
 		eventService.save(dbEvent);
 	}
@@ -183,6 +186,8 @@ public class FacebookService {
 		dbUser.setImageUri(fbProfile.getPicture().getData().getUrl());
 		dbUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
 		dbUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
+		dbUser.setSyncStatus(SyncStatus.UPDATE);
+		dbUser.setUpdated_time(ZonedDateTime.now());
 
 		return userService.save(dbUser);
 	}
@@ -196,6 +201,8 @@ public class FacebookService {
 	public void pullEvents(String accessToken, User newUser) {
 		// povlacenje liste eventova sa fb
 		var events = getUserEvents(accessToken);
+		if (events == null) return;
+		
 		for (CustomFacebookEventData fbEvent : events.getEvents().getData()) {
 			if (!isUpToDate(fbEvent)) {
 				// da li je to postojeci event, pa ga treba samo azurirati?

@@ -22,6 +22,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class SimilarEventsActivity extends AppCompatActivity {
 
@@ -90,7 +91,7 @@ public class SimilarEventsActivity extends AppCompatActivity {
     private void getEventsPage(int num) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<List<EventDTO>> events = e.getInitialEvents(num, new SearchFilterEventsDTO());

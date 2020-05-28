@@ -1,12 +1,15 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
-import java.sql.Timestamp;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.Friendship;
 import rs.ac.uns.ftn.eventsapp.models.FriendshipStatus;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
@@ -43,12 +46,12 @@ public class TestMockup {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 0, 11, 17, 0, 0);    //mesec pocinje od 0 -> januar!?
-        Date startDate = calendar.getTime();
+        ZonedDateTime startDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(1593532800000l), ZoneId.systemDefault());
         calendar.set(2020, 9, 11, 23, 30, 0);
-        Date endDate = calendar.getTime();
+        ZonedDateTime endDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(1590652800000l), ZoneId.systemDefault());
 
-        Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 45l, 20l, u1, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis()));
-        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 41l, 74l, u2, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis()));
+        Event e1 = new Event(1l, "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, FacebookPrivacy.GROUP, startDate, endDate, "Mr. Worlwide", 45l, 20l, u1, null, null, null, null, SyncStatus.ADD, ZonedDateTime.now(), ZonedDateTime.now());
+        Event e2 = new Event(2l, "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, FacebookPrivacy.PRIVATE, startDate, endDate, "My home address", 41l, 74l, u2, null, null, null, null, SyncStatus.UPDATE, ZonedDateTime.now(), ZonedDateTime.now());
 
         Invitation i1 = new Invitation(1l, u1, u2, e1, InvitationStatus.ACCEPTED);
         Invitation i2 = new Invitation(1l, u2, u3, e1, InvitationStatus.ACCEPTED);
@@ -90,8 +93,8 @@ public class TestMockup {
         u1.setReceivedInvitations(u3Inv);
 
         //events
-        u1e1.add(e1.getEventId());
-        u2e2.add(e2.getEventId());
+        u1e1.add(e1.getId());
+        u2e2.add(e2.getId());
         u1.setUserEvents(u1e1);
         u2.setUserEvents(u2e2);
 
@@ -106,9 +109,9 @@ public class TestMockup {
 
         for (int i = 3; i < 50; i++) {
             if (i % 3 == 0) {
-                events.add(new Event(new Long(i), "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, true, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
+                events.add(new Event(new Long(i), "Student day party", "Student day must be celebrated! Come join us and have fun! :)", "http://www.mojnovisad.com/files/news/3/8/5/11385/11385-dsc-7619.jpg", EventType.PARTY, FacebookPrivacy.PUBLIC, startDate, endDate, "Mr. Worlwide", 5645415l, 4517l, u1, null, null, null, null, SyncStatus.UPDATE, ZonedDateTime.now(), ZonedDateTime.now()));
             } else {
-                events.add(new Event(new Long(i), "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, true, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
+                events.add(new Event(new Long(i), "Android programing day", "Just program. No party!", "https://i.pinimg.com/originals/9b/c0/31/9bc031ded28a4eccb4a3f1df621ff84d.png", EventType.HANGING, FacebookPrivacy.PUBLIC, startDate, endDate, "My home address", 12478773l, 23454147l, u2, null, null, null, null, SyncStatus.UPDATE, ZonedDateTime.now(), ZonedDateTime.now()));
             }
         }
         users.add(u1);

@@ -130,7 +130,7 @@ public class InvitationsFragment extends Fragment {
     private void onClickMap() {
         ArrayList<EventForMapDTO> eventsForMap = new ArrayList<>();
         for (Invitation item : invitations) {
-            eventsForMap.add(new EventForMapDTO(item.getEvent().getEventId(), item.getEvent().getEventName(), item.getEvent().getLatitude(), item.getEvent().getLongitude(), item.getEvent().getEventImageURI()));
+            eventsForMap.add(new EventForMapDTO(item.getEvent().getId(), item.getEvent().getName(), item.getEvent().getLatitude(), item.getEvent().getLongitude(), item.getEvent().getImageUri()));
         }
         Intent intent = new Intent(getContext(), GoogleMapActivity.class);
         intent.putExtra("EVENTS", eventsForMap);

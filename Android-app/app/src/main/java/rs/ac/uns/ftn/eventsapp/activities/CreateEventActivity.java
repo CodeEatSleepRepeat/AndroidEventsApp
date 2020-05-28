@@ -53,6 +53,7 @@ import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -393,7 +394,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void sendRequest() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");    //"yyyy-MM-dd'T'HH:mm:ssZ.SSS'Z'"
         startDateTime = sdf.format(calendar.getTime());
         endDateTime = sdf.format(calendar2.getTime());
         if (charityCB.isChecked()) {
@@ -416,7 +417,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
@@ -453,7 +454,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         if(bitmap!=null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(getString(R.string.localhost_uri))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                     .build();
             EventsAppAPI e = retrofit.create(EventsAppAPI.class);
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);

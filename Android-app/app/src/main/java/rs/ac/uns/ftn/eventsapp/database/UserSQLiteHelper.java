@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Timestamp;
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
+import org.threeten.bp.ZonedDateTime;
 
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
@@ -50,12 +52,13 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_SYNC_FB_EVENTS + " integer default 0, "
             + COLUMN_SYNC_FB_PROFILE + " integer default 0, "
             + COLUMN_SYNC_STATUS + " text, "
-            + COLUMN_UPDATED_TIME + " DATETIME default CURRENT_TIMESTAMP"
+            + COLUMN_UPDATED_TIME + " text"
             + ");";
 
 
     public UserSQLiteHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        AndroidThreeTen.init(context);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_SYNC_FB_EVENTS, user.getSyncFacebookEvents());
         cv.put(COLUMN_SYNC_FB_PROFILE, user.getSyncFacebookProfile());
         cv.put(COLUMN_SYNC_STATUS, user.getSyncStatus().toString());
-        cv.put(COLUMN_UPDATED_TIME, user.getUpdated_time().getTime());
+        cv.put(COLUMN_UPDATED_TIME, user.getUpdated_time().toString());
 
         mDatabase = getWritableDatabase();
         mDatabase.insert(TABLE_USER, null, cv);
@@ -92,7 +95,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
 
     public User read() {
         User loggedUser = null;
-        mDatabase = getWritableDatabase();
+        mDatabase = getReadableDatabase();
         Cursor cursor = mDatabase.query(TABLE_USER, null, null, null, null, null, COLUMN_ID + " DESC");
         while (cursor.moveToNext()) {
             loggedUser = new User(
@@ -109,7 +112,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
                     cursor.getInt(9) == 1,
                     cursor.getInt(10) == 1,
                     SyncStatus.valueOf(cursor.getString(11)),
-                    new Timestamp(cursor.getLong(12) * 1000)
+                    ZonedDateTime.parse(cursor.getString(12))
             );
         }
         cursor.close();
@@ -119,7 +122,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
     }
 
     public User update(User user) {
-        user.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+        user.setUpdated_time(ZonedDateTime.now());
         user.setSyncStatus(SyncStatus.UPDATE);
 
         ContentValues cv = new ContentValues();
@@ -135,7 +138,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_SYNC_FB_EVENTS, user.getSyncFacebookEvents());
         cv.put(COLUMN_SYNC_FB_PROFILE, user.getSyncFacebookProfile());
         cv.put(COLUMN_SYNC_STATUS, user.getSyncStatus().toString());
-        cv.put(COLUMN_UPDATED_TIME, user.getUpdated_time().getTime());
+        cv.put(COLUMN_UPDATED_TIME, user.getUpdated_time().toString());
 
         mDatabase = getWritableDatabase();
         mDatabase.update(TABLE_USER, cv, null, null);

@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.appevents.suggestedevents.ViewOnClickListener;
 import com.squareup.picasso.Picasso;
 
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +36,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecyclerView.EventViewHolder> {
 
@@ -41,7 +44,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     private List<EventDTO> mItems;
     private Context context;
     private int listRowResourceLayout;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyyy HH:mm z");
 
     public EventListRecyclerView(List<EventDTO> items, Context context, @NonNull int listRowResourceLayout) {
         mItems = items;
@@ -220,7 +223,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void interestedInEvent(@NonNull final EventViewHolder viewHolder, final EventDTO item){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.interestedInEvent(item.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
@@ -246,7 +249,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void goingToEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.goingToEvent(event.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
@@ -273,7 +276,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void removeFromInterested(@NonNull final EventViewHolder viewHolder, final EventDTO event){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.removeInterestedEvent(event.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
@@ -300,7 +303,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void removeFromGoing(@NonNull final EventViewHolder viewHolder, final EventDTO event){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.removeGoingEvent(event.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
@@ -327,7 +330,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
     public void deleteMyEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.removeMyEvent(AppDataSingleton.getInstance().getLoggedUser().getId(), event.getId());

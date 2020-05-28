@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -29,11 +30,16 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
+import org.threeten.bp.ZonedDateTime;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Timestamp;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,6 +65,7 @@ import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class UpdateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -127,9 +134,18 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         clearImage = findViewById(R.id.clearImageUpdateEvent);
 
         eventId = Long.valueOf(getIntent().getStringExtra("EventId"));
+        imgUri = getIntent().getStringExtra("EventImg");
 
-        if (getIntent().getStringExtra("EventImg") != null && savedInstanceState == null) {
-            getCurrentEventImage(eventId);
+        if (imgUri != null && savedInstanceState == null) {
+            Picasso.get().setLoggingEnabled(true);
+            if (imgUri.startsWith("http")){
+                Picasso.get().load(Uri.parse(imgUri)).into(imgView);
+            } else {
+                Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).into(imgView);
+            }
+            findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
+            findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
+            clearImage.bringToFront();
         }
 
         String privacy = getIntent().getSerializableExtra("EventPrivacy").toString();
@@ -159,36 +175,39 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
 
         if (savedInstanceState == null) {
             Log.d("START TIME", getIntent().getStringExtra("EventStart"));
-            DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-            Date date = null;
-            try {
+            //DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ.SSS'Z'");
+            ZonedDateTime zonedDate = ZonedDateTime.parse(getIntent().getStringExtra("EventStart"));
+            Date date = new Date(zonedDate.toInstant().toEpochMilli());
+            /*try {
                 date = formatter.parse(getIntent().getStringExtra("EventStart"));
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             calendar.setTime(date);
-            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
             Log.d("formatedDate", formatedDate);
             String formatedTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
             startingDateEditText.setText(formatedDate);
             startingTimeEditText.setText(formatedTime);
 
-            Date date2 = null;
+            ZonedDateTime zonedDate2 = ZonedDateTime.parse(getIntent().getStringExtra("EventEnd"));
+            Date date2 = new Date(zonedDate2.toInstant().toEpochMilli());
+            /*Date date2 = null;
             try {
                 date2 = formatter.parse(getIntent().getStringExtra("EventEnd"));
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             calendar2.setTime(date2);
-            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "/" + (calendar2.get(Calendar.MONTH) + 1) + "/" + calendar2.get(Calendar.YEAR);
+            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "." + (calendar2.get(Calendar.MONTH) + 1) + "." + calendar2.get(Calendar.YEAR);
             Log.d("formatedDate2", formatedDate2);
             String formatedTime2 = calendar2.get(Calendar.HOUR_OF_DAY) + ":" + calendar2.get(Calendar.MINUTE);
             endingDateEditText.setText(formatedDate2);
             endingTimeEditText.setText(formatedTime2);
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ.SSS'Z'");
             Date date = null;
             try {
                 date = sdf.parse(savedInstanceState.getString("start"));
@@ -196,7 +215,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 e.printStackTrace();
             }
             calendar.setTime(date);
-            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+            String formatedDate = calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
             Log.d("formatedDate", formatedDate);
             String formatedTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
             startingDateEditText.setText(formatedDate);
@@ -210,11 +229,44 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             }
 
             calendar2.setTime(date2);
-            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "/" + (calendar2.get(Calendar.MONTH) + 1) + "/" + calendar2.get(Calendar.YEAR);
+            String formatedDate2 = calendar2.get(Calendar.DAY_OF_MONTH) + "." + (calendar2.get(Calendar.MONTH) + 1) + "." + calendar2.get(Calendar.YEAR);
             Log.d("formatedDate2", formatedDate2);
             String formatedTime2 = calendar2.get(Calendar.HOUR_OF_DAY) + ":" + calendar2.get(Calendar.MINUTE);
             endingDateEditText.setText(formatedDate2);
             endingTimeEditText.setText(formatedTime2);
+
+            if (savedInstanceState.getString("uri") != null) {
+                imgUri = savedInstanceState.getString("uri");
+
+                //check if it's local image
+                try {
+                    Uri uri = Uri.parse(imgUri);
+                    InputStream is = getContentResolver().openInputStream(uri);
+                    bitmap = BitmapFactory.decodeStream(is);
+                    mediaType = MediaType.parse(getContentResolver().getType(uri));
+                    imgView.setImageURI(uri);
+                } catch (Exception e) {
+                    //not local image
+                    Picasso.get().setLoggingEnabled(true);
+                    if (imgUri.startsWith("http")){
+                        Picasso.get().load(Uri.parse(imgUri)).into(imgView);
+                    } else {
+                        Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).into(imgView);
+                    }
+                } finally {
+                    findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
+                    clearImage.bringToFront();
+                }
+            } else {
+                findViewById(R.id.cameraUpdateImageView).setVisibility(View.VISIBLE);
+                findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.VISIBLE);
+                imgUri = null;
+                bitmap = null;
+                mediaType = null;
+                imgView.setImageURI(null);
+                imgView.setImageDrawable(null);
+            }
         }
 
         Toolbar toolbar = findViewById(R.id.toolbarUpdateEvent);
@@ -301,8 +353,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String format = "dd/MM/yyyy";
-                SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
+                String format = "dd.MM.yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                 startingDateEditText.setError(null);
                 startingDateEditText.setText(sdf.format(calendar.getTime()));
             }
@@ -353,7 +405,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 calendar2.set(Calendar.YEAR, year);
                 calendar2.set(Calendar.MONTH, month);
                 calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String format = "dd/MM/yyyy";
+                String format = "dd.MM.yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
                 endingDateEditText.setError(null);
                 endingDateEditText.setText(sdf.format(calendar2.getTime()));
@@ -420,17 +472,18 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 bitmap = null;
                 mediaType = null;
                 imgView.setImageURI(null);
+                imgView.setImageDrawable(null);
             }
         });
 
-        if (savedInstanceState != null) {
+        /*if (savedInstanceState != null) {
             String s = savedInstanceState.getString("uri");
             if (s != null) {
                 imgView.setImageURI(Uri.parse(s));
                 findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
                 findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
             }
-        }
+        }*/
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,9 +548,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void sendRequest() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        startDateTime = sdf.format(calendar.getTime());
-        endDateTime = sdf.format(calendar2.getTime());
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");    //"yyyy-MM-dd'T'HH:mm:ssZ.SSS'Z'"
+        //startDateTime = sdf.format(calendar.getTime());
+        //endDateTime = sdf.format(calendar2.getTime());
         if (charityCB.isChecked()) {
             eventType = EventType.CHARITY;
         } else if (educationalCB.isChecked()) {
@@ -518,12 +571,12 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<EventDTO> s = e.updateEvent(AppDataSingleton.getInstance().getLoggedUser().getId(), new UpdateEventDTO(eventId, lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
-                descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy, SyncStatus.UPDATE, new Timestamp(System.currentTimeMillis())));
+        Call<EventDTO> s = e.updateEvent(AppDataSingleton.getInstance().getLoggedUser().getId(),
+                new UpdateEventDTO(eventId, lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(), descriptionEditText.getText().toString(),
+                        eventType, calendar.getTime(), calendar2.getTime(), facebookPrivacy, SyncStatus.UPDATE, ZonedDateTime.now()));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
@@ -550,7 +603,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         if (bitmap != null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(getString(R.string.localhost_uri))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                     .build();
             EventsAppAPI e = retrofit.create(EventsAppAPI.class);
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -590,7 +643,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            imgUri = imageData.getPath();
+            imgUri = imageData.toString();
             findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
             findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
             imgView.setImageURI(imageData);
@@ -633,7 +686,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ.SSS'Z'");
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
         if (mapViewBundle == null) {
             mapViewBundle = new Bundle();
@@ -643,9 +696,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             outState.putDouble("lat", lat);
             outState.putDouble("lng", lng);
         }
-        if (imgUri != null) {
-            outState.putString("uri", imgUri);
-        }
+
+        outState.putString("uri", imgUri);
         outState.putString("start", sdf.format(calendar.getTime()));
         outState.putString("end", sdf.format(calendar2.getTime()));
         mMapView.onSaveInstanceState(mapViewBundle);
@@ -692,11 +744,11 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
+/*
     private void getCurrentEventImage(Long id) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<StringDTO> s = e.getEventUpdateImage(id);
@@ -725,6 +777,6 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             }
         });
     }
-
+*/
 
 }

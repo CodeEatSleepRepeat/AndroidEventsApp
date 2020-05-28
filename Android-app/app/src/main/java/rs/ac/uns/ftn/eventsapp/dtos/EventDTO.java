@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.dtos;
 
-import java.util.Date;
+import org.threeten.bp.ZonedDateTime;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
@@ -15,18 +15,19 @@ public class EventDTO {
     private String place;
     private String description;
     private EventType type;
-    private Date start_time;
-    private Date end_time;
+    private ZonedDateTime start_time;
+    private ZonedDateTime end_time;
     private FacebookPrivacy privacy;
     private String imageUri;
     private Long owner;
     private SyncStatus syncStatus;
-    private Date updated_time;
+    private ZonedDateTime updated_time;
+    private ZonedDateTime created_time;
 
     public EventDTO() {
     }
 
-    public EventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, String imageUri, Long owner, SyncStatus syncStatus, Date updated_time) {
+    public EventDTO(Long id, String name, String description, String imageUri, EventType type, FacebookPrivacy privacy, ZonedDateTime start_time, ZonedDateTime end_time, String place, double latitude, double longitude, SyncStatus syncStatus, ZonedDateTime updated_time, ZonedDateTime created_time, Long owner) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -41,6 +42,7 @@ public class EventDTO {
         this.owner = owner;
         this.syncStatus = syncStatus;
         this.updated_time = updated_time;
+        this.created_time = created_time;
     }
 
     public Long getId() {
@@ -99,19 +101,19 @@ public class EventDTO {
         this.type = type;
     }
 
-    public Date getStart_time() {
+    public ZonedDateTime getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(Date start_time) {
+    public void setStart_time(ZonedDateTime start_time) {
         this.start_time = start_time;
     }
 
-    public Date getEnd_time() {
+    public ZonedDateTime getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(Date end_time) {
+    public void setEnd_time(ZonedDateTime end_time) {
         this.end_time = end_time;
     }
 
@@ -147,11 +149,19 @@ public class EventDTO {
         this.syncStatus = syncStatus;
     }
 
-    public Date getUpdated_time() {
+    public ZonedDateTime getUpdated_time() {
         return updated_time;
     }
 
-    public void setUpdated_time(Date updated_time) {
+    public void setUpdated_time(ZonedDateTime updated_time) {
         this.updated_time = updated_time;
+    }
+
+    public ZonedDateTime getCreated_time() {
+        return created_time;
+    }
+
+    public void setCreated_time(ZonedDateTime created_time) {
+        this.created_time = created_time;
     }
 }

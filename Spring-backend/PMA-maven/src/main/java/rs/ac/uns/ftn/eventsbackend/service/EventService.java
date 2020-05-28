@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.File;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,16 +20,16 @@ import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 
 @Service
 public class EventService {
-	
+
 	@Value("${eventImages}")
 	private String IMAGE_FOLDER;
 
 	@Autowired
 	private EventRepository eventRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public Event findById(Long id) {
 		try {
 			return eventRepository.findById(id).get();
@@ -45,39 +45,43 @@ public class EventService {
 			return null;
 		}
 	}
-	
-	public List<Event> getAllPageable(Pageable pageable){
+
+	public List<Event> getAllPageable(Pageable pageable) {
 		Page<Event> page = eventRepository.findAllBySyncStatusNot(SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
-	
-	public List<Event> getMyEvents(Pageable pageable, Long id) throws Exception{
+
+	public List<Event> getMyEvents(Pageable pageable, Long id) throws Exception {
 		Optional<User> user = userRepository.findById(id);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			Page<Event> page = eventRepository.findByOwnerAndSyncStatusNot(user.get(), SyncStatus.DELETE, pageable);
 			return page.getContent();
 		}
 		throw new Exception("User with id " + id + " not found!");
 	}
 	
-	public List<Event> getGoingEvents(Pageable pageable, Long id) throws Exception{
+	public List<Event> getMyEventsForSync(Long id, ZonedDateTime timestamp) {
+		return eventRepository.findAllByOwnerAndUpdatedTime(id, timestamp);
+	}
+
+	public List<Event> getGoingEvents(Pageable pageable, Long id) throws Exception {
 		Page<Event> page = eventRepository.findByGoingIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
-	
-	public List<Event> getInterestedEvents(Pageable pageable, Long id) throws Exception{
+
+	public List<Event> getInterestedEvents(Pageable pageable, Long id) throws Exception {
 		Page<Event> page = eventRepository.findByInterestedIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
-	
+
 	public Event addToGoing(Long eventId, Long userId) throws Exception {
 		Optional<Event> e = eventRepository.findById(eventId);
 		Optional<User> u = userRepository.findById(userId);
-		if(e.isPresent() && u.isPresent()) {
+		if (e.isPresent() && u.isPresent()) {
 			List<Event> going = u.get().getGoingEvents();
-			if(!going.contains(e.get())) {
+			if (!going.contains(e.get())) {
 				List<Event> interested = u.get().getInterestedEvents();
-				if(interested.contains(e.get())) {
+				if (interested.contains(e.get())) {
 					interested.remove(e.get());
 					u.get().setInterestedEvents(interested);
 				}
@@ -94,11 +98,11 @@ public class EventService {
 	public Event addToInterested(Long eventId, Long userId) throws Exception {
 		Optional<Event> e = eventRepository.findById(eventId);
 		Optional<User> u = userRepository.findById(userId);
-		if(e.isPresent() && u.isPresent()) {
+		if (e.isPresent() && u.isPresent()) {
 			List<Event> interested = u.get().getInterestedEvents();
-			if(!interested.contains(e.get())) {
+			if (!interested.contains(e.get())) {
 				List<Event> going = u.get().getGoingEvents();
-				if(going.contains(e.get())) {
+				if (going.contains(e.get())) {
 					going.remove(e.get());
 					u.get().setGoingEvents(going);
 				}
@@ -111,13 +115,13 @@ public class EventService {
 		}
 		throw new Exception("User or event not found!");
 	}
-	
+
 	public Event removeFromInterested(Long eventId, Long userId) throws Exception {
 		Optional<Event> e = eventRepository.findById(eventId);
 		Optional<User> u = userRepository.findById(userId);
-		if(e.isPresent() && u.isPresent()) {
+		if (e.isPresent() && u.isPresent()) {
 			List<Event> interested = u.get().getInterestedEvents();
-			if(interested.contains(e.get())){
+			if (interested.contains(e.get())) {
 				interested.remove(e.get());
 				u.get().setInterestedEvents(interested);
 				userRepository.save(u.get());
@@ -127,13 +131,13 @@ public class EventService {
 		}
 		throw new Exception("User or event not found!");
 	}
-	
+
 	public Event removeFromGoing(Long eventId, Long userId) throws Exception {
 		Optional<Event> e = eventRepository.findById(eventId);
 		Optional<User> u = userRepository.findById(userId);
-		if(e.isPresent() && u.isPresent()) {
+		if (e.isPresent() && u.isPresent()) {
 			List<Event> going = u.get().getGoingEvents();
-			if(going.contains(e.get())){
+			if (going.contains(e.get())) {
 				going.remove(e.get());
 				u.get().setGoingEvents(going);
 				userRepository.save(u.get());
@@ -143,51 +147,55 @@ public class EventService {
 		}
 		throw new Exception("User or event not found!");
 	}
-	
+
 	public Event save(Event event) {
 		event.setSyncStatus(SyncStatus.ADD);
-		Calendar cal = Calendar.getInstance();
-        cal.setTime(event.getStart_time());
-        cal.add(Calendar.HOUR_OF_DAY, -2);
-        event.setStart_time(cal.getTime());
-        cal.setTime(event.getEnd_time());
-        cal.add(Calendar.HOUR_OF_DAY, -2);
-        event.setEnd_time(cal.getTime());
+		event.setUpdated_time(ZonedDateTime.now());
+		/*Calendar cal = Calendar.getInstance();
+		cal.setTime(event.getStart_time());
+		cal.add(Calendar.HOUR_OF_DAY, -2);
+		event.setStart_time(cal.getTime());
+		cal.setTime(event.getEnd_time());
+		cal.add(Calendar.HOUR_OF_DAY, -2);
+		event.setEnd_time(cal.getTime());*/
 		return eventRepository.save(event);
 	}
-	
+
 	public Event delete(Long userId, Long eventId) throws Exception {
 		Optional<User> user = userRepository.findById(userId);
 		Optional<Event> event = eventRepository.findById(eventId);
-		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
+		if (user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
 			event.get().setSyncStatus(SyncStatus.DELETE);
+			event.get().setUpdated_time(ZonedDateTime.now());
 			eventRepository.save(event.get());
-			if(event.get().getCover()!=null) {
+			if (event.get().getCover() != null) {
 				removeImage(event.get().getCover().getSource());
 			}
 			return event.get();
 		}
 		throw new Exception("Event does not exist!");
 	}
-	
+
 	private void removeImage(String imageName) {
 		if (!imageName.equals("")) {
 			File oldImage = new File(IMAGE_FOLDER + imageName);
 			oldImage.delete();
 		}
 	}
-	
+
 	public Event update(Long userId, UpdateEventDTO dto) throws Exception {
 		Optional<User> user = userRepository.findById(userId);
 		Optional<Event> event = eventRepository.findById(dto.getId());
-		if(user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
-			Calendar cal = Calendar.getInstance();
-	        cal.setTime(dto.getStart_time());
-	        cal.add(Calendar.HOUR_OF_DAY, -2);
-	        event.get().setStart_time(cal.getTime());
-	        cal.setTime(dto.getEnd_time());
-	        cal.add(Calendar.HOUR_OF_DAY, -2);
-	        event.get().setEnd_time(cal.getTime());
+		if (user.isPresent() && event.isPresent() && event.get().getOwner().equals(user.get())) {
+			/*Calendar cal = Calendar.getInstance();
+			cal.setTime(dto.getStart_time());
+			cal.add(Calendar.HOUR_OF_DAY, -2);
+			event.get().setStart_time(cal.getTime());
+			cal.setTime(dto.getEnd_time());
+			cal.add(Calendar.HOUR_OF_DAY, -2);
+			event.get().setEnd_time(cal.getTime());*/
+			event.get().setStart_time(dto.getStart_time());
+			event.get().setEnd_time(dto.getEnd_time());
 			event.get().setLatitude(dto.getLatitude());
 			event.get().setLongitude(dto.getLongitude());
 			event.get().setPlace(dto.getPlace());
@@ -196,6 +204,7 @@ public class EventService {
 			event.get().setType(dto.getType());
 			event.get().setPrivacy(dto.getPrivacy());
 			event.get().setSyncStatus(SyncStatus.UPDATE);
+			event.get().setUpdated_time(ZonedDateTime.now());
 			return eventRepository.save(event.get());
 		}
 		throw new Exception("Event does not exist!");
@@ -203,14 +212,19 @@ public class EventService {
 
 	public Event update(Event event) {
 		event.setSyncStatus(SyncStatus.UPDATE);
+		event.setUpdated_time(ZonedDateTime.now());/*
 		Calendar cal = Calendar.getInstance();
-        cal.setTime(event.getStart_time());
-        cal.add(Calendar.HOUR_OF_DAY, -2);
-        event.setStart_time(cal.getTime());
-        cal.setTime(event.getEnd_time());
-        cal.add(Calendar.HOUR_OF_DAY, -2);
-        event.setEnd_time(cal.getTime());
+		cal.setTime(event.getStart_time());
+		cal.add(Calendar.HOUR_OF_DAY, -2);
+		event.setStart_time(cal.getTime());
+		cal.setTime(event.getEnd_time());
+		cal.add(Calendar.HOUR_OF_DAY, -2);
+		event.setEnd_time(cal.getTime());*/
 		return eventRepository.save(event);
 	}
-	
+	/*
+	public Event updateNoTime(Event event) {
+		return eventRepository.save(event);
+	}*/
+
 }

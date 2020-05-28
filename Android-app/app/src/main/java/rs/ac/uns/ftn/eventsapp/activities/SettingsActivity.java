@@ -24,6 +24,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserFBSyncChangeDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -102,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
         private void changeSyncSettings(Boolean value, String email, int v) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(getString(R.string.localhost_uri))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                     .build();
             UserAppApi api = retrofit.create(UserAppApi.class);
             Call<User> call;

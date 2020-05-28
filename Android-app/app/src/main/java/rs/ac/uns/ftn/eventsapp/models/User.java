@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.models;
 
-import java.sql.Timestamp;
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.List;
 
 /*
@@ -32,9 +33,9 @@ public class User {
     private Boolean syncFacebookEvents;
     private Boolean syncFacebookProfile;
     private SyncStatus syncStatus;
-    private Timestamp updated_time;
+    private ZonedDateTime updated_time;
 
-    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Long> sendRequests, List<Long> receivedRequests, List<Long> sendInvitations, List<Long> receivedInvitations, List<Long> chatMessagesSent, List<Long> chatMessagesReceived, List<Long> userEvents, List<Long> interestedEvents, List<Long> goingEvents, List<Long> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile, SyncStatus syncStatus, Timestamp updated_time) {
+    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Long> sendRequests, List<Long> receivedRequests, List<Long> sendInvitations, List<Long> receivedInvitations, List<Long> chatMessagesSent, List<Long> chatMessagesReceived, List<Long> userEvents, List<Long> interestedEvents, List<Long> goingEvents, List<Long> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile, SyncStatus syncStatus, ZonedDateTime updated_time) {
         this.id = id;
         this.facebookId = facebookId;
         this.name = name;
@@ -244,11 +245,11 @@ public class User {
         this.syncStatus = syncStatus;
     }
 
-    public Timestamp getUpdated_time() {
+    public ZonedDateTime getUpdated_time() {
         return updated_time;
     }
 
-    public void setUpdated_time(Timestamp updated_time) {
+    public void setUpdated_time(ZonedDateTime updated_time) {
         this.updated_time = updated_time;
     }
 }

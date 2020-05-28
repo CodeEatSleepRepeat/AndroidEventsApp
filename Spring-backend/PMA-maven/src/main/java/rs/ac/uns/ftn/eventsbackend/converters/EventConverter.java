@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.eventsbackend.converters;
 
+import java.time.ZonedDateTime;
+
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.gson.getUserEvents.CustomFacebookEventData;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -37,6 +40,8 @@ public class EventConverter {
 		dbEvent.getCover().setOffset_x(fbEvent.getCover().getOffset_x());
 		dbEvent.getCover().setOffset_y(fbEvent.getCover().getOffset_y());
 		dbEvent.getCover().setSource(fbEvent.getCover().getSource());
+		dbEvent.setSyncStatus(SyncStatus.ADD);
+		dbEvent.setUpdated_time(ZonedDateTime.now());
 		
 		dbEvent.setType(EventType.FACEBOOK);
 		

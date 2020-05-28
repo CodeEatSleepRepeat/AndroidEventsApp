@@ -30,6 +30,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class AddFriendActivity extends AppCompatActivity {
@@ -147,7 +148,7 @@ public class AddFriendActivity extends AppCompatActivity {
         UserAppApi userAppi;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         userAppi = retrofit.create(UserAppApi.class);
         return userAppi;

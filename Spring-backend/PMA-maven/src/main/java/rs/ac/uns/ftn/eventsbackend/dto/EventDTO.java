@@ -1,6 +1,10 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
+
+import javax.persistence.Column;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,14 +28,14 @@ public class EventDTO {
 	private String place;
 	private String description;
 	private EventType type;
-	private Date start_time;
-	private Date end_time;
+	private ZonedDateTime start_time;
+	private ZonedDateTime end_time;
 	private FacebookPrivacy privacy;
 	private Long owner;
 	private String imageUri;
 	private SyncStatus syncStatus;
-	private Date updated_time;
-	
+	private ZonedDateTime updated_time;
+	private ZonedDateTime created_time;
 	
 	public EventDTO(Event event) {
 		id = event.getId();
@@ -50,6 +54,7 @@ public class EventDTO {
 		}
 		syncStatus = event.getSyncStatus();
 		updated_time = event.getUpdated_time();
+		created_time = event.getCreated_time();
 	}
 	
 }

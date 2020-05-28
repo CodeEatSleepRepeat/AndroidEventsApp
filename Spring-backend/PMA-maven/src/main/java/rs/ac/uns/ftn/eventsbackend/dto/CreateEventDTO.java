@@ -1,7 +1,8 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,9 +32,10 @@ public class CreateEventDTO {
 	@NotNull
 	private EventType type;
 	@NotNull
-	private Date start_time;
+	@Column(name = "start_time", columnDefinition = "DATETIME")
+	private ZonedDateTime start_time;
 	@NotNull
-	private Date end_time;
+	private ZonedDateTime end_time;
 	@NotNull
 	private FacebookPrivacy privacy;
 	@NotNull

@@ -1,118 +1,123 @@
 package rs.ac.uns.ftn.eventsapp.models;
 
+import org.threeten.bp.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
 public class Event {
 
-    private Long eventId;
-    private String eventName;
-    private String eventDescription;
-    private String eventImageURI;
-    private EventType eventType;
-    private Boolean openForAll;
-    private Date startTime;
-    private Date endTime;
-    private String location;
+    private Long id;
+    private String name;
+    private String description;
+    private String imageUri;
+    private EventType type;
+    private FacebookPrivacy privacy;
+    private ZonedDateTime start_time;
+    private ZonedDateTime end_time;
+    private String place;
     private Long latitude;
     private Long longitude;
-    private User author;
+    private User owner;
     private List<User> interested;
     private List<User> going;
     private List<Invitation> userInvitation;
+    private List<Comment> comments;
     private SyncStatus syncStatus;
-    private Date updated_time;
+    private ZonedDateTime updated_time;
+    private ZonedDateTime created_time;
 
-    public Event(Long eventId, String eventName, String eventDescription, String eventImageURI, EventType eventType, Boolean openForAll, Date startTime, Date endTime, String location, Long latitude, Long longitude, User author, List<User> interested, List<User> going, List<Invitation> userInvitation, SyncStatus syncStatus, Date updated_time) {
-        this.eventId = eventId;
-        this.eventName = eventName;
-        this.eventDescription = eventDescription;
-        this.eventImageURI = eventImageURI;
-        this.eventType = eventType;
-        this.openForAll = openForAll;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.location = location;
+    public Event(Long id, String name, String description, String imageUri, EventType type, FacebookPrivacy privacy, ZonedDateTime start_time, ZonedDateTime end_time, String place, Long latitude, Long longitude, User owner, List<User> interested, List<User> going, List<Invitation> userInvitation, List<Comment> comments, SyncStatus syncStatus, ZonedDateTime updated_time, ZonedDateTime created_time) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.imageUri = imageUri;
+        this.type = type;
+        this.privacy = privacy;
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.place = place;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.author = author;
+        this.owner = owner;
         this.interested = interested;
         this.going = going;
         this.userInvitation = userInvitation;
+        this.comments = comments;
         this.syncStatus = syncStatus;
         this.updated_time = updated_time;
+        this.created_time = created_time;
     }
 
-    public Long getEventId() {
-        return eventId;
+    public Long getId() {
+        return id;
     }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getName() {
+        return name;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getEventDescription() {
-        return eventDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getEventImageURI() {
-        return eventImageURI;
+    public String getImageUri() {
+        return imageUri;
     }
 
-    public void setEventImageURI(String eventImageURI) {
-        this.eventImageURI = eventImageURI;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public EventType getType() {
+        return type;
     }
 
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public void setType(EventType type) {
+        this.type = type;
     }
 
-    public Boolean getOpenForAll() {
-        return openForAll;
+    public FacebookPrivacy getPrivacy() {
+        return privacy;
     }
 
-    public void setOpenForAll(Boolean openForAll) {
-        this.openForAll = openForAll;
+    public void setPrivacy(FacebookPrivacy privacy) {
+        this.privacy = privacy;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public ZonedDateTime getStart_time() {
+        return start_time;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setStart_time(ZonedDateTime start_time) {
+        this.start_time = start_time;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public ZonedDateTime getEnd_time() {
+        return end_time;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setEnd_time(ZonedDateTime end_time) {
+        this.end_time = end_time;
     }
 
-    public String getLocation() {
-        return location;
+    public String getPlace() {
+        return place;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public Long getLatitude() {
@@ -131,12 +136,12 @@ public class Event {
         this.longitude = longitude;
     }
 
-    public User getAuthor() {
-        return author;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public List<User> getInterested() {
@@ -163,6 +168,14 @@ public class Event {
         this.userInvitation = userInvitation;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
     public SyncStatus getSyncStatus() {
         return syncStatus;
     }
@@ -171,11 +184,19 @@ public class Event {
         this.syncStatus = syncStatus;
     }
 
-    public Date getUpdated_time() {
+    public ZonedDateTime getUpdated_time() {
         return updated_time;
     }
 
-    public void setUpdated_time(Date updated_time) {
+    public void setUpdated_time(ZonedDateTime updated_time) {
         this.updated_time = updated_time;
+    }
+
+    public ZonedDateTime getCreated_time() {
+        return created_time;
+    }
+
+    public void setCreated_time(ZonedDateTime created_time) {
+        this.created_time = created_time;
     }
 }

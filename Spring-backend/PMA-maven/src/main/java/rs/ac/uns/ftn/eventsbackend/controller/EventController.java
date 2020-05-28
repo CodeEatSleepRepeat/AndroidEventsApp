@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -31,13 +33,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.EventsSyncDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.StringDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.service.EventService;
+import rs.ac.uns.ftn.eventsbackend.service.FacebookService;
 import rs.ac.uns.ftn.eventsbackend.service.UserService;
 
 @CrossOrigin
@@ -57,6 +62,9 @@ public class EventController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private FacebookService facebookService;
+
 	/**
 	 * Upload event cover image to server for storage
 	 * 
@@ -64,7 +72,8 @@ public class EventController {
 	 * @return
 	 */
 	@RequestMapping(value = "/upload/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<EventDTO> uploadImage(@PathVariable Long id, @RequestPart(name = "image") MultipartFile image) {
+	public ResponseEntity<EventDTO> uploadImage(@PathVariable Long id,
+			@RequestPart(name = "image") MultipartFile image) {
 
 		if (image != null && !image.isEmpty()) {
 			if (!MIME_IMAGE_TYPES.contains(image.getContentType())) {
@@ -239,6 +248,64 @@ public class EventController {
 		System.out.println("update");
 		Event e = eventService.update(userId, dto);
 		return ResponseEntity.ok(new EventDTO(e));
+	}
+
+	/**
+	 * Check if user events on android are same as in server DB
+	 * 
+	 * @param user
+	 * @return updated user
+	 */
+	@RequestMapping(value = "/sync/myevents", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<List<EventDTO>> syncUserEvents(@RequestBody @Valid EventsSyncDTO data) {
+		System.out.println("sync " + data.getEmail() + " events with last updated time: " + data.getLastSyncTime());
+
+		User dbUser = userService.findByCredentials(data.getEmail(), data.getPassword());
+		if (dbUser == null) {
+			System.out.println("sync user events user not found");
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		// povlacenje liste eventova sa fb i azuriranje iste
+		if (dbUser.getSyncFacebookEvents() && !dbUser.getFacebookToken().isEmpty()) {
+			//dbUser.get
+			facebookService.pullEvents(dbUser.getFacebookToken(), dbUser);
+		}
+
+		// no data sent from android for update?
+		if (data.getEventsForUpdate() == null || data.getEventsForUpdate().isEmpty()) {
+			// just return events that have update_time > last_update_time
+			List<Event> forUpdate = eventService.getMyEventsForSync(dbUser.getId(), data.getLastSyncTime());
+			ArrayList<EventDTO> retList = new ArrayList<>();
+			for (Event event : forUpdate) {
+				retList.add(new EventDTO(event));
+			}
+			System.out.println("sync user events no data for server since last update time - sending all user events");
+			return new ResponseEntity<>(retList, HttpStatus.OK);
+		}
+
+		// iterate over sent updates and update db if android timestamp > db tmestamp
+		for (UpdateEventDTO androidEvent : data.getEventsForUpdate()) {
+			Event dbEvent = eventService.findById(androidEvent.getId());
+			if (dbEvent != null && dbEvent.getUpdated_time().isBefore(androidEvent.getUpdated_time())) {
+				dbEvent.update(androidEvent);
+				if (eventService.update(dbEvent).getSyncStatus() == SyncStatus.DELETE) {
+					// remove cover from server if event is deleted
+					if (dbEvent.getCover() != null) {
+						removeImage(dbEvent.getCover().getSource());
+					}
+				}
+			}
+		}
+
+		// get all updates
+		List<Event> forUpdate = eventService.getMyEventsForSync(dbUser.getId(), data.getLastSyncTime());
+		ArrayList<EventDTO> retList = new ArrayList<>();
+		for (Event event : forUpdate) {
+			retList.add(new EventDTO(event));
+		}
+		System.out.println("sync user events last update time to long ago - sending user events (mabye empty?)");
+		return new ResponseEntity<>(retList, HttpStatus.OK);
 	}
 
 	@GetMapping("/test/{id}")

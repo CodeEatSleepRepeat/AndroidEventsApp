@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -18,30 +20,48 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
+import org.threeten.bp.ZonedDateTime;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
-import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
+import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class LoginActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private Retrofit retrofit;
+    private long lastSyncTime;
     private EditText email;
     private EditText psw;
     private final String EMAIL = "email";
@@ -89,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         textContinueAsAnonymous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToMainWindowAsUnauthorized();
+                goToMainWindow();   //as unauthorized, of course
             }
         });
 
@@ -108,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         if (psw.getText().toString().trim().equals("")) {
             //Toast.makeText(getApplicationContext(), R.string.registerUserValidationPsw, Toast.LENGTH_LONG).show();
-            psw.setError(getString(R.string.registerUserValidationPsw));
+            psw.setError(getString(R.string.loginPasswordBlank));
             return false;
         }
         return true;
@@ -140,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
                         .baseUrl(getString(R.string.localhost_uri))
-                        .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
+                        .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
                 Call<User> call = api.login(accessToken.getToken());
@@ -153,33 +173,48 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
                                 Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                                goToNoServer();
                             }
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             User loggedUser = response.body();
                             addUserToDB(loggedUser);
+
+                            lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
+                            editor.commit();
+
+
                             signInToFirebase(loggedUser);
                             //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                             //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa - moze biti interno poslat na register!
-                            goToMainWindowAsAuthorized();
+
+                            //start fetching data
+                            getUserEvents();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
-                        Log.d("xxs", "onFailure: login failed");
+                        Log.d("xxs", "onFailure: login failed: " + t.getMessage());
+                        t.printStackTrace();
+                        goToNoServer();
                     }
                 });
             }
 
             @Override
-            public void onCancel() {}
+            public void onCancel() {
+            }
 
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "onError: " + exception.toString());
                 Toast.makeText(getApplicationContext(), "Facebook sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
+                goToNoServer();
             }
         });
     }
@@ -196,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
         // Instantiate the backend request
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
         Call<User> call = api.login(user);
@@ -212,15 +247,25 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                        goToNoServer();
                     }
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     User loggedUser = response.body();
                     addUserToDB(loggedUser);
                     signInToFirebase(loggedUser);
+
+                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
+                    editor.commit();
+
                     //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                     //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa
-                    goToMainWindowAsAuthorized();
+
+                    //start fetching data
+                    getUserEvents();
                 }
             }
 
@@ -228,6 +273,70 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 Log.d("xxs", "onFailure: login failed");
+                goToNoServer();
+            }
+        });
+    }
+
+    private void getUserEvents() {
+        //call backend method for synchronization
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI api = retrofit.create(EventsAppAPI.class);
+        Call<List<EventDTO>> call = api.syncUserEvents(new EventsSyncDTO(AppDataSingleton.getInstance().getLoggedUser().getEmail(), AppDataSingleton.getInstance().getLoggedUser().getPassword(), lastSyncTime, new ArrayList<UpdateEventDTO>()));
+        call.enqueue(new Callback<List<EventDTO>>() {
+            @Override
+            public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        AppDataSingleton.getInstance().updateUserEvents((ArrayList<EventDTO>) response.body());
+                    }
+
+                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
+
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
+                    editor.commit();
+
+                    //now you can start home page
+                    goToMainWindow();
+                } else if (response.code() == 404) {
+                    //response is 404 - user psw have changed or user is deleted on another device, but I just logged in so it's server screw up...
+                    AppDataSingleton.getInstance().deleteAllPhysical();
+                    goToNoServer();
+                } else {
+                    Log.d("xxs", "onFailure: SyncMyEventsTask -> server returned bad code: " + response.code());
+                    goToNoServer();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventDTO>> call, Throwable t) {
+                if (t instanceof EOFException) {
+                    //idiots who made gson didn't think what if null response with code 200 is valid
+                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
+
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
+                    editor.commit();
+
+                    goToMainWindow();
+                    return;
+                }
+                if (t instanceof SocketTimeoutException) {
+                    //server is probably dead
+                    Log.d("xxs", "onFailure: SyncUserTask -> server is not responding, maybe dead?");
+                    goToNoServer();
+                    return;
+                }
+
+                Log.d("xxs", "onFailure: SyncUserTask: " + t.getMessage());
+                goToNoServer();
+                return;
             }
         });
     }
@@ -237,29 +346,25 @@ public class LoginActivity extends AppCompatActivity {
         AppDataSingleton.getInstance().createUser(user);
     }
 
-    private void addUserToDB(ArrayList<Event> userEvents) { //TODO: use this
-        AppDataSingleton.getInstance().setContext(this);
-        AppDataSingleton.getInstance().createUserEvents(userEvents);
-    }
-
     private void forgotPasswordClicked() {
         Intent intent = new Intent(this, ForgottenPasswordActivity.class);
         startActivity(intent);
     }
 
     private void goToRegisterActivity() {
+        LoginManager.getInstance().logOut();
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    private void goToMainWindowAsUnauthorized() {
+    private void goToMainWindow() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
-    private void goToMainWindowAsAuthorized() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void goToNoServer() {
+        Intent intent = new Intent(this, NoServerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

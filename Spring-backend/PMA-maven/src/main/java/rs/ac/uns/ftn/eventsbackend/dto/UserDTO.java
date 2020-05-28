@@ -1,8 +1,12 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
@@ -36,7 +40,7 @@ public class UserDTO {
 	private Boolean syncFacebookProfile;
 
 	private SyncStatus syncStatus;
-	private Date updated_time;
+	private ZonedDateTime updated_time;
 	
 	public UserDTO(User user) {
 		super();

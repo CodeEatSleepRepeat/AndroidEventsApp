@@ -1,8 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,10 +26,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
@@ -62,18 +66,10 @@ public class Event {
 	private FacebookPrivacy privacy;
 
 	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@Column(name = "start_time", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date start_time;
+	private ZonedDateTime start_time;
 
 	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@Column(name = "end_time", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date end_time;
+	private ZonedDateTime end_time;
 
 	@Column(length = 500)
 	private String place;
@@ -86,36 +82,37 @@ public class Event {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private User owner;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@ManyToMany(mappedBy = "interestedEvents", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<User> interested;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@ManyToMany(mappedBy = "goingEvents", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<User> going;
 
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Invitation> userInvitation;
 	
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Comment> comments;
 
-	@JsonProperty("updated_time")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@UpdateTimestamp
-	private Date updated_time;
+	private ZonedDateTime updated_time;
 
-	@JsonProperty("created_time")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
-	private Date created_time;
+	private ZonedDateTime created_time;
 	
+	@NotNull
 	private SyncStatus syncStatus;
 
 	// FB attributes
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private Date updated_timeFB;
+	private ZonedDateTime updated_timeFB;
 	private Long attending_countFB;
 	private Boolean guest_list_enabledFB;
 	private Long declined_count;
@@ -133,7 +130,7 @@ public class Event {
 		interested = new ArrayList<User>();
 		userInvitation = new ArrayList<Invitation>();
 		this.syncStatus = SyncStatus.UPDATE;
-		this.updated_time = new Timestamp(System.currentTimeMillis());
+		this.updated_time = ZonedDateTime.now();
 	}
 	
 	public Event(CreateEventDTO dto) {
@@ -147,12 +144,20 @@ public class Event {
 		end_time = dto.getEnd_time();
 		privacy = dto.getPrivacy();
 		this.syncStatus = SyncStatus.ADD;
-		this.updated_time = new Timestamp(System.currentTimeMillis());
+		this.updated_time = ZonedDateTime.now();
 	}
-	
-	public void setSyncStatus(SyncStatus syncStatus) {
-		this.syncStatus = syncStatus;
-		this.updated_time = new Timestamp(System.currentTimeMillis());
+
+	public void update(@Valid UpdateEventDTO androidEvent) {
+		latitude = androidEvent.getLatitude();
+		longitude = androidEvent.getLongitude();
+		name = androidEvent.getName();
+		place = androidEvent.getPlace();
+		description = androidEvent.getDescription();
+		type = androidEvent.getType();
+		start_time = androidEvent.getStart_time();
+		end_time = androidEvent.getEnd_time();
+		privacy = androidEvent.getPrivacy();
+		this.syncStatus = androidEvent.getSyncStatus();
+		this.updated_time = ZonedDateTime.now();
 	}
-	
 }

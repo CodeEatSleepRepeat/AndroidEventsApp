@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Events</string>
     <string name="splash_text">Events are loading...</string>
-
     <string name="no_valid_email_message">Selected account doesn\'t have a valid email, please select another one.</string>
     <string name="select_account_with_email_message">Please select an account with a valid email address.</string>
     <string name="action_settings">Settings</string>
@@ -117,6 +116,8 @@
     <string name="oops">Oops!</string>
     <string name="check_your_internet">Please check your internet connection</string>
     <string name="there_is_no_internet">There is no internet connection</string>
+    <string name="try_again_later">Please try again later</string>
+    <string name="there_is_no_server">Looks like we can\'t connect to the server</string>
     <string name="invite_friends">Invite friends to event</string>
     <string name="delete_account">Delete Account</string>
     <string name="unlink_account">Unlink Facebook</string>
@@ -129,14 +130,15 @@
     <string name="change_profile_image">Change profile image</string>
     <string name="remove_profile_image">Remove profile image</string>
     <string name="registerUserValidationName">Please enter your new profile name.</string>
-    <string name="registerUserValidationName2">Name must have at least 3 letters including \' - and .</string>
+    <string name="registerUserValidationName2">Name must have at least 2 letters including \' - and .</string>
     <string name="registerUserValidationEmail">Please enter your email.</string>
     <string name="registerUserValidationEmail2">Please enter a valid email.</string>
     <string name="emailAlreadyExists">Email is already registered!</string>
     <string name="registerUserValidationPsw">Please enter your new profile password.</string>
     <string name="registerUserValidationPsw2">Please reenter your new profile password.</string>
+    <string name="loginPasswordBlank">Password can\'t be empty.</string>
     <string name="registerUserValidationPsw3">Entered passwords don\'t match!</string>
-    <string name="registerUserValidationPsw4">New passwords must contain at least: \n1. 4 characters \n2.  one small and one capital letter \n3.  one number or special character</string>
+    <string name="registerUserValidationPsw4">New passwords must contain at least: \n1. 7 characters \n2.  one small and one capital letter \n3.  one number or special character</string>
     <string name="facebookNotAvailable">Facebook profile is not available</string>
     <string name="userNotFound">Email and password don\'t match any known user</string>
     <string name="emailNotFound">Email don\'t match any known user</string>
@@ -146,10 +148,8 @@
     <string name="latestMessageMessagePrefixInOurMessage">You: </string>
     <string name="updateEvent">Update event</string>
     <string name="eventUpdated">Event updated</string>
-    <string name="preferenceSyncUser">preferenceSyncUser</string>
 
-
-    <string name="localhost_uri">http://10.0.2.2:8080</string>
+    <string name="localhost_uri">http://192.168.56.1:8080</string>
     <string name="facebook_app_id">xxx</string>
     <string name="fb_login_protocol_scheme">xxx</string>
 </resources>

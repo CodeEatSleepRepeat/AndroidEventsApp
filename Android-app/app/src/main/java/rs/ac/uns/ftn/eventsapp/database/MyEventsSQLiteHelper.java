@@ -8,11 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Timestamp;
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
+import org.threeten.bp.ZonedDateTime;
 import java.util.ArrayList;
 
-import rs.ac.uns.ftn.eventsapp.models.Event;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 
 public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
@@ -26,14 +29,16 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_IMAGE_URI = "imageUri";
     private static final String COLUMN_EVENT_TYPE = "eventType";
-    private static final String COLUMN_OPEN_FOR_ALL = "openForAll";
+    private static final String COLUMN_PRIVACY = "privacy";
     private static final String COLUMN_START_TIME = "startTime";
     private static final String COLUMN_END_TIME = "endTime";
-    private static final String COLUMN_LOCATION = "location";
+    private static final String COLUMN_PLACE = "place";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
     private static final String COLUMN_SYNC_STATUS = "syncStatus";
     private static final String COLUMN_UPDATED_TIME = "updated_time";
+    private static final String COLUMN_CREATED_TIME = "created_time";
+    private static final String COLUMN_OWNER = "owner";
 
     private static final String DATABASE_NAME = "my_events.db";
     private static final int DATABASE_VERSION = 1;
@@ -45,18 +50,21 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_DESCRIPTION + " text not null, "
             + COLUMN_IMAGE_URI + " text, "
             + COLUMN_EVENT_TYPE + " text, "
-            + COLUMN_OPEN_FOR_ALL + " integer default 0, "
-            + COLUMN_START_TIME + " DATETIME not null, "
-            + COLUMN_END_TIME + " DATETIME not null, "
-            + COLUMN_LOCATION + " text,"
+            + COLUMN_PRIVACY + " text, "
+            + COLUMN_START_TIME + " text, "
+            + COLUMN_END_TIME + " text, "
+            + COLUMN_PLACE + " text,"
             + COLUMN_LATITUDE + " integer default 0, "
             + COLUMN_LONGITUDE + " integer default 0, "
             + COLUMN_SYNC_STATUS + " text, "
-            + COLUMN_UPDATED_TIME + " DATETIME default CURRENT_TIMESTAMP"
+            + COLUMN_UPDATED_TIME + " text, "
+            + COLUMN_CREATED_TIME + " text, "
+            + COLUMN_OWNER + " integer default 0"
             + ");";
 
     public MyEventsSQLiteHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        AndroidThreeTen.init(context);
     }
 
     @Override
@@ -70,48 +78,52 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void create(Event event) {
+    public void create(EventDTO event) {
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, event.getEventId());
-        cv.put(COLUMN_NAME, event.getEventName());
-        cv.put(COLUMN_DESCRIPTION, event.getEventDescription());
-        cv.put(COLUMN_IMAGE_URI, event.getEventImageURI());
-        cv.put(COLUMN_EVENT_TYPE, event.getEventType().toString());
-        cv.put(COLUMN_OPEN_FOR_ALL, event.getOpenForAll());
-        cv.put(COLUMN_START_TIME, event.getStartTime().getTime());
-        cv.put(COLUMN_END_TIME, event.getEndTime().getTime());
-        cv.put(COLUMN_LOCATION, event.getLocation());
+        cv.put(COLUMN_ID, event.getId());
+        cv.put(COLUMN_NAME, event.getName());
+        cv.put(COLUMN_DESCRIPTION, event.getDescription());
+        cv.put(COLUMN_IMAGE_URI, event.getImageUri());
+        cv.put(COLUMN_EVENT_TYPE, event.getType().toString());
+        cv.put(COLUMN_PRIVACY, event.getPrivacy().toString());
+        cv.put(COLUMN_START_TIME, event.getStart_time().toString());
+        cv.put(COLUMN_END_TIME, event.getEnd_time().toString());
+        cv.put(COLUMN_PLACE, event.getPlace());
         cv.put(COLUMN_LATITUDE, event.getLatitude());
         cv.put(COLUMN_LONGITUDE, event.getLongitude());
         cv.put(COLUMN_SYNC_STATUS, event.getSyncStatus().toString());
-        cv.put(COLUMN_UPDATED_TIME, event.getUpdated_time().getTime());
+        cv.put(COLUMN_UPDATED_TIME, event.getUpdated_time().toString());
+        cv.put(COLUMN_CREATED_TIME, event.getCreated_time().toString());
+        cv.put(COLUMN_OWNER, event.getOwner());
 
         mDatabase = getWritableDatabase();
         mDatabase.insert(TABLE_MY_EVENTS, null, cv);
         mDatabase.close();
     }
 
-    public ArrayList<Event> read() {
-        ArrayList<Event> loggedUserEvents = new ArrayList<>();
-        mDatabase = getWritableDatabase();
+    public ArrayList<EventDTO> read() {
+        ArrayList<EventDTO> loggedUserEvents = new ArrayList<>();
+        mDatabase = getReadableDatabase();
         Cursor cursor = mDatabase.query(TABLE_MY_EVENTS, null, null, null, null, null, COLUMN_ID + " DESC");
         while (cursor.moveToNext()) {
-            loggedUserEvents.add(new Event(
+            EventDTO e = new EventDTO(
                     cursor.getLong(0),
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getString(3),
                     EventType.valueOf(cursor.getString(4)),
-                    cursor.getInt(5) == 1,
-                    new Timestamp(cursor.getLong(6) * 1000),
-                    new Timestamp(cursor.getLong(7) * 1000),
+                    FacebookPrivacy.valueOf(cursor.getString(5)),
+                    ZonedDateTime.parse(cursor.getString(6)),
+                    ZonedDateTime.parse(cursor.getString(7)),
                     cursor.getString(8),
-                    cursor.getLong(9),
-                    cursor.getLong(10),
-                    null, null, null, null,
+                    cursor.getDouble(9),
+                    cursor.getDouble(10),
                     SyncStatus.valueOf(cursor.getString(11)),
-                    new Timestamp(cursor.getLong(12) * 1000)
-            ));
+                    ZonedDateTime.parse(cursor.getString(12)),
+                    ZonedDateTime.parse(cursor.getString(13)),
+                    cursor.getLong(14)
+            );
+            loggedUserEvents.add(e);
         }
         cursor.close();
         mDatabase.close();
@@ -119,24 +131,26 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
         return loggedUserEvents;
     }
 
-    public Event update(Event event) {
-        event.setUpdated_time(new Timestamp(System.currentTimeMillis()));
+    public EventDTO update(EventDTO event) {
+        event.setUpdated_time(ZonedDateTime.now());
         event.setSyncStatus(SyncStatus.UPDATE);
 
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, event.getEventId());
-        cv.put(COLUMN_NAME, event.getEventName());
-        cv.put(COLUMN_DESCRIPTION, event.getEventDescription());
-        cv.put(COLUMN_IMAGE_URI, event.getEventImageURI());
-        cv.put(COLUMN_EVENT_TYPE, event.getEventType().toString());
-        cv.put(COLUMN_OPEN_FOR_ALL, event.getOpenForAll());
-        cv.put(COLUMN_START_TIME, event.getStartTime().getTime());
-        cv.put(COLUMN_END_TIME, event.getEndTime().getTime());
-        cv.put(COLUMN_LOCATION, event.getLocation());
+        cv.put(COLUMN_ID, event.getId());
+        cv.put(COLUMN_NAME, event.getName());
+        cv.put(COLUMN_DESCRIPTION, event.getDescription());
+        cv.put(COLUMN_IMAGE_URI, event.getImageUri());
+        cv.put(COLUMN_EVENT_TYPE, event.getType().toString());
+        cv.put(COLUMN_PRIVACY, event.getPrivacy().toString());
+        cv.put(COLUMN_START_TIME, event.getStart_time().toString());
+        cv.put(COLUMN_END_TIME, event.getEnd_time().toString());
+        cv.put(COLUMN_PLACE, event.getPlace());
         cv.put(COLUMN_LATITUDE, event.getLatitude());
         cv.put(COLUMN_LONGITUDE, event.getLongitude());
         cv.put(COLUMN_SYNC_STATUS, event.getSyncStatus().toString());
-        cv.put(COLUMN_UPDATED_TIME, event.getUpdated_time().getTime());
+        cv.put(COLUMN_UPDATED_TIME, event.getUpdated_time().toString());
+        cv.put(COLUMN_CREATED_TIME, event.getCreated_time().toString());
+        cv.put(COLUMN_OWNER, event.getOwner());
 
         mDatabase = getWritableDatabase();
         mDatabase.update(TABLE_MY_EVENTS, cv, null, null);
@@ -151,7 +165,7 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
         mDatabase.close();
     }
 
-    public Event deleteLogical(Event event) {
+    public EventDTO deleteLogical(EventDTO event) {
         event.setSyncStatus(SyncStatus.DELETE);
         return update(event);
     }
@@ -163,5 +177,15 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
         return b;
     }
 
-
+    public boolean exists(Long id) {
+        String Query = "Select * from " + TABLE_MY_EVENTS + " where " + COLUMN_ID + " = " + id;
+        mDatabase = getReadableDatabase();
+        Cursor cursor = mDatabase.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
 }

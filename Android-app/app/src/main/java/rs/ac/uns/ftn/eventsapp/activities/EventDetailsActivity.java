@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.VectorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,21 +22,20 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.net.URISyntaxException;
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
-import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -47,6 +43,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static final String TAG = "ShowEventDetailsAct";
     private static final int LAUNCH_SEND_INVITATIONS_ACTIVITY = 2001;
     private static Long idEvent;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
 
     private CollapsingToolbarLayout collapsingToolbar;
     private EventDetailsDTO dto;
@@ -107,7 +105,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         goingBtn = findViewById(R.id.goingEventDetailsBtn);
         interestedBtn = findViewById(R.id.interestedEventDetailsBtn);
 
-        if(AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getAuthor())){
+        if (AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getAuthor())) {
             goingBtn.setVisibility(View.INVISIBLE);
             interestedBtn.setVisibility(View.INVISIBLE);
         }
@@ -134,7 +132,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         imageView.setAlpha(0.9f);
 
         eventNameEventDetailsTextView.setText(dto.getEventName());
-        eventStartEventDetailsView.setText(dto.getStartTime() + "");
+        eventStartEventDetailsView.setText(formatter.format(dto.getStartTime()));
         eventDescriptionEventDetailsView.setText(dto.getEventDescription());
         eventLocationEventDetailsTextView.setText(dto.getLocation());
         final EventForMapDTO mapDto = new EventForMapDTO(dto.getEventId(), dto.getEventName(), dto.getLongitude(), dto.getLatitude(), dto.getEventImageURI());
@@ -232,20 +230,19 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    public void goingToEvent(){
+    public void goingToEvent() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.goingToEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(getApplicationContext(), "You are already going to this event", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
                 }
@@ -258,19 +255,19 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void interestedInEvent(){
+    public void interestedInEvent() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.interestedInEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(getApplicationContext(), "You are already interested in this event", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
                 }

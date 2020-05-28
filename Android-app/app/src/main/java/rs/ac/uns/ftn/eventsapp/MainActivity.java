@@ -51,7 +51,6 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
-import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -225,10 +224,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_item_messages:
                         Boolean isUserLoggedToFirebaseMessageService =
                                 FirebaseAuth.getInstance().getCurrentUser() != null;
-                        if(isUserLoggedToFirebaseMessageService)
+                        if (isUserLoggedToFirebaseMessageService)
                             onClickNavItem(LatestMessagesFragment.class);
                         else
-                            Toast.makeText(MainActivity.this,"Message system is not avaible at the " +
+                            Toast.makeText(MainActivity.this, "Message system is not avaible at the " +
                                             "moment",
                                     Toast.LENGTH_SHORT).show();
                         break;
@@ -373,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (EventDTO item : items) {
-            if (item.getImageUri()==null || item.getImageUri().equals("") || item.getImageUri().startsWith("http")){
+            if (item.getImageUri() == null || item.getImageUri().equals("") || item.getImageUri().startsWith("http")) {
                 eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), item.getImageUri()));
             } else {
                 eventsForMap.add(new EventForMapDTO(item.getId(), item.getName(), item.getLatitude(), item.getLongitude(), AppDataSingleton.IMAGE_URI + item.getImageUri()));
@@ -699,7 +698,7 @@ public class MainActivity extends AppCompatActivity {
         if (!imgUri.equals("")) {
 
             Picasso.get().setLoggingEnabled(true);
-            if (imgUri.startsWith("http")){
+            if (imgUri.startsWith("http")) {
                 Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_user_icon).into(userImage);
             } else {
                 Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imgUri)).placeholder(R.drawable.ic_user_icon).into(userImage);

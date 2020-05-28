@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.model;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,13 +39,10 @@ public class Comment {
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private Event event;
 
-	@JsonProperty("timestamp")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@CreationTimestamp
-	private Date timestamp;
+	private ZonedDateTime timestamp;
 
-	public Comment(Long id, @NotNull String text, @NotNull User user, @NotNull Event event, Date timestamp) {
+	public Comment(Long id, @NotNull String text, @NotNull User user, @NotNull Event event, ZonedDateTime timestamp) {
 		super();
 		this.id = id;
 		this.text = text;

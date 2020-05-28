@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.dtos;
 
 import java.io.Serializable;
-import java.util.Date;
+import org.threeten.bp.ZonedDateTime;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
@@ -14,16 +14,14 @@ public class EventDetailsDTO implements Serializable {
     private String eventImageURI;
     private EventType eventType;
     private FacebookPrivacy openForAll;
-    private Date startTime;
-    private Date endTime;
+    private ZonedDateTime startTime;
+    private ZonedDateTime endTime;
     private String location;
     private double latitude;
     private double longitude;
     private Long author;
 
-    public EventDetailsDTO(Long eventId, String eventName, String eventDescription,
-                           String eventImageURI, EventType eventType, FacebookPrivacy openForAll, Date startTime, Date endTime,
-                           String location, double latitude, double longitude, Long author) {
+    public EventDetailsDTO(Long eventId, String eventName, String eventDescription, String eventImageURI, EventType eventType, FacebookPrivacy openForAll, ZonedDateTime startTime, ZonedDateTime endTime, String location, double latitude, double longitude, Long author) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
@@ -86,20 +84,28 @@ public class EventDetailsDTO implements Serializable {
         this.openForAll = openForAll;
     }
 
-    public Date getStartTime() {
+    public ZonedDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(ZonedDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public ZonedDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(ZonedDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getLocation() {
