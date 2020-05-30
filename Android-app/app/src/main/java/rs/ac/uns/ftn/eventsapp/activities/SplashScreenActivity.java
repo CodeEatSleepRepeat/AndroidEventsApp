@@ -11,10 +11,13 @@ import rs.ac.uns.ftn.eventsapp.sync.SyncReceiverInitTask;
 public class SplashScreenActivity extends Activity {
 
     private SyncReceiverInitTask syncReceiverInitTask;
+    public static final String SYNC_PREFERENCE = "SYNC_PREFERENCE";
     public static final String SYNC_USER = "SYNC_USER";
     public static final String SYNC_MY_EVENTS = "SYNC_MY_EVENTS";
+    public static final String SYNC_GI_EVENTS = "SYNC_GI_EVENTS";
     public static final String SYNC_USER_RESULT = "SYNC_USER_RESULT";
     public static final String SYNC_MY_EVENT_RESULT = "SYNC_MY_EVENT_RESULT";
+    public static final String SYNC_GI_EVENT_RESULT = "SYNC_GI_EVENT_RESULT";
     public static final int SYNC_OK = 0;
     public static final int SYNC_SERVER_NA = 1;
     public static final int SYNC_BAD_USER = 2;
@@ -24,11 +27,12 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
-        this.syncReceiverInitTask = new SyncReceiverInitTask();
+        syncReceiverInitTask = new SyncReceiverInitTask();
         //register broadcast listener
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYNC_USER);
         filter.addAction(SYNC_MY_EVENTS);
+        filter.addAction(SYNC_GI_EVENTS);
         registerReceiver(syncReceiverInitTask, filter);
 
         // uradi inicijalizaciju u pozadinskom threadu

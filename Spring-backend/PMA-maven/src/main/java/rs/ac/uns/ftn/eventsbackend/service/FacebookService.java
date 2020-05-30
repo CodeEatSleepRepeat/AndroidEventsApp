@@ -144,11 +144,14 @@ public class FacebookService {
 		if (!facebook.isAuthorized())
 			return null;
 
-		final String uri = "https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cemail%2Cpicture%7Burl%2Cheight%2Cwidth%7D&access_token="
-				+ accessToken;
+		final String uri = "https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cemail&access_token=" + accessToken;
 
-		ResponseEntity<CustomFacebookProfile> fbUser = facebook.restOperations().getForEntity(URI.create(uri),
-				CustomFacebookProfile.class);
+		ResponseEntity<CustomFacebookProfile> fbUser = facebook.restOperations().getForEntity(URI.create(uri), CustomFacebookProfile.class);
+		
+		//try to get larger picture with constant url
+		final String imgUri = "https://graph.facebook.com/v6.0/" + fbUser.getBody().getId()  + "/picture?type=large";
+		fbUser.getBody().setUrl(imgUri);
+		
 		return fbUser.getBody();
 	}
 
@@ -183,9 +186,9 @@ public class FacebookService {
 		dbUser.setFacebookId(fbProfile.getId());
 		dbUser.setName(fbProfile.getName());
 		dbUser.setEmail(fbProfile.getEmail());
-		dbUser.setImageUri(fbProfile.getPicture().getData().getUrl());
-		dbUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
-		dbUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
+		dbUser.setImageUri(fbProfile.getUrl());
+		//dbUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
+		//dbUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
 		dbUser.setSyncStatus(SyncStatus.UPDATE);
 		dbUser.setUpdated_time(ZonedDateTime.now());
 

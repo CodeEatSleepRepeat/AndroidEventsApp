@@ -13,6 +13,8 @@ import retrofit2.http.Path;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.GIEventsSyncDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
@@ -60,7 +62,10 @@ public interface EventsAppAPI {
     @GET("/event/test/{id}")
     Call<StringDTO> getEventUpdateImage(@Path("id") Long id);
 
-    @POST("/event//sync/myevents")
+    @POST("/event/sync/myevents")
     Call<List<EventDTO>> syncUserEvents(@Body EventsSyncDTO data);
+
+    @POST("/event/sync/gi-events")
+    Call<List<GoingInterestedEventsDTO>> syncGoingInterestedEvents(@Body GIEventsSyncDTO data);
 
 }

@@ -268,9 +268,7 @@ public class UserController {
 		psw = psw.substring(0, psw.indexOf("-")).toUpperCase() + "F7a";
 		User newUser = new User(fbProfile.getName(), fbProfile.getEmail(), psw);
 		newUser.setFacebookId(fbProfile.getId());
-		newUser.setImageUri(fbProfile.getPicture().getData().getUrl());
-		newUser.setImageHeight(fbProfile.getPicture().getData().getHeight());
-		newUser.setImageWidth(fbProfile.getPicture().getData().getWidth());
+		newUser.setImageUri(fbProfile.getUrl());
 		newUser.setActivatedAccount(true);
 		newUser.setSyncFacebookEvents(true);
 		newUser.setSyncFacebookProfile(true);
@@ -318,6 +316,9 @@ public class UserController {
 		if (user.getName() != null && !user.getName().trim().equals("")) {
 			// promeni ime
 			dbUser.setName(user.getName().trim());
+			if (dbUser.getSyncFacebookProfile()) {
+				dbUser.setSyncFacebookProfile(false);	//deactivate fb profile update if manual profile change happened
+			}
 		}
 		if (user.getImageUri() != null && user.getImageUri().equals("")) {
 			// obrisi staru sliku ako postoji na serveru
@@ -325,6 +326,9 @@ public class UserController {
 
 			// promeni sliku
 			dbUser.setImageUri("");
+			if (dbUser.getSyncFacebookProfile()) {
+				dbUser.setSyncFacebookProfile(false);	//deactivate fb profile update if manual profile change happened
+			}
 		}
 		if (user.getPasswordNew1() != null && !user.getPasswordNew1().trim().equals("")) {
 			// promeni password ako je dobar
@@ -379,7 +383,7 @@ public class UserController {
 			System.out.println("sync user no last update time - sending user");
 			return new ResponseEntity<>(dbUser, HttpStatus.OK);
 		}
-
+		
 		if (dbUser.getUpdated_time().toInstant().isAfter(Instant.ofEpochMilli(data.getLastSyncTime()))) {
 			// need to update
 			System.out.println("sync user last update time to long ago - sending user");
@@ -609,6 +613,7 @@ public class UserController {
 					removeImage(user.getImageUri());
 				}
 				user.setImageUri(newImageName);
+				user.setSyncFacebookProfile(false);	//deactivate fb profile update if manual image change happened
 				user.setSyncStatus(SyncStatus.UPDATE);
 				user.setUpdated_time(ZonedDateTime.now());
 				user = userService.save(user);

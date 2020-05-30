@@ -2,10 +2,6 @@ package rs.ac.uns.ftn.eventsbackend.dto;
 
 import java.time.ZonedDateTime;
 
-import javax.persistence.Column;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -11,6 +11,6 @@ public class CustomFacebookProfile {
 	private String id;
 	private String name;
 	private String email;
-	private CustomFacebookPicture picture;
+	private String url;
 
 }

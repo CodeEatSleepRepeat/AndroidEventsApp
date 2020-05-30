@@ -15,8 +15,6 @@ public class User {
     private String facebookId;
     private String name;
     private String imageUri;
-    private Integer imageHeight;
-    private Integer imageWidth;
     private String email;
     private String password;
     private List<Long> sendRequests;
@@ -35,13 +33,11 @@ public class User {
     private SyncStatus syncStatus;
     private ZonedDateTime updated_time;
 
-    public User(Long id, String facebookId, String name, String imageUri, Integer imageHeight, Integer imageWidth, String email, String password, List<Long> sendRequests, List<Long> receivedRequests, List<Long> sendInvitations, List<Long> receivedInvitations, List<Long> chatMessagesSent, List<Long> chatMessagesReceived, List<Long> userEvents, List<Long> interestedEvents, List<Long> goingEvents, List<Long> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile, SyncStatus syncStatus, ZonedDateTime updated_time) {
+    public User(Long id, String facebookId, String name, String imageUri, String email, String password, List<Long> sendRequests, List<Long> receivedRequests, List<Long> sendInvitations, List<Long> receivedInvitations, List<Long> chatMessagesSent, List<Long> chatMessagesReceived, List<Long> userEvents, List<Long> interestedEvents, List<Long> goingEvents, List<Long> comments, Boolean activatedAccount, Boolean syncFacebookEvents, Boolean syncFacebookProfile, SyncStatus syncStatus, ZonedDateTime updated_time) {
         this.id = id;
         this.facebookId = facebookId;
         this.name = name;
         this.imageUri = imageUri;
-        this.imageHeight = imageHeight;
-        this.imageWidth = imageWidth;
         this.email = email;
         this.password = password;
         this.sendRequests = sendRequests;
@@ -99,22 +95,6 @@ public class User {
 
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
-    }
-
-    public Integer getImageHeight() {
-        return imageHeight;
-    }
-
-    public void setImageHeight(Integer imageHeight) {
-        this.imageHeight = imageHeight;
-    }
-
-    public Integer getImageWidth() {
-        return imageWidth;
-    }
-
-    public void setImageWidth(Integer imageWidth) {
-        this.imageWidth = imageWidth;
     }
 
     public String getEmail() {

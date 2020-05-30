@@ -1,9 +1,9 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -23,36 +23,23 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import org.threeten.bp.ZonedDateTime;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
+import rs.ac.uns.ftn.eventsapp.sync.SyncReceiverInitTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -67,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private final String EMAIL = "email";
     private final String EVENTS = "user_events";
     private final String TAG = this.getClass().getName();
+    private SyncReceiverInitTask syncReceiverInitTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +101,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        syncReceiverInitTask = new SyncReceiverInitTask();
+        //register broadcast listener
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SplashScreenActivity.SYNC_MY_EVENTS);
+        filter.addAction(SplashScreenActivity.SYNC_GI_EVENTS);
+        registerReceiver(syncReceiverInitTask, filter);
     }
 
     private boolean validationSuccess() {
@@ -181,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                             addUserToDB(loggedUser);
 
                             lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            SharedPreferences sharedPreferences = getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
                             editor.commit();
@@ -191,8 +185,9 @@ public class LoginActivity extends AppCompatActivity {
                             //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                             //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa - moze biti interno poslat na register!
 
-                            //start fetching data
-                            getUserEvents();
+                            //start fetching other data in background
+                            new SyncMyEventsTask(getApplicationContext()).execute();
+                            new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
                         }
                     }
 
@@ -256,7 +251,7 @@ public class LoginActivity extends AppCompatActivity {
                     signInToFirebase(loggedUser);
 
                     lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences sharedPreferences = getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
                     editor.commit();
@@ -264,8 +259,9 @@ public class LoginActivity extends AppCompatActivity {
                     //FirebaseLogin firebaseLogin = new FirebaseLogin(LoginActivity.this);
                     //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa
 
-                    //start fetching data
-                    getUserEvents();
+                    //start fetching other data in background
+                    new SyncMyEventsTask(getApplicationContext()).execute();
+                    new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
                 }
             }
 
@@ -274,69 +270,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 Log.d("xxs", "onFailure: login failed");
                 goToNoServer();
-            }
-        });
-    }
-
-    private void getUserEvents() {
-        //call backend method for synchronization
-        retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
-                .build();
-        EventsAppAPI api = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> call = api.syncUserEvents(new EventsSyncDTO(AppDataSingleton.getInstance().getLoggedUser().getEmail(), AppDataSingleton.getInstance().getLoggedUser().getPassword(), lastSyncTime, new ArrayList<UpdateEventDTO>()));
-        call.enqueue(new Callback<List<EventDTO>>() {
-            @Override
-            public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        AppDataSingleton.getInstance().updateUserEvents((ArrayList<EventDTO>) response.body());
-                    }
-
-                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
-                    editor.commit();
-
-                    //now you can start home page
-                    goToMainWindow();
-                } else if (response.code() == 404) {
-                    //response is 404 - user psw have changed or user is deleted on another device, but I just logged in so it's server screw up...
-                    AppDataSingleton.getInstance().deleteAllPhysical();
-                    goToNoServer();
-                } else {
-                    Log.d("xxs", "onFailure: SyncMyEventsTask -> server returned bad code: " + response.code());
-                    goToNoServer();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<EventDTO>> call, Throwable t) {
-                if (t instanceof EOFException) {
-                    //idiots who made gson didn't think what if null response with code 200 is valid
-                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
-                    editor.commit();
-
-                    goToMainWindow();
-                    return;
-                }
-                if (t instanceof SocketTimeoutException) {
-                    //server is probably dead
-                    Log.d("xxs", "onFailure: SyncUserTask -> server is not responding, maybe dead?");
-                    goToNoServer();
-                    return;
-                }
-
-                Log.d("xxs", "onFailure: SyncUserTask: " + t.getMessage());
-                goToNoServer();
-                return;
             }
         });
     }
@@ -377,4 +310,12 @@ public class LoginActivity extends AppCompatActivity {
                 registeredUser.getPassword(), registeredUser.getName(), registeredUser.getImageUri());
     }
 
+    @Override
+    protected void onDestroy() {
+        //osloboditi resurse
+        if (syncReceiverInitTask != null) {
+            unregisterReceiver(syncReceiverInitTask);
+        }
+        super.onDestroy();
+    }
 }

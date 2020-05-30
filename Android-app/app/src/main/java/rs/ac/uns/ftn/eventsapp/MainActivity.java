@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,7 @@ import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsUnAuthUserActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserProfileActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
@@ -51,6 +53,9 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
+import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
+import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
@@ -413,10 +418,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        //firebase sign out
         FirebaseAuth userFirebaseInstance = FirebaseAuth.getInstance();
         userFirebaseInstance.signOut();
+        //DB deletion
         AppDataSingleton.getInstance().deleteAllPhysical();
+        //delete last sync preferences
+        SharedPreferences sharedPreferences = getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(SyncUserTask.preferenceSyncUser);
+        editor.remove(SyncMyEventsTask.preferenceSyncMyEvents);
+        editor.remove(SyncGoingInterestedEventsTask.preferenceSyncGIEvents);
+        editor.commit();
+
+        //FB login btn reset
         LoginManager.getInstance().logOut();
+        //goto sign in screen
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

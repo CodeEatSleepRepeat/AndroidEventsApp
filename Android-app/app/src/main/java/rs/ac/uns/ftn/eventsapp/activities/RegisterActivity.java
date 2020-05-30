@@ -1,12 +1,12 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -25,6 +25,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -32,13 +33,9 @@ import com.facebook.login.widget.LoginButton;
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -50,14 +47,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
+import rs.ac.uns.ftn.eventsapp.sync.SyncReceiverInitTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -81,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private Uri imageData;
     private long lastSyncTime;
+    private SyncReceiverInitTask syncReceiverInitTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,11 +143,17 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
+        syncReceiverInitTask = new SyncReceiverInitTask();
+        //register broadcast listener
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SplashScreenActivity.SYNC_MY_EVENTS);
+        filter.addAction(SplashScreenActivity.SYNC_GI_EVENTS);
+        registerReceiver(syncReceiverInitTask, filter);
     }
 
     private void setupFacebookRegistration() {
         callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.fullyInitialize();
 
         LoginButton loginButton = findViewById(R.id.login_button_login);
         loginButton.setPermissions(Arrays.asList(EMAIL, EVENTS));
@@ -189,15 +191,17 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             Log.d("TAG", response.body().getId().toString());
                             addUserToDB(response.body());
+                            //TODO: firebase login+register
 
                             lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            SharedPreferences sharedPreferences = getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
                             editor.commit();
 
-                            //start fetching data - fb events?
-                            getUserEvents();
+                            //start fetching other data in background - fb data
+                            new SyncMyEventsTask(getApplicationContext()).execute();
+                            new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
                         }
                     }
 
@@ -218,7 +222,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "onError: " + exception.toString());
-                Toast.makeText(getApplicationContext(), "Facebbok sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Facebook sent exception: " + exception.getCause(), Toast.LENGTH_LONG).show();
+                goToNoServer();
             }
         });
     }
@@ -278,6 +283,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                     Log.d("xxs", "onResponse: image uploaded success");
+                    goToNoServer();
                 } else {
                     loginAfterRegisterActivity();
                 }
@@ -287,67 +293,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 Log.d("xxs", "onResponse: image upload failed");
-            }
-        });
-    }
-
-    private void getUserEvents() {
-        //call backend method for synchronization
-        retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
-                .build();
-        EventsAppAPI api = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> call = api.syncUserEvents(new EventsSyncDTO(AppDataSingleton.getInstance().getLoggedUser().getEmail(), AppDataSingleton.getInstance().getLoggedUser().getPassword(), lastSyncTime, new ArrayList<UpdateEventDTO>()));
-        call.enqueue(new Callback<List<EventDTO>>() {
-            @Override
-            public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        AppDataSingleton.getInstance().updateUserEvents((ArrayList<EventDTO>) response.body());
-                    }
-
-                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
-                    editor.commit();
-
-                    //now you can start home page
-                    goToMainWindow();
-                } else if (response.code() == 404) {
-                    //response is 404 - user psw have changed or user is deleted on another device, but I just logged in...
-                    AppDataSingleton.getInstance().deleteAllPhysical();
-                    goToNoServer();
-                } else {
-                    Log.d("xxs", "onFailure: SyncMyEventsTask -> server returned bad code: " + response.code());
-                    goToNoServer();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<EventDTO>> call, Throwable t) {
-                if (t instanceof EOFException) {
-                    //idiots who made gson didn't think what if null response with code 200 is valid
-                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
-
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong(SyncMyEventsTask.preferenceSyncMyEvents, lastSyncTime);
-                    editor.commit();
-
-                    goToMainWindow();
-                    return;
-                }
-                if (t instanceof SocketTimeoutException) {
-                    //server is probably dead
-                    Log.d("xxs", "onFailure: SyncUserTask -> server is not responding, maybe dead?");
-                    goToNoServer();
-                    return;
-                }
-
-                Log.d("xxs", "onFailure: SyncUserTask: " + t.getMessage());
                 goToNoServer();
             }
         });
@@ -511,5 +456,14 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        //osloboditi resurse
+        if (syncReceiverInitTask != null) {
+            unregisterReceiver(syncReceiverInitTask);
+        }
+        super.onDestroy();
     }
 }

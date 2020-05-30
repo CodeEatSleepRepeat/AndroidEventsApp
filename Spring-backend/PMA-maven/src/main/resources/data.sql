@@ -5,10 +5,6 @@ USE android_db;
 --
 TRUNCATE TABLE user;
 --
--- Delete data from the table 'owner'
---
-TRUNCATE TABLE owner;
---
 -- Delete data from the table 'invitation'
 --
 TRUNCATE TABLE invitation;
@@ -480,21 +476,6 @@ INSERT INTO invitation(id, status, event_id, invitation_receiver_id, invitation_
 (48, 2, 7, 3, 8),
 (49, 1, 18, 4, 2),
 (50, 0, 8, 7, 8);
-
---
--- Inserting data into table owner
---
-INSERT INTO owner(id, facebook_id, user_id) VALUES
-(1, '', 6),
-(2, '', 2),
-(3, '', 3),
-(4, '', 5),
-(5, '', 8),
-(6, '', 9),
-(7, '', 10),
-(8, '', 7),
-(9, '', 1),
-(10, '', 4);
 
 --
 -- Inserting data into table user

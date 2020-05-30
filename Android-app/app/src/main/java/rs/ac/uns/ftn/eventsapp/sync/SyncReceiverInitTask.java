@@ -10,13 +10,14 @@ import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
 
 public class SyncReceiverInitTask extends BroadcastReceiver {
+    private int threadCount = 2;    //set how many async tasks are working and must complete before starting main activity
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(SplashScreenActivity.SYNC_USER)) {
             int resultStatus = intent.getExtras().getInt(SplashScreenActivity.SYNC_USER_RESULT);
             switch (resultStatus) {
                 case SplashScreenActivity.SYNC_OK:  //user is fetched, now sync all other user lists
-                    //startMainActivity(context);
                     startSyncUserEventsService(context);
                     break;
                 case SplashScreenActivity.SYNC_BAD_USER:    //go to login, user in DB was bad
@@ -28,8 +29,24 @@ public class SyncReceiverInitTask extends BroadcastReceiver {
         } else if (intent.getAction().equals(SplashScreenActivity.SYNC_MY_EVENTS)) {
             int resultStatus = intent.getExtras().getInt(SplashScreenActivity.SYNC_MY_EVENT_RESULT);
             switch (resultStatus) {
-                case SplashScreenActivity.SYNC_OK:  //user is fetched, now sync all other user lists
-                    startMainActivity(context);
+                case SplashScreenActivity.SYNC_OK:
+                    threadCount--;
+                    if (threadCount == 0)   //is this last async task?
+                        startMainActivity(context);
+                    break;
+                case SplashScreenActivity.SYNC_BAD_USER:    //go to login, user in DB was bad
+                    startSignInActivity(context);
+                    break;
+                default:    // SplashScreenActivity.SYNC_SERVER_NA
+                    startNoServerActivity(context);
+            }
+        } else if (intent.getAction().equals(SplashScreenActivity.SYNC_GI_EVENTS)) {
+            int resultStatus = intent.getExtras().getInt(SplashScreenActivity.SYNC_GI_EVENT_RESULT);
+            switch (resultStatus) {
+                case SplashScreenActivity.SYNC_OK:
+                    threadCount--;
+                    if (threadCount == 0)   //is this last async task?
+                        startMainActivity(context);
                     break;
                 case SplashScreenActivity.SYNC_BAD_USER:    //go to login, user in DB was bad
                     startSignInActivity(context);
@@ -60,5 +77,6 @@ public class SyncReceiverInitTask extends BroadcastReceiver {
 
     private void startSyncUserEventsService(Context context) {
         new SyncMyEventsTask(context).execute();
+        new SyncGoingInterestedEventsTask(context).execute();
     }
 }

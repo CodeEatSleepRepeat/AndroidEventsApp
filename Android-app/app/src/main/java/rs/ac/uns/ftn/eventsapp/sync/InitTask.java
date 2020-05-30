@@ -67,12 +67,6 @@ public class InitTask extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
-    }
-
     private void startNoInternetActivity() {
         Intent intent = new Intent(context, NoInternetActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

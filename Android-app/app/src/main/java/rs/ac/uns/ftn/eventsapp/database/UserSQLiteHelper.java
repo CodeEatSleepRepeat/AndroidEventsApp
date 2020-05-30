@@ -25,8 +25,6 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
     private static final String COLUMN_FB_ID = "facebookId";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_IMAGE_URI = "imageUri";
-    private static final String COLUMN_IMAGE_HEIGHT = "imageHeight";
-    private static final String COLUMN_IMAGE_WIDTH = "imageWidth";
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_ACTIVATED = "activatedAccount";
@@ -44,8 +42,6 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_FB_ID + " text, "
             + COLUMN_NAME + " text not null, "
             + COLUMN_IMAGE_URI + " text, "
-            + COLUMN_IMAGE_HEIGHT + " integer, "
-            + COLUMN_IMAGE_WIDTH + " integer, "
             + COLUMN_EMAIL + " text not null, "
             + COLUMN_PASSWORD + " text not null, "
             + COLUMN_ACTIVATED + " integer default 0, "
@@ -78,8 +74,6 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_FB_ID, user.getFacebookId());
         cv.put(COLUMN_NAME, user.getName());
         cv.put(COLUMN_IMAGE_URI, user.getImageUri());
-        cv.put(COLUMN_IMAGE_HEIGHT, user.getImageHeight());
-        cv.put(COLUMN_IMAGE_WIDTH, user.getImageWidth());
         cv.put(COLUMN_EMAIL, user.getEmail());
         cv.put(COLUMN_PASSWORD, user.getPassword());
         cv.put(COLUMN_ACTIVATED, user.getActivatedAccount());
@@ -103,16 +97,14 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getInt(4),
-                    cursor.getInt(5),
-                    cursor.getString(6),
-                    cursor.getString(7),
+                    cursor.getString(4),
+                    cursor.getString(5),
                     null, null, null, null, null, null, null, null, null, null,
+                    cursor.getInt(6) == 1,
+                    cursor.getInt(7) == 1,
                     cursor.getInt(8) == 1,
-                    cursor.getInt(9) == 1,
-                    cursor.getInt(10) == 1,
-                    SyncStatus.valueOf(cursor.getString(11)),
-                    ZonedDateTime.parse(cursor.getString(12))
+                    SyncStatus.valueOf(cursor.getString(9)),
+                    ZonedDateTime.parse(cursor.getString(10))
             );
         }
         cursor.close();
@@ -130,8 +122,6 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_FB_ID, user.getFacebookId());
         cv.put(COLUMN_NAME, user.getName());
         cv.put(COLUMN_IMAGE_URI, user.getImageUri());
-        cv.put(COLUMN_IMAGE_HEIGHT, user.getImageHeight());
-        cv.put(COLUMN_IMAGE_WIDTH, user.getImageWidth());
         cv.put(COLUMN_EMAIL, user.getEmail());
         cv.put(COLUMN_PASSWORD, user.getPassword());
         cv.put(COLUMN_ACTIVATED, user.getActivatedAccount());

@@ -64,12 +64,12 @@ public class EventService {
 		return eventRepository.findAllByOwnerAndUpdatedTime(id, timestamp);
 	}
 
-	public List<Event> getGoingEvents(Pageable pageable, Long id) throws Exception {
+	public List<Event> getGoingEvents(Pageable pageable, Long id) {
 		Page<Event> page = eventRepository.findByGoingIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}
 
-	public List<Event> getInterestedEvents(Pageable pageable, Long id) throws Exception {
+	public List<Event> getInterestedEvents(Pageable pageable, Long id) {
 		Page<Event> page = eventRepository.findByInterestedIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
 		return page.getContent();
 	}

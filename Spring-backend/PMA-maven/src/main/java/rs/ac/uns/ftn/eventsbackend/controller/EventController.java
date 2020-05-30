@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.eventsbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -34,9 +33,12 @@ import org.springframework.web.multipart.MultipartFile;
 import rs.ac.uns.ftn.eventsbackend.dto.CreateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventsSyncDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.GIEventsSyncDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.GoingInterestedEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.StringDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Cover;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -138,9 +140,14 @@ public class EventController {
 
 	@PostMapping("/myevents/{id}/{num}")
 	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num,
-			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		Pageable pageable = PageRequest.of(num, 10);
-		List<Event> events = eventService.getMyEvents(pageable, id);
+		List<Event> events = new ArrayList<Event>();
+		try {
+			events = eventService.getMyEvents(pageable, id);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
@@ -151,7 +158,7 @@ public class EventController {
 
 	@PostMapping("/goingevents/{id}/{num}")
 	public ResponseEntity<List<EventDTO>> goingEventsPageable(@PathVariable Long id, @PathVariable int num,
-			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getGoingEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -164,7 +171,7 @@ public class EventController {
 
 	@PostMapping("/interestedevents/{id}/{num}")
 	public ResponseEntity<List<EventDTO>> interestedEventsPageable(@PathVariable Long id, @PathVariable int num,
-			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) throws Exception {
+			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getInterestedEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();
@@ -176,18 +183,25 @@ public class EventController {
 	}
 
 	@GetMapping("/image/{name}")
-	public ResponseEntity<byte[]> getImage(@PathVariable String name) throws IOException {
+	public ResponseEntity<byte[]> getImage(@PathVariable String name) {
 		File f = new File(IMAGE_FOLDER + name);
-		FileInputStream fis = new FileInputStream(f);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		for (int readNum; (readNum = fis.read(buf)) != -1;) {
-			baos.write(buf, 0, readNum);
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(f);
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			for (int readNum; (readNum = fis.read(buf)) != -1;) {
+				baos.write(buf, 0, readNum);
+			}
+			byte[] bytes = baos.toByteArray();
+			fis.close();
+			baos.close();
+			return ResponseEntity.ok(bytes);
+		} catch (Exception e) {
+			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
 		}
-		byte[] bytes = baos.toByteArray();
-		fis.close();
-		baos.close();
-		return ResponseEntity.ok(bytes);
+
 	}
 
 	@GetMapping("/{id}")
@@ -251,14 +265,15 @@ public class EventController {
 	}
 
 	/**
-	 * Check if user events on android are same as in server DB
+	 * Check if user events on android are same as in server DB and sync them if
+	 * they are not
 	 * 
 	 * @param user
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/sync/myevents", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<List<EventDTO>> syncUserEvents(@RequestBody @Valid EventsSyncDTO data) {
-		System.out.println("sync " + data.getEmail() + " events with last updated time: " + data.getLastSyncTime());
+		System.out.println("sync myevents " + data.getEmail() + " (last updated time: " + data.getLastSyncTime() + " )");
 
 		User dbUser = userService.findByCredentials(data.getEmail(), data.getPassword());
 		if (dbUser == null) {
@@ -268,7 +283,7 @@ public class EventController {
 
 		// povlacenje liste eventova sa fb i azuriranje iste
 		if (dbUser.getSyncFacebookEvents() && !dbUser.getFacebookToken().isEmpty()) {
-			//dbUser.get
+			// dbUser.get
 			facebookService.pullEvents(dbUser.getFacebookToken(), dbUser);
 		}
 
@@ -278,9 +293,16 @@ public class EventController {
 			List<Event> forUpdate = eventService.getMyEventsForSync(dbUser.getId(), data.getLastSyncTime());
 			ArrayList<EventDTO> retList = new ArrayList<>();
 			for (Event event : forUpdate) {
+				System.out.println(event.getUpdated_time());
+				System.out.println(data.getLastSyncTime());
 				retList.add(new EventDTO(event));
 			}
-			System.out.println("sync user events no data for server since last update time - sending all user events");
+			if (retList.isEmpty()) {
+				System.out.println("sync myevents no data for server since last update time - no data for android");
+			} else {
+				System.out.println("sync myevents no data for server since last update time - sending changed user events");
+			}
+			
 			return new ResponseEntity<>(retList, HttpStatus.OK);
 		}
 
@@ -304,12 +326,82 @@ public class EventController {
 		for (Event event : forUpdate) {
 			retList.add(new EventDTO(event));
 		}
-		System.out.println("sync user events last update time to long ago - sending user events (mabye empty?)");
+		System.out.println("sync myevents last update time to long ago - sending user events (mabye empty?)");
+		return new ResponseEntity<>(retList, HttpStatus.OK);
+	}
+
+	/**
+	 * Check if going or interested events on android are same as in server DB and
+	 * sync them if they are not
+	 * 
+	 * @param user
+	 * @return updated user
+	 */
+	@RequestMapping(value = "/sync/gi-events", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<List<GoingInterestedEventsDTO>> syncGoingEvents(@RequestBody @Valid GIEventsSyncDTO data) {
+		System.out.println("sync going/interested " + data.getEmail());
+
+		User dbUser = userService.findByCredentials(data.getEmail(), data.getPassword());
+		if (dbUser == null) {
+			System.out.println("sync going/interested events user not found");
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		// data sent from android for update?
+		if (data.getEventsForUpdate() != null && !data.getEventsForUpdate().isEmpty()) {
+
+			// iterate over sent updates and update db
+			for (GoingInterestedEventsDTO androidEvent : data.getEventsForUpdate()) {
+				switch (androidEvent.getStatus()) {
+				case GOING:
+					try {
+						removeInterestedEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+					try {
+						goingToEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+					break;
+				case INTERESTED:
+					try {
+						removeGoingEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+					try {
+						interestedInEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+					break;
+				default:
+					try {
+						removeGoingEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+					try {
+						removeInterestedEvent(androidEvent.getEvent().getId(), dbUser.getId());
+					} catch (Exception e) {
+					}
+				}
+			}
+		}
+		
+		// get all going and interested events
+		List<Event> forUpdate = dbUser.getGoingEvents();
+		ArrayList<GoingInterestedEventsDTO> retList = new ArrayList<>();
+		for (Event event : forUpdate) {
+			retList.add(new GoingInterestedEventsDTO(new EventDTO(event), GoingInterestedStatus.GOING));
+		}
+		forUpdate = dbUser.getInterestedEvents();
+		for (Event event : forUpdate) {
+			retList.add(new GoingInterestedEventsDTO(new EventDTO(event), GoingInterestedStatus.INTERESTED));
+		}
+
 		return new ResponseEntity<>(retList, HttpStatus.OK);
 	}
 
 	@GetMapping("/test/{id}")
-	public ResponseEntity<StringDTO> getImageForUpdate(@PathVariable Long id) throws IOException {
+	public ResponseEntity<StringDTO> getImageForUpdate(@PathVariable Long id) {
 		Event e = eventService.findById(id);
 		try {
 			File f = new File(IMAGE_FOLDER + e.getCover().getSource());

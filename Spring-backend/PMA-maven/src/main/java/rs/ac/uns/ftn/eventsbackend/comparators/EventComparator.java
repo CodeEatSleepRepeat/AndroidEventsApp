@@ -31,8 +31,6 @@ public class EventComparator {
 			// ceo event se ispituje
 			if (!compare(dbEvent.getFacebookId(), fbEvent.getId()))
 				return false;
-			if (!compare(dbEvent.getUpdated_timeFB(), fbEvent.getUpdated_time()))
-				return false;
 			if (!compare(dbEvent.getAttending_countFB(), fbEvent.getAttending_count()))
 				return false;
 			if (!compare(dbEvent.getGuest_list_enabledFB(), fbEvent.getGuest_list_enabled()))
@@ -78,7 +76,7 @@ public class EventComparator {
 	}
 
 	private static boolean compare(ZonedDateTime d1, ZonedDateTime d2) {
-		return (d1 == null ? d2 == null : d1.equals(d2));
+		return (d1 == null ? d2 == null : d1.toLocalDateTime().equals(d2.toLocalDateTime()));
 	}
 
 	private static boolean compare(Long l1, Long l2) {

@@ -49,10 +49,6 @@ public class User {
 	@Column(length = 500)
 	private String imageUri;
 
-	private Integer imageHeight;
-
-	private Integer imageWidth;
-
 	@NotNull
 	@Email
 	private String email;
@@ -140,8 +136,6 @@ public class User {
 		this.facebookToken = "";
 		this.name = userName;
 		this.imageUri = "";
-		this.imageHeight = null;
-		this.imageWidth = null;
 		this.email = email;
 		this.password = password;
 		this.sendRequests = new ArrayList<Friendship>();

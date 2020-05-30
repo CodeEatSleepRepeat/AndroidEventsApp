@@ -14,13 +14,9 @@ public class UserComparator {
 			return false;
 		if (!compare(fbProfile.getEmail(), user.getEmail()))
 			return false;
-		if (!compare(fbProfile.getPicture().getData().getUrl(), user.getImageUri()))
+		if (!compare(fbProfile.getUrl(), user.getImageUri()))
 			return false;
-		if (!compare(fbProfile.getPicture().getData().getHeight(), user.getImageHeight()))
-			return false;
-		if (!compare(fbProfile.getPicture().getData().getWidth(), user.getImageWidth()))
-			return false;
-
+		
 		return true;
 	}
 
@@ -31,9 +27,4 @@ public class UserComparator {
 	private static boolean compare(String str1, String str2) {
 		return (str1 == null ? str2 == null : str1.equals(str2));
 	}
-
-	private static boolean compare(Integer d1, Integer d2) {
-		return (d1 == null ? d2 == null : d1.equals(d2));
-	}
-
 }

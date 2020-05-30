@@ -7,29 +7,25 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.google.gson.GsonBuilder;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.EOFException;
 import java.net.SocketTimeoutException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
-import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -42,18 +38,19 @@ public class SyncMyEventsTask extends AsyncTask<Void, Void, Void> {
 
     public SyncMyEventsTask(Context applicationContext) {
         this.context = applicationContext;
+        AndroidThreeTen.init(context);
     }
 
     @Override
     protected void onPreExecute() {
         //procitaj kada je poslednje vreme azuriranja korisnickih eventova
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, context.MODE_PRIVATE);
         lastSyncTime = sharedPreferences.getLong(preferenceSyncMyEvents, 0l);
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        ArrayList<UpdateEventDTO> eventsForUpdate = getEventsForUpdate();
+        ArrayList<UpdateEventDTO> eventsForUpdate = AppDataSingleton.getInstance().getUserEventsForUpdate(lastSyncTime);
 
         //call backend method for synchronization
         retrofit = new Retrofit.Builder()
@@ -70,9 +67,9 @@ public class SyncMyEventsTask extends AsyncTask<Void, Void, Void> {
                         AppDataSingleton.getInstance().updateUserEvents((ArrayList<EventDTO>) response.body());
                     }
 
-                    lastSyncTime = new Date().getTime();
+                    lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
 
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putLong(preferenceSyncMyEvents, lastSyncTime);
                     editor.commit();
@@ -93,7 +90,7 @@ public class SyncMyEventsTask extends AsyncTask<Void, Void, Void> {
                     //idiots who made gson didn't think what if null response with code 200 is valid
                     lastSyncTime = ZonedDateTime.now().toInstant().toEpochMilli();
 
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putLong(preferenceSyncMyEvents, lastSyncTime);
                     editor.commit();
@@ -115,18 +112,6 @@ public class SyncMyEventsTask extends AsyncTask<Void, Void, Void> {
         });
 
         return null;
-    }
-
-    private ArrayList<UpdateEventDTO> getEventsForUpdate() {
-        ArrayList<EventDTO> dbMyEvents = AppDataSingleton.getInstance().getUserEvents();
-        ArrayList<UpdateEventDTO> forUpdate = new ArrayList<>();
-        for (EventDTO e : dbMyEvents) {
-            if (e.getUpdated_time().toInstant().toEpochMilli() > lastSyncTime && e.getSyncStatus() != SyncStatus.ADD) {
-                //needs sync
-                forUpdate.add(new UpdateEventDTO(e.getId(), e.getLatitude(), e.getLongitude(), e.getName(), e.getPlace(), e.getDescription(), e.getType(), e.getStart_time(), e.getEnd_time(), e.getPrivacy(), e.getSyncStatus(), e.getUpdated_time()));
-            }
-        }
-        return forUpdate;
     }
 
     private void broadcastNoServer() {
