@@ -149,7 +149,7 @@
     <string name="updateEvent">Update event</string>
     <string name="eventUpdated">Event updated</string>
 
-    <string name="localhost_uri">http://192.168.56.1:8080</string>
+    <string name="localhost_uri">http://10.0.2.2:8080</string>
     <string name="facebook_app_id">xxx</string>
     <string name="fb_login_protocol_scheme">xxx</string>
 </resources>
