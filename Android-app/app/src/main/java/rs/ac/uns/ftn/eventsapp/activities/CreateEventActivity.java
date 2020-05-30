@@ -421,8 +421,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.createEvent(new CreateEventDTO(lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(),
-                descriptionEditText.getText().toString(), eventType, startDateTime,
-                endDateTime, facebookPrivacy, AppDataSingleton.getInstance().getLoggedUser().getId()));
+                descriptionEditText.getText().toString(), eventType, calendar.getTime(),
+                calendar2.getTime(), facebookPrivacy, AppDataSingleton.getInstance().getLoggedUser().getId()));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
