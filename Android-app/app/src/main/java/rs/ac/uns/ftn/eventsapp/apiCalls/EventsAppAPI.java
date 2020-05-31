@@ -10,6 +10,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
@@ -67,5 +69,11 @@ public interface EventsAppAPI {
 
     @POST("/event/sync/gi-events")
     Call<List<GoingInterestedEventsDTO>> syncGoingInterestedEvents(@Body GIEventsSyncDTO data);
+
+    @GET("/comment/{eventId}/{num}")
+    Call<List<CommentDTO>> getComments(@Path("eventId") Long eventId, @Path("num") int num);
+
+    @POST("/comment")
+    Call<CommentDTO> addComment(@Body CreateCommentDTO dto);
 
 }

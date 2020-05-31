@@ -151,6 +151,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeCommentsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intent2.putExtra("EventId", idEvent.toString());
                 startActivity(intent2);
             }
         });

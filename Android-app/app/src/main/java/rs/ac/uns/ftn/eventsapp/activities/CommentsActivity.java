@@ -1,58 +1,154 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.CommentsArrayAdapter;
+import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
+import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.models.Comment;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class CommentsActivity extends AppCompatActivity {
 
-    ArrayList<Comment> comments = new ArrayList<>();
+    private static final int PAGE_START = 0;
+    List<CommentDTO> comments = new ArrayList<>();
+    private RecyclerView.Adapter adapter;
+    private LinearLayoutManager layoutManager;
+    private boolean isLoading = false;
+    private int currentPage = PAGE_START;
+    private Long eventId = null;
+    private Button button;
+    private EditText newComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
-        ListView listView = findViewById(R.id.commentsListView);
+        newComment = findViewById(R.id.commentEditText);
+        button = findViewById(R.id.commentBtn);
+        RecyclerView recyclerView = findViewById(R.id.commentsListView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new CommentsArrayAdapter(comments, this);
+        recyclerView.setAdapter(adapter);
 
-        User u1 = new User(1l, "Borko Bakic", "baki9@example.com", "sdcsdc84sSA", "SD58s4dSD8s87sdfSf4sdf87sdf48SDFsd178");
-        User u2 = new User(2l, "Martin Kovac", "kovac.m@example.com", "sdcsdcs8794", "1s4asSDF894FSDSDF478sd48fsdfsdf8s74ssd");
-        User u3 = new User(3l, "Aleksej Stralic", "ftnstudent@example.com", "sdf984sd54", "aiushdASDOF#EP#EKC#K$Rc#R$cCWepkcweC44c");
-        Comment c1 = new Comment(u1, "Bas je dobar dogadjaj, jedva cekam da odem!!!");
-        Comment c2 = new Comment(u2, "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW");
-        Comment c3 = new Comment(u3, "oh my god, I am never going to financially recover from this.");
-        Comment c4 = new Comment(u1, "Bas je dobar dogadjaj, jedva cekam da odem!!!");
-        Comment c5 = new Comment(u2, "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW");
-        Comment c6 = new Comment(u3, "oh my god, I am never going to financially recover from this.");
-        Comment c7 = new Comment(u1, "Bas je dobar dogadjaj, jedva cekam da odem!!!");
-        Comment c8 = new Comment(u2, "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW");
-        Comment c9 = new Comment(u3, "oh my god, I am never going to financially recover from this.");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addComment();
+            }
+        });
 
-        comments.add(c1);
-        comments.add(c2);
-        comments.add(c3);
-        comments.add(c4);
-        comments.add(c5);
-        comments.add(c6);
-        comments.add(c7);
-        comments.add(c8);
-        comments.add(c9);
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, null, null) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+                getComments(currentPage);
+            }
 
-        CommentsArrayAdapter adapter = new CommentsArrayAdapter(this, R.layout.adapter_comments_activity, comments);
-        listView.setAdapter(adapter);
-        if (AppDataSingleton.getInstance().isLoggedIn()) {
-            //TODO moze da postavi komentar samo ako je ulogovan
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventId = Long.valueOf(getIntent().getStringExtra("EventId"));
+        comments.clear();
+        currentPage = PAGE_START;
+        getComments(PAGE_START);
+    }
+
+    private void getComments(int num) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<List<CommentDTO>> cs = e.getComments(eventId, num);
+        cs.enqueue(new Callback<List<CommentDTO>>() {
+            @Override
+            public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+                isLoading = false;
+                comments.addAll(response.body());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<CommentDTO>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
+    }
+
+    private void addComment(){
+        if(newComment.getText()==null || newComment.getText().toString().trim()==""){
+            Toast.makeText(getApplicationContext(), R.string.blankFieldError, Toast.LENGTH_LONG).show();
+        }else {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(getString(R.string.localhost_uri))
+                    .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                    .build();
+            EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+            Call<CommentDTO> s = e.addComment(new CreateCommentDTO(newComment.getText().toString(), eventId, AppDataSingleton.getInstance().getLoggedUser().getId()));
+            s.enqueue(new Callback<CommentDTO>() {
+                @Override
+                public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    }
+                    comments.add(response.body());
+                    adapter.notifyDataSetChanged();
+                    newComment.setText(null);
+                    Toast.makeText(getApplicationContext(), R.string.commentAdded, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<CommentDTO> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }
