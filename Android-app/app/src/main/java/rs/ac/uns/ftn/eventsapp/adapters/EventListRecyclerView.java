@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,26 +14,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.appevents.suggestedevents.ViewOnClickListener;
 import com.squareup.picasso.Picasso;
 
 import org.threeten.bp.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UpdateEventActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -66,8 +59,10 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventAddressTextView.setText(item.getPlace());
         viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
         String imageUri = item.getImageUri();
-        if (imageUri!=null && !imageUri.equals("") && !imageUri.startsWith("http")){
+        if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
             imageUri = IMAGE_URI + imageUri;
+        } else if (imageUri == null || imageUri.equals("")) {
+            imageUri = "image"; //for picasso to not crash if image is empty or null
         }
         Picasso.get()
                 .load(imageUri)
@@ -86,15 +81,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 Context context = view.getContext();
                 Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
 
-                final EventDTO e = mItems.get(i);
+                EventDTO e = mItems.get(i);
                 String imageUri = e.getImageUri();
-                if (imageUri!=null && !imageUri.equals("") && !imageUri.startsWith("http")){
-                    imageUri = IMAGE_URI + imageUri;
+                if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
+                    e.setImageUri(IMAGE_URI + imageUri);
                 }
-                EventDetailsDTO dto = new EventDetailsDTO(e.getId(), e.getName(), e.getDescription(), imageUri, e.getType(),
-                        e.getPrivacy(), e.getStart_time(), e.getEnd_time(), e.getPlace(), e.getLongitude(), e.getLatitude(), e.getOwner());
 
-                detailsIntent.putExtra("EVENT", dto);
+                detailsIntent.putExtra("EVENT", e);
                 context.startActivity(detailsIntent);
             }
         });
@@ -149,7 +142,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             });
         }
 
-        if(deleteEvent!=null){
+        if (deleteEvent != null) {
             deleteEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -158,7 +151,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             });
         }
 
-        if(updateEvent!=null){
+        if (updateEvent != null) {
             updateEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -179,16 +172,16 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             });
         }
 
-        if(notInterested!=null){
+        if (notInterested != null) {
             notInterested.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
+                public void onClick(View v) {
                     removeFromInterested(viewHolder, item);
                 }
             });
         }
 
-        if(notGoing!=null){
+        if (notGoing != null) {
             notGoing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -220,7 +213,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         }
     }
 
-    public void interestedInEvent(@NonNull final EventViewHolder viewHolder, final EventDTO item){
+    public void interestedInEvent(@NonNull final EventViewHolder viewHolder, final EventDTO item) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -230,15 +223,17 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(viewHolder.itemView.getContext(), "You are already interested in this event", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(item);
                     notifyDataSetChanged();
+                    AppDataSingleton.getInstance().setEventToInterested(item);
                     Toast.makeText(viewHolder.itemView.getContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
                 }
             }
+
             @Override
             public void onFailure(Call<EventDTO> call, Throwable t) {
                 Toast.makeText(viewHolder.itemView.getContext(), R.string.failed, Toast.LENGTH_LONG).show();
@@ -246,7 +241,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         });
     }
 
-    public void goingToEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+    public void goingToEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -256,12 +251,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(viewHolder.itemView.getContext(), "You are already going to this event", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
+                    AppDataSingleton.getInstance().setEventToGoing(event);
                     Toast.makeText(viewHolder.itemView.getContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -273,7 +269,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         });
     }
 
-    public void removeFromInterested(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+    public void removeFromInterested(@NonNull final EventViewHolder viewHolder, final EventDTO event) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -283,12 +279,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
+                    AppDataSingleton.getInstance().deleteInterestedEventPhysical(event.getId());
                     Toast.makeText(viewHolder.itemView.getContext(), "Removed from interested!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -300,7 +297,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         });
     }
 
-    public void removeFromGoing(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+    public void removeFromGoing(@NonNull final EventViewHolder viewHolder, final EventDTO event) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -310,12 +307,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
+                    AppDataSingleton.getInstance().deleteGoingEventPhysical(event.getId());
                     Toast.makeText(viewHolder.itemView.getContext(), "Removed from going!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -327,7 +325,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         });
     }
 
-    public void deleteMyEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event){
+    public void deleteMyEvent(@NonNull final EventViewHolder viewHolder, final EventDTO event) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -337,9 +335,9 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
-                if (response.code()!=200) {
+                if (response.code() != 200) {
                     Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();

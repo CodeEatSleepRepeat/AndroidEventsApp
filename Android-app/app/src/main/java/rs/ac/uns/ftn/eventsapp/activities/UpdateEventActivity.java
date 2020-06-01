@@ -139,9 +139,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         if (imgUri != null && savedInstanceState == null) {
             Picasso.get().setLoggingEnabled(true);
             if (imgUri.startsWith("http")){
-                Picasso.get().load(Uri.parse(imgUri)).into(imgView);
+                Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
             } else {
-                Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).into(imgView);
+                Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
             }
             findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
             findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
@@ -249,9 +249,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                     //not local image
                     Picasso.get().setLoggingEnabled(true);
                     if (imgUri.startsWith("http")){
-                        Picasso.get().load(Uri.parse(imgUri)).into(imgView);
+                        Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
                     } else {
-                        Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).into(imgView);
+                        Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
                     }
                 } finally {
                     findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
@@ -744,39 +744,4 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-/*
-    private void getCurrentEventImage(Long id) {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
-                .build();
-        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<StringDTO> s = e.getEventUpdateImage(id);
-        s.enqueue(new Callback<StringDTO>() {
-            @Override
-            public void onResponse(Call<StringDTO> call, Response<StringDTO> response) {
-                if (!response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
-                    return;
-                }
-                String ba = response.body().getString();
-                if (ba != null) {
-                    byte[] b = Base64.decode(ba, Base64.DEFAULT);
-                    bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-                    mediaType = MediaType.parse("image/*");
-                    imgView.setImageBitmap(bitmap);
-                    findViewById(R.id.cameraUpdateImageView).setVisibility(View.INVISIBLE);
-                    findViewById(R.id.addPhotoUpdateTextView).setVisibility(View.INVISIBLE);
-                    clearImage.bringToFront();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<StringDTO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-*/
-
 }

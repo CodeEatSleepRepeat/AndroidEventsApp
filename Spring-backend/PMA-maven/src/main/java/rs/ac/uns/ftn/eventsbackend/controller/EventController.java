@@ -139,11 +139,17 @@ public class EventController {
 	}
 
 	@PostMapping("/myevents/{id}/{num}")
-	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num,
-			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
+	public ResponseEntity<List<EventDTO>> myEventsPageable(@PathVariable Long id, @PathVariable int num, @RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {			
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = new ArrayList<Event>();
 		try {
+			User dbUser = userService.findById(id);
+			// povlacenje liste eventova sa fb i azuriranje iste
+			if (dbUser.getSyncFacebookEvents() && !dbUser.getFacebookToken().isEmpty()) {
+				// dbUser.get
+				facebookService.pullEvents(dbUser.getFacebookToken(), dbUser);
+			}
+			
 			events = eventService.getMyEvents(pageable, id);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -338,7 +344,7 @@ public class EventController {
 	 * @return updated user
 	 */
 	@RequestMapping(value = "/sync/gi-events", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<List<GoingInterestedEventsDTO>> syncGoingEvents(@RequestBody @Valid GIEventsSyncDTO data) {
+	public ResponseEntity<List<GoingInterestedEventsDTO>> syncGoingInterestedEvents(@RequestBody @Valid GIEventsSyncDTO data) {
 		System.out.println("sync going/interested " + data.getEmail());
 
 		User dbUser = userService.findByCredentials(data.getEmail(), data.getPassword());

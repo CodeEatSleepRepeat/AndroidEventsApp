@@ -226,15 +226,47 @@ public class GoingInterestedEventsSQLiteHelper extends SQLiteOpenHelper {
         return b;
     }
 
-    public boolean exists(Long eventId) {
-        String Query = "Select * from " + TABLE_GI_EVENTS + " where " + COLUMN_ID + " = " + eventId;
+    public boolean exists(Long eventId, GoingInterestedStatus status) {
+        String Query = "Select * from " + TABLE_GI_EVENTS + " where " + COLUMN_ID + " = " + eventId + " and " + COLUMN_GI_STATUS + " = ?";
         mDatabase = getReadableDatabase();
-        Cursor cursor = mDatabase.rawQuery(Query, null);
+        Cursor cursor = mDatabase.rawQuery(Query, new String[]{status.toString()});
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }
         cursor.close();
         return true;
+    }
+
+    public GoingInterestedEventsDTO getGIEvent(Long eventId) {
+        String Query = "Select * from " + TABLE_GI_EVENTS + " where " + COLUMN_ID + " = " + eventId;
+        mDatabase = getReadableDatabase();
+        Cursor cursor = mDatabase.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            GoingInterestedEventsDTO e = new GoingInterestedEventsDTO(
+                    new EventDTO(
+                            cursor.getLong(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            EventType.valueOf(cursor.getString(4)),
+                            FacebookPrivacy.valueOf(cursor.getString(5)),
+                            ZonedDateTime.parse(cursor.getString(6)),
+                            ZonedDateTime.parse(cursor.getString(7)),
+                            cursor.getString(8),
+                            cursor.getDouble(9),
+                            cursor.getDouble(10),
+                            SyncStatus.valueOf(cursor.getString(11)),
+                            ZonedDateTime.parse(cursor.getString(12)),
+                            ZonedDateTime.parse(cursor.getString(13)),
+                            cursor.getLong(14)
+                    ),
+                    GoingInterestedStatus.valueOf(cursor.getString(15))
+            );
+            cursor.close();
+            return e;
+        }
+        cursor.close();
+        return null;
     }
 }

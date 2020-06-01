@@ -2,11 +2,14 @@ package rs.ac.uns.ftn.eventsapp.dtos;
 
 import org.threeten.bp.ZonedDateTime;
 
+import java.io.Serializable;
+
+import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 
-public class EventDTO {
+public class EventDTO implements Serializable {
 
     private Long id;
     private double latitude;
@@ -43,6 +46,24 @@ public class EventDTO {
         this.syncStatus = syncStatus;
         this.updated_time = updated_time;
         this.created_time = created_time;
+    }
+
+    public EventDTO(Event e){
+        this.id = e.getId();
+        this.latitude = e.getLatitude();
+        this.longitude = e.getLongitude();
+        this.name = e.getName();
+        this.place = e.getPlace();
+        this.description = e.getDescription();
+        this.type = e.getType();
+        this.start_time = e.getStart_time();
+        this.end_time = e.getEnd_time();
+        this.privacy = e.getPrivacy();
+        this.imageUri = e.getImageUri();
+        this.owner = e.getOwner().getId();
+        this.syncStatus = e.getSyncStatus();
+        this.updated_time = e.getUpdated_time();
+        this.created_time = e.getCreated_time();
     }
 
     public Long getId() {

@@ -31,6 +31,7 @@ import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsapp.sync.SyncGoingList;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -41,6 +42,7 @@ public class GoingEventsListFragment extends Fragment {
     private List<EventDTO> items = new ArrayList<>();
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
+    private SwipeRefreshLayout pullToRefresh;
     private boolean isLoading = false;
     private int currentPage = PAGE_START;
 
@@ -62,12 +64,11 @@ public class GoingEventsListFragment extends Fragment {
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.going_event_list_row);
         recyclerView.setAdapter(adapter);
 
-        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh = v.findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData();  //TODO: implement refresh list from backend
-                pullToRefresh.setRefreshing(false);
+                refreshData(); // code for updating list
             }
         });
 
@@ -114,7 +115,7 @@ public class GoingEventsListFragment extends Fragment {
      * Refresh data from server
      */
     private void refreshData() {
-        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+        new SyncGoingList(this).execute();
     }
 
     private void getEventsPage(int num) {
@@ -129,6 +130,7 @@ public class GoingEventsListFragment extends Fragment {
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 isLoading = false;
                 items.addAll(response.body());
@@ -141,5 +143,16 @@ public class GoingEventsListFragment extends Fragment {
                 Log.d("ERROR", t.toString());
             }
         });
+    }
+
+    public void setItems(List<EventDTO> newItems) {
+        isLoading = false;
+        items.clear();
+        items.addAll(newItems);
+        adapter.notifyDataSetChanged();
+    }
+
+    public SwipeRefreshLayout getPullToRefresh() {
+        return pullToRefresh;
     }
 }

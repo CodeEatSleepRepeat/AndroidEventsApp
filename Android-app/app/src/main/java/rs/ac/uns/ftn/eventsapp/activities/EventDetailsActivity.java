@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.threeten.bp.format.DateTimeFormatter;
@@ -32,8 +30,9 @@ import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
+import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -47,7 +46,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
 
     private CollapsingToolbarLayout collapsingToolbar;
-    private EventDetailsDTO dto;
+    private EventDTO dto;
 
     private ImageView imageView;
     private TextView eventNameEventDetailsTextView;
@@ -72,7 +71,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_details);
+        setContentView(R.layout.activity_event_details);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,12 +83,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         //get all elements that are going to contain event information
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
-        dto = (EventDetailsDTO) getIntent().getSerializableExtra("EVENT");
+        dto = (EventDTO) getIntent().getSerializableExtra("EVENT");
         setView(dto);
 
     }
 
-    private void setView(EventDetailsDTO dto) {
+    private void setView(final EventDTO dto) {
 
         imageView = findViewById(R.id.image_user_user_detail);
         eventNameEventDetailsTextView = findViewById(R.id.eventNameEventDetailsTextView);
@@ -105,37 +104,28 @@ public class EventDetailsActivity extends AppCompatActivity {
         goingBtn = findViewById(R.id.goingEventDetailsBtn);
         interestedBtn = findViewById(R.id.interestedEventDetailsBtn);
 
-        if (AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getAuthor())) {
+        if (AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getOwner())) {
             goingBtn.setVisibility(View.INVISIBLE);
             interestedBtn.setVisibility(View.INVISIBLE);
         }
 
-        idEvent = dto.getEventId();
-        collapsingToolbar.setTitle(dto.getEventName());
+        idEvent = dto.getId();
+        collapsingToolbar.setTitle(dto.getName());
+        collapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT); //added to hide title over image
+
         Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(dto.getEventImageURI()).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView, new Callback.EmptyCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                int dominantColor = getDominantColor(((BitmapDrawable) imageView.getDrawable()).getBitmap());
-                collapsingToolbar.setExpandedTitleColor(dominantColor);
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                super.onError(e);
-                collapsingToolbar.setExpandedTitleColor(Color.BLACK);
-            }
-        });
-
+        if (dto.getImageUri() == null || dto.getImageUri().equals("")) {
+            Picasso.get().load(R.drawable.ic_missing_event_icon_white).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView); //for picasso to not crash if image is empty or null
+        } else {
+            Picasso.get().load(dto.getImageUri()).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView);
+        }
         imageView.setAlpha(0.9f);
 
-        eventNameEventDetailsTextView.setText(dto.getEventName());
-        eventStartEventDetailsView.setText(formatter.format(dto.getStartTime()));
-        eventDescriptionEventDetailsView.setText(dto.getEventDescription());
-        eventLocationEventDetailsTextView.setText(dto.getLocation());
-        final EventForMapDTO mapDto = new EventForMapDTO(dto.getEventId(), dto.getEventName(), dto.getLongitude(), dto.getLatitude(), dto.getEventImageURI());
+        eventNameEventDetailsTextView.setText(dto.getName());
+        eventStartEventDetailsView.setText(formatter.format(dto.getStart_time()));
+        eventDescriptionEventDetailsView.setText(dto.getDescription());
+        eventLocationEventDetailsTextView.setText(dto.getPlace());
+        final EventForMapDTO mapDto = new EventForMapDTO(dto.getId(), dto.getName(), dto.getLongitude(), dto.getLatitude(), dto.getImageUri());
         final Intent intent = new Intent(this, GoogleMapActivity.class);
         seeOnMapEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,32 +181,34 @@ public class EventDetailsActivity extends AppCompatActivity {
         goingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goingToEvent();
+                if (goingBtn.getText().equals(getString(R.string.notGoing))) {
+                    removeFromGoing();
+                } else {
+                    goingToEvent();
+                }
             }
         });
 
         interestedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                interestedInEvent();
+                if (interestedBtn.getText().equals(getString(R.string.notInterested))){
+                    removeFromInterested();
+                } else {
+                    interestedInEvent();
+                }
             }
         });
 
-/*
-            //TODO: ovo treba da ide u dobavljac sadrzaja (u posebnu nit), a ne ovako
-            ImageView imageView = findViewById(R.id.imageViewasdf);
-            if (imageView == null) {
-                Log.d(TAG, "setView: Image view was null");
-                imageView = new ImageView(this);
-            }
+        if (AppDataSingleton.getInstance().isUserGoingTo(dto.getId())) {
+            //korisnik vec ide na ovaj event
+            goingBtn.setText(R.string.notGoing);
+        }
+        if (AppDataSingleton.getInstance().isUserInterestedTo(dto.getId())) {
+            //korisnik vec ide na ovaj event
+            interestedBtn.setText(R.string.notInterested);
+        }
 
-            Log.d(imageView.toString(), "setView1: " + imageURI);
-
-
-            Picasso.with(this).setLoggingEnabled(true);
-            Picasso.with(this).load(uri).into(imageView);
-            Log.d(TAG, "setView2: " + imageView.toString());
-*/
     }
 
     public static int getDominantColor(Bitmap bitmap) {
@@ -237,21 +229,25 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<EventDTO> s = e.goingToEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        Call<EventDTO> s = e.goingToEvent(dto.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "You are already going to this event", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "You are already going to this event", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
-                    Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+                    AppDataSingleton.getInstance().deleteInterestedEventPhysical(dto.getId());
+                    AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(dto, GoingInterestedStatus.GOING));
+                    goingBtn.setText(R.string.notGoing);
+                    interestedBtn.setText(R.string.nav_item_interested);
+                    Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<EventDTO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -262,15 +258,71 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<EventDTO> s = e.interestedInEvent(dto.getEventId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        Call<EventDTO> s = e.interestedInEvent(dto.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
         s.enqueue(new retrofit2.Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "You are already interested in this event", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "You are already interested in this event", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
-                    Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
+                    AppDataSingleton.getInstance().deleteGoingEventPhysical(dto.getId());
+                    AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(dto, GoingInterestedStatus.INTERESTED));
+                    interestedBtn.setText(R.string.notInterested);
+                    goingBtn.setText(R.string.nav_item_going);
+                    Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void removeFromInterested() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.removeInterestedEvent(dto.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Event not found", Toast.LENGTH_LONG).show();
+                } else {
+                    AppDataSingleton.getInstance().deleteInterestedEventPhysical(dto.getId());
+                    Toast.makeText(getApplicationContext(), "Removed from interested!", Toast.LENGTH_LONG).show();
+                    interestedBtn.setText(R.string.nav_item_interested);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removeFromGoing() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Call<EventDTO> s = e.removeGoingEvent(dto.getId(), AppDataSingleton.getInstance().getLoggedUser().getId());
+        s.enqueue(new retrofit2.Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Event not found", Toast.LENGTH_LONG).show();
+                } else {
+                    AppDataSingleton.getInstance().deleteGoingEventPhysical(dto.getId());
+                    Toast.makeText(getApplicationContext(), "Removed from going!", Toast.LENGTH_LONG).show();
+                    goingBtn.setText(R.string.nav_item_going);
                 }
             }
 

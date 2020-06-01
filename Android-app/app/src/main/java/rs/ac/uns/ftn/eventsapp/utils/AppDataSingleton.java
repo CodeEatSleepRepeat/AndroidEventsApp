@@ -14,6 +14,7 @@ import rs.ac.uns.ftn.eventsapp.database.UserSQLiteHelper;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
+import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.models.SyncStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
@@ -122,8 +123,9 @@ public class AppDataSingleton {
         }
     }
 
-    private void updateGIEvent(GoingInterestedEventsDTO event) {
-        event = dbGoingInterestedEventsHelper.update(event);
+    public void updateGIEvent(GoingInterestedEventsDTO event) {
+        dbGoingInterestedEventsHelper.deletePhysical(event.getEvent().getId());
+        dbGoingInterestedEventsHelper.create(event);
 
         ListIterator<GoingInterestedEventsDTO> iterator = getGoingEvents().listIterator();
         while (iterator.hasNext()) {
@@ -162,6 +164,16 @@ public class AppDataSingleton {
         }
     }
 
+    public boolean isUserGoingTo(Long id){
+        return dbGoingInterestedEventsHelper.exists(id, GoingInterestedStatus.GOING);
+    }
+
+    public boolean isUserInterestedTo(Long id){
+        return dbGoingInterestedEventsHelper.exists(id, GoingInterestedStatus.INTERESTED);
+    }
+
+
+
     private void deleteUserEventPhysical(Long id) {
         dbMyEventsHelper.deletePhysical(id);
         ListIterator<EventDTO> iterator = getUserEvents().listIterator();
@@ -175,8 +187,9 @@ public class AppDataSingleton {
         }
     }
 
-    private void deleteGIEventPhysical(Long id) {
+    public void deleteGoingEventPhysical(Long id) {
         dbGoingInterestedEventsHelper.deletePhysical(id);
+
         ListIterator<GoingInterestedEventsDTO> iterator = getGoingEvents().listIterator();
         while (iterator.hasNext()) {
             GoingInterestedEventsDTO next = iterator.next();
@@ -186,6 +199,10 @@ public class AppDataSingleton {
                 return;
             }
         }
+    }
+
+    public void deleteInterestedEventPhysical(Long id) {
+        dbGoingInterestedEventsHelper.deletePhysical(id);
 
         ListIterator<GoingInterestedEventsDTO> iterator2 = getInterestedEvents().listIterator();
         while (iterator2.hasNext()) {
@@ -203,13 +220,29 @@ public class AppDataSingleton {
         dbMyEventsHelper.create(event);
     }
 
-    private void addGIEvent(GoingInterestedEventsDTO event) {
+    public void addGIEvent(GoingInterestedEventsDTO event) {
         if (event.getStatus() == GoingInterestedStatus.GOING) {
             getGoingEvents().add(event);
         } else {
             getInterestedEvents().add(event);
         }
         dbGoingInterestedEventsHelper.create(event);
+    }
+
+    public void setEventToGoing(EventDTO event){
+        if (isUserInterestedTo(event.getId())){
+            updateGIEvent(new GoingInterestedEventsDTO(event, GoingInterestedStatus.GOING));
+        } else {
+            addGIEvent(new GoingInterestedEventsDTO(event, GoingInterestedStatus.GOING));
+        }
+    }
+
+    public void setEventToInterested(EventDTO event){
+        if (isUserGoingTo(event.getId())){
+            updateGIEvent(new GoingInterestedEventsDTO(event, GoingInterestedStatus.INTERESTED));
+        } else {
+            addGIEvent(new GoingInterestedEventsDTO(event, GoingInterestedStatus.INTERESTED));
+        }
     }
 
     public void updateUserEvents(ArrayList<EventDTO> userEvents) {
@@ -233,13 +266,7 @@ public class AppDataSingleton {
         dbGoingInterestedEventsHelper.deleteAll();
 
         for (GoingInterestedEventsDTO e : forUpdate) {
-            if (e.getStatus() == GoingInterestedStatus.GOING) {
-                goingEvents.add(e);
-                addGIEvent(e);
-            } else if (e.getStatus() == GoingInterestedStatus.INTERESTED) {
-                interestedEvents.add(e);
-                addGIEvent(e);
-            }
+            addGIEvent(e);
         }
     }
 
@@ -298,7 +325,6 @@ public class AppDataSingleton {
     public boolean isLoggedIn() {
         return loggedUser != null;
     }
-
 
     public ArrayList<UpdateEventDTO> getUserEventsForUpdate(Long lastSyncTime) {
         ArrayList<UpdateEventDTO> forUpdate = new ArrayList<>();

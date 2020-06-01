@@ -31,6 +31,7 @@ import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
+import rs.ac.uns.ftn.eventsapp.sync.SyncHomeList;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -41,6 +42,7 @@ public class HomeEventListFragment extends Fragment {
     private List<EventDTO> items = new ArrayList<>();
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
+    private SwipeRefreshLayout pullToRefresh;
     private boolean isLoading = false;
     private int currentPage = PAGE_START;
 
@@ -58,25 +60,25 @@ public class HomeEventListFragment extends Fragment {
         //items = TestMockup.getInstance().events;
 
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
-        RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row);
-        recyclerView.setAdapter(adapter);
 
-        final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
+        pullToRefresh = v.findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData(); // your code
-                pullToRefresh.setRefreshing(false);
+                refreshData(); // code for updating list
             }
         });
 
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+
+        RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab, null) {
             @Override
-            protected void loadMoreItems() {
+            protected void loadMoreItems() {        //TODO: da li ovde uposte ulazi?
                 isLoading = true;
                 currentPage += 1;
                 getEventsPage(currentPage);
@@ -123,8 +125,7 @@ public class HomeEventListFragment extends Fragment {
      * Refresh data from server
      */
     private void refreshData() {
-        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
-
+        new SyncHomeList(this).execute();
     }
 
     @Override
@@ -165,5 +166,16 @@ public class HomeEventListFragment extends Fragment {
                 Log.d("ERROR", t.toString());
             }
         });
+    }
+
+    public void setItems(List<EventDTO> newItems) {
+        isLoading = false;
+        items.clear();
+        items.addAll(newItems);
+        adapter.notifyDataSetChanged();
+    }
+
+    public SwipeRefreshLayout getPullToRefresh() {
+        return pullToRefresh;
     }
 }

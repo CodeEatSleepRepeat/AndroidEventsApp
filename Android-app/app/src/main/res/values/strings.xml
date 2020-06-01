@@ -149,6 +149,8 @@
     <string name="updateEvent">Update event</string>
     <string name="eventUpdated">Event updated</string>
     <string name="commentAdded">Comment added!</string>
+    <string name="notGoing">Not going</string>
+    <string name="notInterested">Not interested</string>
 
     <string name="localhost_uri">http://10.0.2.2:8080</string>
     <string name="facebook_app_id">xxx</string>

@@ -18,9 +18,7 @@ import java.text.SimpleDateFormat;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDetailsDTO;
-import rs.ac.uns.ftn.eventsapp.models.Event;
-import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 
 public class InvitationItem extends Item<GroupieViewHolder> {
@@ -117,12 +115,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
 
     private void goToEventDetail(Context context){
         Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
-
-        final Event e = invitation.getEvent();
-        EventDetailsDTO transferObject = new EventDetailsDTO(e.getId(), e.getName(),
-                e.getDescription(), e.getImageUri(),
-                e.getType(), FacebookPrivacy.PUBLIC, e.getStart_time(), e.getEnd_time(),
-                e.getPlace(), e.getLongitude(), e.getLatitude(), 1l);
+        EventDTO transferObject = new EventDTO(invitation.getEvent());
 
 //        detailsIntent.putExtra("id", e.getEventId());
 //        detailsIntent.putExtra("name", e.getEventName());
