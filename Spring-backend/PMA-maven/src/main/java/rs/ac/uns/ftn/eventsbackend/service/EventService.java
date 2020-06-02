@@ -2,15 +2,19 @@ package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.File;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.eventsbackend.dto.RequestEventDetailsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -226,5 +230,45 @@ public class EventService {
 	public Event updateNoTime(Event event) {
 		return eventRepository.save(event);
 	}*/
+	
+	public ResponseEventDetailsDTO getDetails(RequestEventDetailsDTO dto) {
+		Optional<Event> event = eventRepository.findById(dto.getEventId());
+		Optional<User> user = userRepository.findById(dto.getUserId());
+		if(event.isPresent() && user.isPresent()) {
+			ResponseEventDetailsDTO resDTO = new ResponseEventDetailsDTO();
+			resDTO.setUserImage(event.get().getOwner().getImageUri());
+			resDTO.setUserName(event.get().getOwner().getName());
+			resDTO.setOrganizedEventsNum(event.get().getOwner().getUserEvents().size());
+			resDTO.setInterested(user.get().getInterestedEvents().contains(event.get()));
+			resDTO.setGoing(user.get().getGoingEvents().contains(event.get()));
+			List<String> goingImages = new ArrayList<>();
+			List<String> interestedImages = new ArrayList<>();
+			List<String> eventsImages = new ArrayList<>();
+			for (User u : event.get().getGoing()) {
+				goingImages.add(u.getImageUri());
+				if(goingImages.size()==8) {
+					break;
+				}
+			}
+			for (User u : event.get().getInterested()) {
+				interestedImages.add(u.getImageUri());
+				if(goingImages.size()==8) {
+					break;
+				}
+			}
+			for (Event e : eventRepository.findByType(event.get().getType())) {
+				eventsImages.add(e.getCover().getSource());
+				if(eventsImages.size()==5) {
+					break;
+				}
+			}
+			resDTO.setGoingImages(goingImages);
+			resDTO.setInterestedImages(interestedImages);
+			resDTO.setEventsImages(eventsImages);
+			
+			return resDTO;
+		}
+		return null;
+	}
 
 }

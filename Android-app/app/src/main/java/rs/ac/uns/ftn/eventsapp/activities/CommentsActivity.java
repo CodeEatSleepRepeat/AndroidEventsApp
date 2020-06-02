@@ -65,12 +65,23 @@ public class CommentsActivity extends AppCompatActivity {
         adapter = new CommentsArrayAdapter(comments, this);
         recyclerView.setAdapter(adapter);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addComment();
-            }
-        });
+        if(AppDataSingleton.getInstance().getLoggedUser()==null){
+            button.setAlpha(.5f);
+            button.setClickable(false);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), R.string.notLoggedInComment, Toast.LENGTH_LONG).show();
+                }
+            });
+        }else {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addComment();
+                }
+            });
+        }
 
         recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, null, null) {
             @Override
@@ -123,7 +134,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void addComment(){
-        if(newComment.getText()==null || newComment.getText().toString().trim()==""){
+        if(newComment.getText().toString().isEmpty()){
             Toast.makeText(getApplicationContext(), R.string.blankFieldError, Toast.LENGTH_LONG).show();
         }else {
             Retrofit retrofit = new Retrofit.Builder()

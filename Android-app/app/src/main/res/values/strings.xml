@@ -155,4 +155,5 @@
     <string name="localhost_uri">http://10.0.2.2:8080</string>
     <string name="facebook_app_id">xxx</string>
     <string name="fb_login_protocol_scheme">xxx</string>
+    <string name="notLoggedInComment">\"You must  log in to comment\"</string>
 </resources>

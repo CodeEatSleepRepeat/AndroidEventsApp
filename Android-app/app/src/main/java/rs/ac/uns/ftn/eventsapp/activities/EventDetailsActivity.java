@@ -104,7 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         goingBtn = findViewById(R.id.goingEventDetailsBtn);
         interestedBtn = findViewById(R.id.interestedEventDetailsBtn);
 
-        if (AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getOwner())) {
+        if (AppDataSingleton.getInstance().getLoggedUser()==null || AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getOwner())) {
             goingBtn.setVisibility(View.INVISIBLE);
             interestedBtn.setVisibility(View.INVISIBLE);
         }

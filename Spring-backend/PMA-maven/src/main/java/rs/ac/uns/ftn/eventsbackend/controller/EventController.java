@@ -35,6 +35,8 @@ import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.EventsSyncDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.GIEventsSyncDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.GoingInterestedEventsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.RequestEventDetailsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.StringDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
@@ -422,6 +424,11 @@ public class EventController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
+	}
+	
+	@PostMapping("/details")
+	public ResponseEntity<ResponseEventDetailsDTO> getDetails(@RequestBody RequestEventDetailsDTO dto){
+		return ResponseEntity.ok(eventService.getDetails(dto));
 	}
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -51,6 +52,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Page<Event> findByOwnerAndSyncStatusNot(User user, SyncStatus s, Pageable pageable);
 	Page<Event> findByGoingIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
 	Page<Event> findByInterestedIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
+	List<Event> findByType(EventType et);
 	
 	Page<Event> findAllBySyncStatus(SyncStatus s, Pageable pageable);
 	Page<Event> findByOwnerAndSyncStatus(User user, SyncStatus s, Pageable pageable);
