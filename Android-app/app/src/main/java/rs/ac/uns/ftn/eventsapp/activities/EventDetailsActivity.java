@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
@@ -25,13 +27,19 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsUserRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.RequestEventDetailsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -48,6 +56,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbar;
     private EventDTO dto;
 
+    private ResponseEventDetailsDTO res;
     private ImageView imageView;
     private TextView eventNameEventDetailsTextView;
     private TextView eventStartEventDetailsView;
@@ -59,6 +68,10 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView seeAllInterestedEventDetailsTextView;
     private TextView seeAllAuthorsEventsEventDetailsTextView;
     private TextView seeAllSimilarPostsEventDetailsTextView;
+    private ImageView authorImg;
+    private TextView authorName;
+    private TextView organizedEvents;
+    private TextView authorInfo;
     private Button goingBtn;
     private Button interestedBtn;
 
@@ -81,9 +94,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         //mMapView = findViewById(R.id.mapViewEventDetails);
         //initGoogleMap(savedInstanceState);
         //get all elements that are going to contain event information
+        authorImg = findViewById(R.id.authorEventDetailsImgView);
+        authorName = findViewById(R.id.userNameEventDetailsTextView);
+        authorInfo = findViewById(R.id.userInfoEventDetailsTextView);
+        organizedEvents = findViewById(R.id.organizedEventsEventDetailsTextView);
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
         dto = (EventDTO) getIntent().getSerializableExtra("EVENT");
+        getDetails();
         setView(dto);
 
     }
@@ -283,7 +301,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void removeFromInterested() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -309,7 +327,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void removeFromGoing() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl(getString(R.string.localhost_uri))
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -381,6 +399,50 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void getDetails(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Long userId = null;
+        if(AppDataSingleton.getInstance().getLoggedUser()!=null){
+            userId = AppDataSingleton.getInstance().getLoggedUser().getId();
+        }
+        Call<ResponseEventDetailsDTO> s = e.getDetails(new RequestEventDetailsDTO(userId, dto.getId()));
+        s.enqueue(new Callback<ResponseEventDetailsDTO>() {
+            @Override
+            public void onResponse(Call<ResponseEventDetailsDTO> call, Response<ResponseEventDetailsDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                }
+                res = response.body();
+                if (res.getUserImage() == null || res.getUserImage().equals("")) {
+                    Picasso.get().load(R.drawable.ic_missing_event_icon_white).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg); //for picasso to not crash if image is empty or null
+                } else {
+                    Picasso.get().load(dto.getImageUri()).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg);
+                }
+                authorName.setText(res.getUserName());
+                authorInfo.setText(R.string.eventOrganizer);
+                organizedEvents.setText(res.getOrganizedEventsNum() + " " + getString(R.string.eventsOrganized));
+                initGoingRV(res);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseEventDetailsDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void initGoingRV(ResponseEventDetailsDTO res){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView rv = findViewById(R.id.goingToEventRV);
+        rv.setLayoutManager(layoutManager);
+        EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getGoingImages());
+        rv.setAdapter(adapter);
     }
 
 

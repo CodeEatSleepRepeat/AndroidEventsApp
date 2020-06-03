@@ -13,8 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.RequestEventDetailsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.ResponseEventDetailsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.SimilarEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -233,17 +235,22 @@ public class EventService {
 	
 	public ResponseEventDetailsDTO getDetails(RequestEventDetailsDTO dto) {
 		Optional<Event> event = eventRepository.findById(dto.getEventId());
+		ResponseEventDetailsDTO resDTO = new ResponseEventDetailsDTO();
+		if(dto.getUserId()!=null) {
 		Optional<User> user = userRepository.findById(dto.getUserId());
-		if(event.isPresent() && user.isPresent()) {
-			ResponseEventDetailsDTO resDTO = new ResponseEventDetailsDTO();
+			if(user.isPresent()) {
+				resDTO.setInterested(user.get().getInterestedEvents().contains(event.get()));
+				resDTO.setGoing(user.get().getGoingEvents().contains(event.get()));
+			}
+		}
+		if(event.isPresent()) {	
 			resDTO.setUserImage(event.get().getOwner().getImageUri());
 			resDTO.setUserName(event.get().getOwner().getName());
 			resDTO.setOrganizedEventsNum(event.get().getOwner().getUserEvents().size());
-			resDTO.setInterested(user.get().getInterestedEvents().contains(event.get()));
-			resDTO.setGoing(user.get().getGoingEvents().contains(event.get()));
+
 			List<String> goingImages = new ArrayList<>();
 			List<String> interestedImages = new ArrayList<>();
-			List<String> eventsImages = new ArrayList<>();
+			List<SimilarEventDTO> events = new ArrayList<>();
 			for (User u : event.get().getGoing()) {
 				goingImages.add(u.getImageUri());
 				if(goingImages.size()==8) {
@@ -257,14 +264,14 @@ public class EventService {
 				}
 			}
 			for (Event e : eventRepository.findByType(event.get().getType())) {
-				eventsImages.add(e.getCover().getSource());
-				if(eventsImages.size()==5) {
+				events.add(new SimilarEventDTO(e.getName(), e.getCover().getSource()));
+				if(events.size()==5) {
 					break;
 				}
 			}
 			resDTO.setGoingImages(goingImages);
 			resDTO.setInterestedImages(interestedImages);
-			resDTO.setEventsImages(eventsImages);
+			resDTO.setEvents(events);
 			
 			return resDTO;
 		}

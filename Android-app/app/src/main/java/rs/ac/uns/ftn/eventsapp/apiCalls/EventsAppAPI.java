@@ -17,6 +17,8 @@ import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventsSyncDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GIEventsSyncDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.RequestEventDetailsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
@@ -75,5 +77,8 @@ public interface EventsAppAPI {
 
     @POST("/comment")
     Call<CommentDTO> addComment(@Body CreateCommentDTO dto);
+
+    @POST("/event/details")
+    Call<ResponseEventDetailsDTO> getDetails(@Body RequestEventDetailsDTO dto);
 
 }

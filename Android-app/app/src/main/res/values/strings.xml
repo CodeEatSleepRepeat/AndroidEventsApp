@@ -156,4 +156,6 @@
     <string name="facebook_app_id">xxx</string>
     <string name="fb_login_protocol_scheme">xxx</string>
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>
+    <string name="eventOrganizer">Event organizer</string>
+    <string name="eventsOrganized">events organized</string>
 </resources>
