@@ -31,6 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsSimilarEventsRecyclerView;
 import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsUserRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
@@ -428,6 +429,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                 authorInfo.setText(R.string.eventOrganizer);
                 organizedEvents.setText(res.getOrganizedEventsNum() + " " + getString(R.string.eventsOrganized));
                 initGoingRV(res);
+                initInterestedRV(res);
+                initSimilarRV(res);
             }
 
             @Override
@@ -442,6 +445,22 @@ public class EventDetailsActivity extends AppCompatActivity {
         RecyclerView rv = findViewById(R.id.goingToEventRV);
         rv.setLayoutManager(layoutManager);
         EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getGoingImages());
+        rv.setAdapter(adapter);
+    }
+
+    private void initInterestedRV(ResponseEventDetailsDTO res){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView rv = findViewById(R.id.interestedInEventRV);
+        rv.setLayoutManager(layoutManager);
+        EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getInterestedImages());
+        rv.setAdapter(adapter);
+    }
+
+    private void initSimilarRV(ResponseEventDetailsDTO res){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView rv = findViewById(R.id.similarEventsRV);
+        rv.setLayoutManager(layoutManager);
+        EventDetailsSimilarEventsRecyclerView adapter = new EventDetailsSimilarEventsRecyclerView(this, res.getEvents());
         rv.setAdapter(adapter);
     }
 
