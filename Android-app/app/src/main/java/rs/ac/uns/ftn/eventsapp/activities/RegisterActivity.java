@@ -49,6 +49,7 @@ import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserRegisterDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
@@ -199,9 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                             editor.putLong(SyncUserTask.preferenceSyncUser, lastSyncTime);
                             editor.commit();
 
-                            //start fetching other data in background - fb data
-                            new SyncMyEventsTask(getApplicationContext()).execute();
-                            new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
+                            signInToFirebase(response.body());
                         }
                     }
 
@@ -456,6 +455,14 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void signInToFirebase(User registeredUser) {
+        //nakon uspesne registracije registrujemo ga i na firebase
+        FirebaseSignIn firebaseSignIn = new FirebaseSignIn(RegisterActivity.this);
+
+        firebaseSignIn.performSignIn(registeredUser.getEmail(),
+                registeredUser.getPassword(), registeredUser.getName(), registeredUser.getImageUri());
     }
 
     @Override

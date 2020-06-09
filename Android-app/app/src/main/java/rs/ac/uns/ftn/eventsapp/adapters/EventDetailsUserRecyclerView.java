@@ -36,11 +36,19 @@ public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDeta
 
     @Override
     public void onBindViewHolder(@NonNull EventDetailsUserRecyclerView.ViewHolder holder, int position) {
-        Picasso.get()
-                .load(mItems.get(position))
-                .placeholder(R.drawable.ic_missing_event_icon)
-                .error(R.drawable.ic_missing_event_icon)
-                .into(holder.image);
+        if (mItems.get(position).equals("")){
+            Picasso.get()
+                    .load(R.drawable.ic_missing_event_icon)
+                    .placeholder(R.drawable.ic_missing_event_icon)
+                    .error(R.drawable.ic_missing_event_icon)
+                    .into(holder.image);
+        } else {
+            Picasso.get()
+                    .load(mItems.get(position))
+                    .placeholder(R.drawable.ic_missing_event_icon)
+                    .error(R.drawable.ic_missing_event_icon)
+                    .into(holder.image);
+        }
     }
 
     @Override

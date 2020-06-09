@@ -582,6 +582,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    return;
                 }
                 Log.d("TAG", response.body().getId().toString());
                 if (imgUri != null) {
@@ -617,6 +618,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                     if (!response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                        return;
                     }
                     Toast.makeText(getApplicationContext(), R.string.eventUpdated, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);

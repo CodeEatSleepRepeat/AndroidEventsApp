@@ -153,7 +153,7 @@ public class MyEventsSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_OWNER, event.getOwner());
 
         mDatabase = getWritableDatabase();
-        mDatabase.update(TABLE_MY_EVENTS, cv, null, null);
+        mDatabase.replace(TABLE_MY_EVENTS, null, cv);
         mDatabase.close();
 
         return event;

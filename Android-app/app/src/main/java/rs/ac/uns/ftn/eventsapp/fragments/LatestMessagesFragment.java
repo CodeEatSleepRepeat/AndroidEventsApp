@@ -149,7 +149,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
         intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
         getActivity().startActivity(intent);
-
     }
 
     /**

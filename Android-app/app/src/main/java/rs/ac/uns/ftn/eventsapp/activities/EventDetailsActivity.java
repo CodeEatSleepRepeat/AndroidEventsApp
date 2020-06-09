@@ -418,6 +418,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseEventDetailsDTO> call, Response<ResponseEventDetailsDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    return;
                 }
                 res = response.body();
                 if (res.getUserImage() == null || res.getUserImage().equals("")) {

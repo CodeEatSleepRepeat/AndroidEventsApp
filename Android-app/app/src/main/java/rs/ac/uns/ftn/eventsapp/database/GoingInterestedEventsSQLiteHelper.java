@@ -202,7 +202,7 @@ public class GoingInterestedEventsSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_GI_UPDATED_TIME, ZonedDateTime.now().toString());
 
         mDatabase = getWritableDatabase();
-        mDatabase.update(TABLE_GI_EVENTS, cv, null, null);
+        mDatabase.replace(TABLE_GI_EVENTS, null, cv);
         mDatabase.close();
 
         return event;

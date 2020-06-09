@@ -131,7 +131,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_UPDATED_TIME, user.getUpdated_time().toString());
 
         mDatabase = getWritableDatabase();
-        mDatabase.update(TABLE_USER, cv, null, null);
+        mDatabase.replace(TABLE_USER, null, cv);
         mDatabase.close();
 
         return user;

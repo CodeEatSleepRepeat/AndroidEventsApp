@@ -14,6 +14,8 @@ import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
 
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.text.SimpleDateFormat;
 
 import rs.ac.uns.ftn.eventsapp.R;
@@ -24,7 +26,7 @@ import rs.ac.uns.ftn.eventsapp.models.Invitation;
 public class InvitationItem extends Item<GroupieViewHolder> {
 
     private Invitation invitation;
-    private SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
 
 
     // TODO: Na ulaz treba da ide invitacija objekat

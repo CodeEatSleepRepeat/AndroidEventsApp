@@ -186,8 +186,8 @@ public class LoginActivity extends AppCompatActivity {
                             //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa - moze biti interno poslat na register!
 
                             //start fetching other data in background
-                            new SyncMyEventsTask(getApplicationContext()).execute();
-                            new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
+                            //new SyncMyEventsTask(getApplicationContext()).execute();
+                            //new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
                         }
                     }
 
@@ -260,8 +260,8 @@ public class LoginActivity extends AppCompatActivity {
                     //firebaseLogin.loginWithEmailAndPassword(loggedUser.getEmail(), loggedUser.getPassword());    //TODO: ne sme da blokira dalji tok programa
 
                     //start fetching other data in background
-                    new SyncMyEventsTask(getApplicationContext()).execute();
-                    new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
+                    //new SyncMyEventsTask(getApplicationContext()).execute();
+                    //new SyncGoingInterestedEventsTask(getApplicationContext()).execute();
                 }
             }
 
