@@ -144,7 +144,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     private void onAdapterItemClick(){
         Intent intent = new Intent(getActivity(), ChatLogActivity.class);
         intent.putExtra(EXTRA_USER_FIREBASE_UID, chatPartnerUser.getUid());
-        //TODO: ova 3 ispod idu od usera iz baze bas... tako da kasnije to izmeni...
         intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
         intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
         intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
@@ -156,6 +155,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
      */
     private void refreshData() {
         //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+        refreshRecyclerViewMessages();
     }
 
     @Override

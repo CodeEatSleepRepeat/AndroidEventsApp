@@ -107,7 +107,7 @@ public class ChatLogFragment extends Fragment {
     }
 
     private void getMessages(final RecyclerView recyclerView){
-        String uidOfLoggedUser = FirebaseAuth.getInstance().getUid();
+        final String uidOfLoggedUser = FirebaseAuth.getInstance().getUid();
         String uidOfChatPartner = chatPartner.getUid();
 
         DatabaseReference userMessagesRef = FirebaseDatabase.getInstance().getReference("/user-messages/"
@@ -125,6 +125,10 @@ public class ChatLogFragment extends Fragment {
                     else{
                         adapter.add(new MessageFromChatPartnerItem(chatMessage, chatPartner));
                     }
+
+                    // ako je poruka namenjena meni stavi da je procitana
+                    if(chatMessage.getToId() == uidOfLoggedUser)
+                        setLatestMessageOfUserToSeen();
                 }
 
                 recyclerView.scrollToPosition(adapter.getItemCount()-1);

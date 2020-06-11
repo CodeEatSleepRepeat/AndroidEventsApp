@@ -93,26 +93,11 @@ public class UserService {
 	}
 
 	public List<User> findAllFriendsOfUser(Long userId) {
-		Optional<User> foundUser = userRepository.findById(userId);
-		List<User> usersFriends = new ArrayList<User>();
-		if(foundUser.get() == null){
-			usersFriends = Collections.emptyList();
-		}
-		else {
-			for(Friendship friendship : foundUser.get().getSendRequests()){
-				if(friendship.getStatus().equals(FriendshipStatus.ACCEPTED))
-					usersFriends.add(friendship.getRequestReceiver());
-			}
-			for(Friendship friendship : foundUser.get().getReceivedRequests()){
-				if(friendship.getStatus().equals(FriendshipStatus.ACCEPTED))
-					usersFriends.add(friendship.getRequestSender());
-			}
-		}
-
-		return usersFriends;
+		Optional<List<User>> usersFriendsOptional = userRepository.findUsersFriends(userId);
+		return usersFriendsOptional.orElse(Collections.emptyList());
 	}
 
-	public List<User> findAllWhichContainsUsernamePageable(String username, Pageable pageable) {
-		return userRepository.findByNameContaining(username, pageable).getContent();
+	public List<User> findAllWhichContainsUsernamePageable(Long userId, String username, Pageable pageable) {
+		return userRepository.findByNameContaining(userId, username, pageable).getContent();
 	}
 }

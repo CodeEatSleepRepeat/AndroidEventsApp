@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import rs.ac.uns.ftn.eventsbackend.model.User;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	User findByEmail(String email);
@@ -22,6 +25,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	public boolean existsByEmail(String email);
 
-    Page<User> findByNameContaining(String username, Pageable pageable);
+	@Query(value = "SELECT u from User u where " +
+			"u.id not in " +
+			"(SELECT f.requestReceiver.id from Friendship f where f.requestSender.id = ?1)" +
+			"and u.id not in" +
+			"(SELECT f.requestSender.id from Friendship f where f.requestReceiver.id = ?1)" +
+			"and u.id != ?1" +
+			"and u.name LIKE CONCAT('%', ?2, '%')" +
+			"and u.activatedAccount = true")
+	Page<User> findByNameContaining(Long userId, String username, Pageable pageable);
 
+	// Napomena: Hibernate ne podrzava UNION operator
+    @Query(value = "SELECT u from User u where u.id in " +
+			"(SELECT f.requestReceiver.id from Friendship f where f.requestSender.id = ?1 and f.status = 0 )" +
+			"or u.id in" +
+			"(SELECT f.requestSender.id from Friendship f where f.requestReceiver.id = ?1 and f.status = 0)")
+	Optional<List<User>> findUsersFriends(Long userId);
 }
