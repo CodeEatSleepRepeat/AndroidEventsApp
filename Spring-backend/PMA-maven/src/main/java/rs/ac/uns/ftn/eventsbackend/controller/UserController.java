@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import rs.ac.uns.ftn.eventsbackend.comparators.UserComparator;
+import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UserFBSyncChangeDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UserLoginDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UserProfileChangeDTO;
@@ -643,6 +644,16 @@ public class UserController {
 			File oldImage = new File(uri);
 			oldImage.delete();
 		}
+	}
+	
+	@GetMapping("/goingTo/{num}/{eventId}")
+	private ResponseEntity<List<UserDTO>> getAllGoingToEvent(@PathVariable int num, @PathVariable Long eventId){
+		return ResponseEntity.ok(userService.getAllGoingToEvent(num, eventId));
+	}
+	
+	@GetMapping("/interestedIn/{num}/{eventId}")
+	private ResponseEntity<List<UserDTO>> getAllInterestedInEvent(@PathVariable int num, @PathVariable Long eventId){
+		return ResponseEntity.ok(userService.getAllInterestedInEvent(num, eventId));
 	}
 
 }

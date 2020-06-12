@@ -113,7 +113,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="xxx" />
+            android:value="tajna" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
