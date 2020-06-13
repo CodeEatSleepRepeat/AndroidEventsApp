@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.eventsbackend.dto.FriendshipDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -82,7 +83,7 @@ public class FriendshipService {
         Optional<Friendship> foundFriendRequest = friendshipRepository.findById(requestId);
 
         if(!foundFriendRequest.isPresent())
-            throw new Exception("Friend Request for accepting was not found");
+            throw new Exception("Friend Request for deleting was not found");
         Friendship requestForAccept = foundFriendRequest.get();
 
         friendshipRepository.delete(requestForAccept);
@@ -96,5 +97,18 @@ public class FriendshipService {
             return numberOfFriendRequestsOptional.get();
         else
             return 0;
+    }
+
+    public FriendshipDTO getFriendship(Long user1, Long user2) {
+        Optional<Friendship> foundFriendship = friendshipRepository.findFriendshipOfTwoUsers(user1, user2);
+
+        if(foundFriendship.isPresent())
+            return new FriendshipDTO(foundFriendship.get());
+        else{
+            FriendshipDTO friendshipDTO = new FriendshipDTO();
+            friendshipDTO.setStatus("NOT EXISTS");
+            return friendshipDTO;
+        }
+
     }
 }

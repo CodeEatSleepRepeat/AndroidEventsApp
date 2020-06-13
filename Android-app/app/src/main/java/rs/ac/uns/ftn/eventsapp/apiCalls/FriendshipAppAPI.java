@@ -21,6 +21,10 @@ public interface FriendshipAppAPI {
     @GET("/friendship/getAllFriendRequests/{userId}/page/{num}")
     Call<List<FriendshipDTO>> getFriendRequests(@Path("userId") Long userId, @Path("num") int num);
 
+    @GET("/friendship/getFriendship/{user1}/{user2}")
+    Call<FriendshipDTO> getFriendshipOfTwoUsers(@Path("user1") Long user1,
+                                                @Path("user2") Long user2);
+
     @GET("/friendship/getNumberOfUserFriendRequests/{userId}")
     Call<Integer> getNumberOfUserFriendRequests(@Path("userId") Long userId);
 

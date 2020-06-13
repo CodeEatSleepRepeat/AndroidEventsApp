@@ -26,6 +26,8 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
             ".EXTRA_USER_IMAGE_PATH";
     public static String EXTRA_USER_EMAIL = "rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem" +
             ".EXTRA_USER_EMAIL";
+    public static String EXTRA_USER_ID = "rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem" +
+            ".EXTRA_USER_ID";
 
     private UserShareDTO user;
     private SendInvitationsActivity parentActivity;
@@ -84,6 +86,7 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
         intent.putExtra(EXTRA_USER_NAME, user.getUser().getName());
         intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getUser().getImageUri());
         intent.putExtra(EXTRA_USER_EMAIL, user.getUser().getEmail());
+        intent.putExtra(EXTRA_USER_ID, user.getUser().getId());
         viewHolder.itemView.getContext().startActivity(intent);
     }
 

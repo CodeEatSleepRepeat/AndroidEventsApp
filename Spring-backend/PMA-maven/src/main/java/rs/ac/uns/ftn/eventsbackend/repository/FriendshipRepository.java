@@ -18,4 +18,8 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     @Query("SELECT count(f) from Friendship f where f.requestReceiver.id = ?1 and f.status = 2")
     Optional<Integer> getNumberOfUserFriendRequests(Long userId);
+
+    @Query("SELECT f from Friendship f where (f.requestReceiver.id = ?1 and f.requestSender.id = ?2) " +
+            "or (f.requestReceiver.id = ?2 and f.requestSender.id = ?1)")
+    Optional<Friendship> findFriendshipOfTwoUsers(Long user1, Long user2);
 }
