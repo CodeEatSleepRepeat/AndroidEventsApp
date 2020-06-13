@@ -27,9 +27,10 @@ import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 public class SimilarEventsActivity extends AppCompatActivity {
 
     private static final int PAGE_START = 0;
-    private static List<EventDTO> items = null;
+    private static List<EventDTO> items = new ArrayList<>();
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
+    //private Long l;
     private boolean isLoading = false;
     private static int currentPage = -1;
 
@@ -38,13 +39,15 @@ public class SimilarEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_similar_events);
 
-        if(currentPage==-1){
+        //l = Long.valueOf(getIntent().getStringExtra("eventId"));
+
+        /*if(currentPage==-1){
             currentPage = PAGE_START;
         }
         if(items==null) {
             items = new ArrayList<>();
             getEventsPage(PAGE_START);
-        }
+        }*/
 
         RecyclerView recyclerView = findViewById(R.id.similarEventsRecyclerView);
         layoutManager = new LinearLayoutManager(this);
@@ -94,7 +97,7 @@ public class SimilarEventsActivity extends AppCompatActivity {
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInitialEvents(num, new SearchFilterEventsDTO());
+        Call<List<EventDTO>> events = e.similarEvents(num, Long.valueOf(getIntent().getStringExtra("eventId")));
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
@@ -112,5 +115,13 @@ public class SimilarEventsActivity extends AppCompatActivity {
                 Log.d("ERROR", t.toString());
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START);
     }
 }

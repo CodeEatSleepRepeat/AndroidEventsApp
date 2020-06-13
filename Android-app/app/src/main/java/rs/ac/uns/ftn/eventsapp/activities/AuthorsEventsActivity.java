@@ -27,24 +27,28 @@ import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 public class AuthorsEventsActivity extends AppCompatActivity {
 
     private static final int PAGE_START = 0;
-    private static List<EventDTO> items = null;
+    private static List<EventDTO> items = new ArrayList<>();
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
     private boolean isLoading = false;
     private static int currentPage = -1;
+    //private Long ownerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authors_events);
 
-        if(currentPage==-1){
+        //ownerId = Long.valueOf(getIntent().getStringExtra("ownerId"));
+        //Log.d("OWNER AA", ownerId.toString());
+
+        /*if(currentPage==-1){
             currentPage = PAGE_START;
         }
         if(items==null) {
             items = new ArrayList<>();
             getEventsPage(PAGE_START);
-        }
+        }*/
 
         RecyclerView recyclerView = findViewById(R.id.authorsEventsRecyclerView);
         layoutManager = new LinearLayoutManager(this);
@@ -94,7 +98,7 @@ public class AuthorsEventsActivity extends AppCompatActivity {
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInitialEvents(num, new SearchFilterEventsDTO());
+        Call<List<EventDTO>> events = e.getMyEvents(Long.valueOf(getIntent().getStringExtra("ownerId")), num, new SearchFilterEventsDTO());
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
@@ -112,6 +116,14 @@ public class AuthorsEventsActivity extends AppCompatActivity {
                 Log.d("ERROR", t.toString());
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START);
     }
 }
 

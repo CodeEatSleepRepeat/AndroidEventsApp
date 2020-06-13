@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResponseEventDetailsDTO {
 
+	private Long userId;
 	private Boolean going;
 	private Boolean interested;
 	private List<String> goingImages;

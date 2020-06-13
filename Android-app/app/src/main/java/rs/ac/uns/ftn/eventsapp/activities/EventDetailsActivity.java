@@ -56,6 +56,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private CollapsingToolbarLayout collapsingToolbar;
     private EventDTO dto;
+    private Long ownerId;
 
     private ResponseEventDetailsDTO res;
     private ImageView imageView;
@@ -169,6 +170,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeAllGoingEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intent3.putExtra("eventId", idEvent.toString());
                 startActivity(intent3);
             }
         });
@@ -177,6 +179,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeAllInterestedEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intent4.putExtra("eventId", idEvent.toString());
                 startActivity(intent4);
             }
         });
@@ -185,14 +188,19 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeAllAuthorsEventsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("OWNER", ownerId.toString());
+                intent5.putExtra("ownerId", ownerId.toString());
                 startActivity(intent5);
             }
         });
+
 
         final Intent intent6 = new Intent(this, SimilarEventsActivity.class);
         seeAllSimilarPostsEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("ID", idEvent.toString());
+                intent6.putExtra("eventId", idEvent.toString());
                 startActivity(intent6);
             }
         });
@@ -426,6 +434,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 } else {
                     Picasso.get().load(res.getUserImage()).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg);
                 }
+                ownerId = res.getUserId();
                 authorName.setText(res.getUserName());
                 authorInfo.setText(R.string.eventOrganizer);
                 organizedEvents.setText(res.getOrganizedEventsNum() + " " + getString(R.string.eventsOrganized));

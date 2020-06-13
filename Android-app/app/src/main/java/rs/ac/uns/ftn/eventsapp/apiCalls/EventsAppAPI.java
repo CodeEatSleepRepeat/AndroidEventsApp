@@ -81,4 +81,7 @@ public interface EventsAppAPI {
     @POST("/event/details")
     Call<ResponseEventDetailsDTO> getDetails(@Body RequestEventDetailsDTO dto);
 
+    @GET("/event/similar/{num}/{eventId}")
+    Call<List<EventDTO>> similarEvents(@Path("num") int num, @Path("eventId") Long eventId);
+
 }

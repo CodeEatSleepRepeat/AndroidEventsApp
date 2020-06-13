@@ -237,6 +237,7 @@ public class EventService {
 		Optional<Event> event = eventRepository.findById(dto.getEventId());
 		ResponseEventDetailsDTO resDTO = new ResponseEventDetailsDTO();
 		if(event.isPresent()) {	
+			resDTO.setUserId(event.get().getOwner().getId());
 			resDTO.setUserImage(event.get().getOwner().getImageUri());
 			resDTO.setUserName(event.get().getOwner().getName());
 			resDTO.setOrganizedEventsNum(event.get().getOwner().getUserEvents().size());

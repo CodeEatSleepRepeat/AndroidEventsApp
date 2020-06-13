@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ResponseEventDetailsDTO {
 
+	private Long userId;
 	private Boolean going;
 	private Boolean interested;
 	private List<String> goingImages;
@@ -16,7 +17,8 @@ public class ResponseEventDetailsDTO {
 	public ResponseEventDetailsDTO() {
 	}
 
-	public ResponseEventDetailsDTO(Boolean going, Boolean interested, List<String> goingImages, List<String> interestedImages, String userImage, String userName, Integer organizedEventsNum, List<SimilarEventDTO> events) {
+	public ResponseEventDetailsDTO(Long userId, Boolean going, Boolean interested, List<String> goingImages, List<String> interestedImages, String userImage, String userName, Integer organizedEventsNum, List<SimilarEventDTO> events) {
+		this.userId = userId;
 		this.going = going;
 		this.interested = interested;
 		this.goingImages = goingImages;
@@ -25,6 +27,14 @@ public class ResponseEventDetailsDTO {
 		this.userName = userName;
 		this.organizedEventsNum = organizedEventsNum;
 		this.events = events;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public Boolean getGoing() {
