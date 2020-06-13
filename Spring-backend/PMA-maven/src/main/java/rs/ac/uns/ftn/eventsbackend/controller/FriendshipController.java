@@ -49,6 +49,12 @@ public class FriendshipController {
 		return ResponseEntity.ok(foundRequestsDTO);
 	}
 
+	@GetMapping("/getFriendship/{user1}/{user2}")
+	public ResponseEntity<FriendshipDTO> getFriendship(@PathVariable Long user1, @PathVariable Long user2){
+		FriendshipDTO foundUsers = friendshipService.getFriendship(user1,user2);
+		return ResponseEntity.ok(foundUsers);
+	}
+
 	@GetMapping("/getNumberOfUserFriendRequests/{userId}")
 	public ResponseEntity<Integer> getNumberOfUserFriendRequests(@PathVariable Long userId){
 		int numberOfFriendRequests = friendshipService.getNumberOfUsersFriendRequests(userId);

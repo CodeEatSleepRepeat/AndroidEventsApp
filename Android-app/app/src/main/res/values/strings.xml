@@ -160,5 +160,8 @@
     <string name="eventsOrganized">events organized</string>
     <string name="friend_requests">Friend requests</string>
     <string name="request_accepted">Thank you for friendship</string>
-    <string name="request_declined">Request denied, ok</string>
+    <string name="request_declined">Request canceled</string>
+    <string name="cancel_request">Cancel request</string>
+    <string name="friend_removed">Friend removed</string>
+    <string name="friend_request_send">Friend request send</string>
 </resources>

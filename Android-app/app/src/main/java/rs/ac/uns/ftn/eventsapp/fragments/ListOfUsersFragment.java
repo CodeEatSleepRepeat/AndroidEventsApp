@@ -38,10 +38,8 @@ import rs.ac.uns.ftn.eventsapp.activities.AddFriendActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
@@ -99,7 +97,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerview_list_of_users);
         recyclerView.setAdapter(adapter);
 
-        getAllFriendUsers();
+        getAllUsersFriends();
         getNumberOfFriendRequests();
 
         // ukoliko korisnik npr rotira telefon, prehodno stanje mu ucitavam
@@ -155,7 +153,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         outState.putString(SEARCH_TEXT_LIST_OF_USERS, searchText);
     }
 
-    private void getAllFriendUsers() {
+    private void getAllUsersFriends() {
             UserAppApi userAppi;
             userAppi = getUserApi();
 
@@ -171,6 +169,9 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
                                 Toast.LENGTH_LONG).show();
                     }
                     if(response.body() != null) {
+                        userList.clear();
+                        userListAll.clear();
+                        adapter.clear();
                         userList.addAll(response.body());
                         userListAll.addAll(response.body());
 
@@ -200,6 +201,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     private void refreshData() {
         //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
         getNumberOfFriendRequests();
+        getAllUsersFriends();
     }
 
     @Override
@@ -299,8 +301,15 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
                 if(response.body() != null) {
                     Button goToFriendRequestsBtn =
                             getActivity().findViewById(R.id.button_go_to_friend_requests_list_of_users);
-                    String friendRequests =getString(R.string.friend_requests);
-                    goToFriendRequestsBtn.setText(response.body() + " " + friendRequests);
+                    if(response.body()>0){
+                        goToFriendRequestsBtn.setVisibility(View.VISIBLE);
+                        String friendRequests = getString(R.string.friend_requests);
+                        goToFriendRequestsBtn.setText(response.body() + " " + friendRequests);
+                    }
+                    else{
+                        goToFriendRequestsBtn.setVisibility(View.GONE);
+                    }
+
                 }
             }
 
@@ -311,8 +320,6 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
                 Log.d("ERROR", t.toString());
             }
         });
-
-
     }
     private FriendshipAppAPI getFriendshipApi() {
         FriendshipAppAPI friendshipAppAPI;

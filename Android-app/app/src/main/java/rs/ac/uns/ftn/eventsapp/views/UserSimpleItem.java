@@ -44,6 +44,8 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             ".EXTRA_USER_EMAIL";
     public static String EXTRA_USER_FIREBASE_UID = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
             ".EXTRA_USER_FIREBASE_UID";
+    public static String EXTRA_USER_ID = "rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem" +
+            ".EXTRA_USER_ID";
 
     private User user;
     private Boolean setAddButton;
@@ -126,6 +128,8 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         intent.putExtra(EXTRA_USER_NAME, user.getName());
         intent.putExtra(EXTRA_USER_IMAGE_PATH, user.getImageUri());
         intent.putExtra(EXTRA_USER_EMAIL, user.getEmail());
+        intent.putExtra(EXTRA_USER_ID, user.getId());
+
         viewHolder.itemView.getContext().startActivity(intent);
     }
 
@@ -176,8 +180,6 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
     }
 
     private void addFriendAction(final GroupieViewHolder viewHolder) {
-
-
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
         Retrofit retrofit = new Retrofit.Builder()
