@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -80,11 +81,12 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
         textUsername.setText(user.getName());
 
-        Picasso.get()
-                .load(user.getImageUri())
-                .placeholder(R.drawable.ic_veljko)
-                .error(R.drawable.ic_user_icon)
-                .into(imageUser);
+        Picasso.get().setLoggingEnabled(true);
+        if (user.getImageUri().startsWith("http")){
+            Picasso.get().load(Uri.parse(user.getImageUri())).placeholder(R.drawable.ic_user_icon).into(imageUser);
+        } else {
+            Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + user.getImageUri())).placeholder(R.drawable.ic_user_icon).into(imageUser);
+        }
 
         textUsername.setOnClickListener(new View.OnClickListener() {
             @Override

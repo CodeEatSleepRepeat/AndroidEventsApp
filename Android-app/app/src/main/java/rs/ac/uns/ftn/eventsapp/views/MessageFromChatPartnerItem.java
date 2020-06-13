@@ -44,11 +44,6 @@ public class MessageFromChatPartnerItem extends Item<GroupieViewHolder> {
 
         // TODO: Ovde treba sliak usera da se izvuce
         bindUserImageToUI(imageUser);
-//        Picasso.get()
-//                .load(user.getProfileImageUrl())
-//                .placeholder(R.drawable.ic_veljko)
-//                .error(R.drawable.ic_veljko)
-//                .into(imageUser);
 
         textMessage.setOnClickListener(new View.OnClickListener() {
             @Override

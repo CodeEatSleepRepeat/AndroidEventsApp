@@ -43,12 +43,6 @@ public class MessageToChatPartnerItem extends Item<GroupieViewHolder> {
         messageTime.setVisibility(View.INVISIBLE);
 
         bindUserImageToUI(imageUser);
-        // TODO: Ovde treba sliak usera da se izvuce
-//        Picasso.get()
-//                .load(user.getProfileImageUrl())
-//                .placeholder(R.drawable.ic_veljko)
-//                .error(R.drawable.ic_veljko)
-//                .into(imageUser);
 
         textMessage.setOnClickListener(new View.OnClickListener() {
             @Override

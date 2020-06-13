@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -34,12 +37,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.ChatMessage;
 import rs.ac.uns.ftn.eventsapp.models.User;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.LatestMessageItem;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
@@ -234,8 +244,35 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     }
 
     private void getAllFriendUsers(){
-        userList.addAll(TestMockup.users);
-        userListAll.addAll(TestMockup.users);
+
+        UserAppApi userAppi;
+        userAppi = getUserApi();
+
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
+        Call<List<User>> userFriends =
+                userAppi.getFriendsOfUser(loggedUser.getId());
+        userFriends.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
+                            Toast.LENGTH_LONG).show();
+                }
+                if(response.body() != null) {
+                    userList.addAll(response.body());
+                    userListAll.addAll(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
+
+
     }
 
     @Override
@@ -352,5 +389,17 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
                 adapter.add(new LatestMessageItem(message, chatPartnerUser));
             }
         });
+
     }
+
+    private UserAppApi getUserApi() {
+        UserAppApi userAppi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        userAppi = retrofit.create(UserAppApi.class);
+        return userAppi;
+    }
+
 }

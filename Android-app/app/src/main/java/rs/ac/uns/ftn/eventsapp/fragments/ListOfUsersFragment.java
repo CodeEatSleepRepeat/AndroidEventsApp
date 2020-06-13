@@ -37,6 +37,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.AddFriendActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
@@ -94,6 +95,10 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
                 startActivity(intent);
             }
         });
+        adapter = new GroupAdapter<>();
+        RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerview_list_of_users);
+        recyclerView.setAdapter(adapter);
+
         getAllFriendUsers();
         getNumberOfFriendRequests();
 
@@ -151,18 +156,37 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     }
 
     private void getAllFriendUsers() {
+            UserAppApi userAppi;
+            userAppi = getUserApi();
 
-        adapter = new GroupAdapter<>();
-        RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerview_list_of_users);
+            User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-        userList.addAll(TestMockup.users);
-        userListAll.addAll(TestMockup.users);
-        for (User user : userList) {
-            adapter.add(new UserSimpleItem(user, false, false));
-        }
+            Call<List<User>> userFriends =
+                    userAppi.getFriendsOfUser(loggedUser.getId());
+            userFriends.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if(response.body() != null) {
+                        userList.addAll(response.body());
+                        userListAll.addAll(response.body());
 
-        recyclerView.setAdapter(adapter);
+                        for (User user : userList) {
+                            adapter.add(new UserSimpleItem(user, false, false));
+                        }
 
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    Log.d("ERROR", t.toString());
+                }
+            });
     }
 
     private void goToAddFriendActivity() {
@@ -175,6 +199,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
      */
     private void refreshData() {
         //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+        getNumberOfFriendRequests();
     }
 
     @Override
@@ -297,6 +322,16 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
                 .build();
         friendshipAppAPI = retrofit.create(FriendshipAppAPI.class);
         return friendshipAppAPI;
+    }
+
+    private UserAppApi getUserApi() {
+        UserAppApi userAppi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        userAppi = retrofit.create(UserAppApi.class);
+        return userAppi;
     }
 
 }
