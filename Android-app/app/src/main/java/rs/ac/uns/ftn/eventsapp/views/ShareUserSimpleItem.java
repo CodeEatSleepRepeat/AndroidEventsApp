@@ -37,8 +37,8 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
 
     @Override
     public void bind(@NonNull final GroupieViewHolder viewHolder, int position) {
-        TextView textUsername = viewHolder.itemView.findViewById(R.id.text_username_user_item);
-        ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_item);
+        TextView textUsername = viewHolder.itemView.findViewById(R.id.text_username_simple_item);
+        ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_simple_item);
         Context itemViewContext = viewHolder.itemView.getContext();
         CheckBox selectedCB = viewHolder.itemView.findViewById(R.id.selectFriendForShareCB);
 

@@ -2,14 +2,17 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,10 +29,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.AddFriendActivity;
+import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
+import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class ListOfUsersFragment extends Fragment implements Filterable {
@@ -73,7 +85,17 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Button friendRequestButton =
+                getActivity().findViewById(R.id.button_go_to_friend_requests_list_of_users);
+        friendRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FriendRequestsActivity.class);
+                startActivity(intent);
+            }
+        });
         getAllFriendUsers();
+        getNumberOfFriendRequests();
 
         // ukoliko korisnik npr rotira telefon, prehodno stanje mu ucitavam
         if (savedInstanceState != null) {
@@ -235,4 +257,46 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             }
         }
     };
+
+    private void getNumberOfFriendRequests(){
+        FriendshipAppAPI friendshipAppAPI = getFriendshipApi();
+
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
+        Call<Integer> friendshipRequests =
+                friendshipAppAPI.getNumberOfUserFriendRequests(loggedUser.getId());
+        friendshipRequests.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+                if(response.body() != null) {
+                    Button goToFriendRequestsBtn =
+                            getActivity().findViewById(R.id.button_go_to_friend_requests_list_of_users);
+                    String friendRequests =getString(R.string.friend_requests);
+                    goToFriendRequestsBtn.setText(response.body() + " " + friendRequests);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
+                        Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
+
+
+    }
+    private FriendshipAppAPI getFriendshipApi() {
+        FriendshipAppAPI friendshipAppAPI;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        friendshipAppAPI = retrofit.create(FriendshipAppAPI.class);
+        return friendshipAppAPI;
+    }
+
 }

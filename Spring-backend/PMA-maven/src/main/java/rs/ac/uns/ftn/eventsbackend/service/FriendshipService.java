@@ -88,4 +88,13 @@ public class FriendshipService {
         friendshipRepository.delete(requestForAccept);
         return requestForAccept;
     }
+
+    public int getNumberOfUsersFriendRequests(Long userId) {
+        Optional<Integer> numberOfFriendRequestsOptional = friendshipRepository.getNumberOfUserFriendRequests(userId);
+
+        if(numberOfFriendRequestsOptional.isPresent())
+            return numberOfFriendRequestsOptional.get();
+        else
+            return 0;
+    }
 }

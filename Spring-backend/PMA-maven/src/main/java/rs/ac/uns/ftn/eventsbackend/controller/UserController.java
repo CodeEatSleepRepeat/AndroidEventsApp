@@ -555,7 +555,7 @@ public class UserController {
 	public ResponseEntity<List<User>> getUsersWhichContainsUsername(@PathVariable int num,
 			@PathVariable String username, @PathVariable Long userId) {
 		System.out.println("Usao je u metodu username:" + username + " num: " + num);
-		Pageable pageable = PageRequest.of(num, 15);
+		Pageable pageable = PageRequest.of(num, 10);
 		List<User> foundUsers = userService.findAllWhichContainsUsernamePageable(userId, username, pageable);
 		return ResponseEntity.ok(foundUsers);
 	}

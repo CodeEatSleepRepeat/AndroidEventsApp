@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
+        <activity android:name=".activities.FriendRequestsActivity"></activity>
 
         <receiver android:name=".sync.SyncReceiverInitTask" />
 

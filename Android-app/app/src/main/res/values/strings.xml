@@ -158,4 +158,7 @@
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>
     <string name="eventOrganizer">Event organizer</string>
     <string name="eventsOrganized">events organized</string>
+    <string name="friend_requests">Friend requests</string>
+    <string name="request_accepted">Thank you for friendship</string>
+    <string name="request_declined">Request denied, ok</string>
 </resources>

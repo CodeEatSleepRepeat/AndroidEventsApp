@@ -49,6 +49,13 @@ public class FriendshipController {
 		return ResponseEntity.ok(foundRequestsDTO);
 	}
 
+	@GetMapping("/getNumberOfUserFriendRequests/{userId}")
+	public ResponseEntity<Integer> getNumberOfUserFriendRequests(@PathVariable Long userId){
+		int numberOfFriendRequests = friendshipService.getNumberOfUsersFriendRequests(userId);
+
+		return ResponseEntity.ok(numberOfFriendRequests);
+	}
+
 	@PutMapping("/acceptRequest/{receiverId}/{requestId}")
 	public ResponseEntity<FriendshipDTO> acceptRequest(@PathVariable Long receiverId, @PathVariable Long requestId) throws Exception {
 		Friendship accepted = friendshipService.acceptRequestAndReturnStatus(receiverId, requestId);

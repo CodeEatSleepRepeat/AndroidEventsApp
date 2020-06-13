@@ -20,11 +20,19 @@ import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserDetailActivity;
+import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
+import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class UserSimpleItem extends Item<GroupieViewHolder>{
     public static String EXTRA_USER_NAME = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
@@ -41,6 +49,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
     private Boolean onClickGoToChatRoom;
     private Query emailQuery;
     private RecyclerView.ViewHolder viewHolder;
+    private Button addButton;
 
     public UserSimpleItem(User user, Boolean setAddButton, Boolean onClickGoToChatRoom){
 
@@ -52,10 +61,10 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
     @Override
     public void bind(@NonNull final GroupieViewHolder viewHolder, int position) {
-        TextView textUsername = viewHolder.itemView.findViewById(R.id.text_username_user_item);
-        ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_item);
+        TextView textUsername = viewHolder.itemView.findViewById(R.id.text_username_simple_item);
+        ImageView imageUser = viewHolder.itemView.findViewById(R.id.image_user_simple_item);
         Context itemViewContext = viewHolder.itemView.getContext();
-        Button addButton = viewHolder.itemView.findViewById(R.id.btn_add_simple_user_item);
+        addButton = viewHolder.itemView.findViewById(R.id.btn_add_friend);
         this.viewHolder = viewHolder;
         if(!setAddButton){
             addButton.setVisibility(View.GONE);
@@ -164,9 +173,41 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
     }
 
-    private void addFriendAction(GroupieViewHolder viewHolder) {
-        Toast.makeText(viewHolder.itemView.getContext(), "Hvala na prijateljstvu",
-                Toast.LENGTH_SHORT).show();
+    private void addFriendAction(final GroupieViewHolder viewHolder) {
+
+
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(viewHolder.itemView.getContext().getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+
+        FriendshipAppAPI friendshipApi = retrofit.create(FriendshipAppAPI.class);
+        Call<FriendshipDTO> friendshipCall = friendshipApi.sendFriendRequest(loggedUser.getId(),
+                user.getId());
+
+        friendshipCall.enqueue(new Callback<FriendshipDTO>() {
+            @Override
+            public void onResponse(Call<FriendshipDTO> call, retrofit2.Response<FriendshipDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Neuspesno dodavanje",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(viewHolder.itemView.getContext(), "Hvala na prijateljstvu",
+                            Toast.LENGTH_SHORT).show();
+                    addButton.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FriendshipDTO> call, Throwable t) {
+                Toast.makeText(viewHolder.itemView.getContext(), "Hvala na prijateljstvu",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
     }
 
     public User getUser() {

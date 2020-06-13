@@ -57,7 +57,10 @@ public interface UserAppApi {
     @GET("/user/friendsOf/{userId}")
     Call<List<User>> getFriendsOfUser(@Path("userId") Long userId);
 
-    @GET("/user/containsUsername/{username}/page/{num}")
-    Call<List<User>> getUsersWhichContainsUsername(@Path("num") int num,
+    @GET("/user/containsUsername/{userId}/{username}/page/{num}")
+    Call<List<User>> getUsersWhichContainsUsername(@Path("userId") Long userId,
+                                                   @Path("num") int num,
                                                    @Path("username") String username);
+    @GET("/user/{userId}")
+    Call<User> getUser(@Path("userId") Long userId);
 }

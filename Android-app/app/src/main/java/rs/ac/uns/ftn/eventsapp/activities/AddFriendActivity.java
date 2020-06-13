@@ -28,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -86,8 +87,8 @@ public class AddFriendActivity extends AppCompatActivity {
             protected void loadMoreItems() {
                 isLoading = true;
                 Log.d("salepare", "usao ovde opet");
-                //currentPage += 1;
-                //searchUsersByUsername();
+                currentPage += 1;
+                searchUsersByUsername();
             }
 
             @Override
@@ -110,8 +111,10 @@ public class AddFriendActivity extends AppCompatActivity {
         UserAppApi userAppi;
         userAppi = getUserApi();
 
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
         Call<List<User>> userFriends =
-                userAppi.getUsersWhichContainsUsername(currentPage,
+                userAppi.getUsersWhichContainsUsername(loggedUser.getId(), currentPage,
                         searchInput.getText().toString());
         userFriends.enqueue(new Callback<List<User>>() {
             @Override
@@ -136,7 +139,7 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private void refreshFoundUserList() {
-        adapter.clear();
+        //adapter.clear();
         for(User user : foundUsers){
             adapter.add(new UserSimpleItem(user, true, false));
         }
