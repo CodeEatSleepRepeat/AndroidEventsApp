@@ -144,7 +144,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventStartEventDetailsView.setText(formatter.format(dto.getStart_time()));
         eventDescriptionEventDetailsView.setText(dto.getDescription());
         eventLocationEventDetailsTextView.setText(dto.getPlace());
-        final EventForMapDTO mapDto = new EventForMapDTO(dto.getId(), dto.getName(), dto.getLongitude(), dto.getLatitude(), dto.getImageUri());
+        final EventForMapDTO mapDto = new EventForMapDTO(dto.getId(), dto.getName(), dto.getLatitude(), dto.getLongitude(), dto.getImageUri());
         final Intent intent = new Intent(this, GoogleMapActivity.class);
         seeOnMapEventDetailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,7 +424,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if (res.getUserImage() == null || res.getUserImage().equals("")) {
                     Picasso.get().load(R.drawable.ic_missing_event_icon_white).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg); //for picasso to not crash if image is empty or null
                 } else {
-                    Picasso.get().load(dto.getImageUri()).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg);
+                    Picasso.get().load(res.getUserImage()).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg);
                 }
                 authorName.setText(res.getUserName());
                 authorInfo.setText(R.string.eventOrganizer);
@@ -442,27 +442,42 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void initGoingRV(ResponseEventDetailsDTO res){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView rv = findViewById(R.id.goingToEventRV);
-        rv.setLayoutManager(layoutManager);
-        EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getGoingImages());
-        rv.setAdapter(adapter);
+        if(!res.getGoingImages().isEmpty()) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            RecyclerView rv = findViewById(R.id.goingToEventRV);
+            rv.setLayoutManager(layoutManager);
+            EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getGoingImages());
+            rv.setAdapter(adapter);
+        }else{
+            seeAllGoingEventDetailsTextView.setText("No one");
+            seeAllGoingEventDetailsTextView.setOnClickListener(null);
+        }
     }
 
     private void initInterestedRV(ResponseEventDetailsDTO res){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView rv = findViewById(R.id.interestedInEventRV);
-        rv.setLayoutManager(layoutManager);
-        EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getInterestedImages());
-        rv.setAdapter(adapter);
+        if(!res.getInterestedImages().isEmpty()) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            RecyclerView rv = findViewById(R.id.interestedInEventRV);
+            rv.setLayoutManager(layoutManager);
+            EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getInterestedImages());
+            rv.setAdapter(adapter);
+        }else{
+            seeAllInterestedEventDetailsTextView.setText("No one");
+            seeAllInterestedEventDetailsTextView.setOnClickListener(null);
+        }
     }
 
     private void initSimilarRV(ResponseEventDetailsDTO res){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView rv = findViewById(R.id.similarEventsRV);
-        rv.setLayoutManager(layoutManager);
-        EventDetailsSimilarEventsRecyclerView adapter = new EventDetailsSimilarEventsRecyclerView(this, res.getEvents());
-        rv.setAdapter(adapter);
+        if(!res.getEvents().isEmpty()) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            RecyclerView rv = findViewById(R.id.similarEventsRV);
+            rv.setLayoutManager(layoutManager);
+            EventDetailsSimilarEventsRecyclerView adapter = new EventDetailsSimilarEventsRecyclerView(this, res.getEvents());
+            rv.setAdapter(adapter);
+        }else{
+            seeAllSimilarPostsEventDetailsTextView.setText("No similar events");
+            seeAllSimilarPostsEventDetailsTextView.setOnClickListener(null);
+        }
     }
 
 

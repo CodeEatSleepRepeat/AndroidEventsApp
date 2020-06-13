@@ -428,7 +428,16 @@ public class EventController {
 	
 	@PostMapping("/details")
 	public ResponseEntity<ResponseEventDetailsDTO> getDetails(@RequestBody RequestEventDetailsDTO dto){
-		return ResponseEntity.ok(eventService.getDetails(dto));
+		ResponseEventDetailsDTO returnDTO = eventService.getDetails(dto);
+		if(returnDTO!=null) {
+			return ResponseEntity.ok(returnDTO);
+		}
+		return new ResponseEntity<ResponseEventDetailsDTO>(HttpStatus.NO_CONTENT);	
+	}
+	
+	@GetMapping("/similar/{num}/{eventId}")
+	public ResponseEntity<List<EventDTO>> similarEvents(@PathVariable int num, @PathVariable Long eventId){
+		return ResponseEntity.ok(eventService.getSimilarEvents(num, eventId));
 	}
 
 }

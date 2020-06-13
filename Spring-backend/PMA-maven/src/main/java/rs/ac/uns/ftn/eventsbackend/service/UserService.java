@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -99,5 +101,25 @@ public class UserService {
 
 	public List<User> findAllWhichContainsUsernamePageable(Long userId, String username, Pageable pageable) {
 		return userRepository.findByNameContaining(userId, username, pageable).getContent();
+	}
+
+	public List<UserDTO> getAllGoingToEvent(int num, Long eventId) {
+		Pageable pageable = PageRequest.of(num, 10);
+		List<UserDTO> dtos = new ArrayList<>();
+		List<User> users = userRepository.findByGoingEventsId(eventId, pageable).getContent();
+		for (User user : users) {
+			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri()));
+		}
+		return dtos;
+	}
+	
+	public List<UserDTO> getAllInterestedInEvent(int num, Long eventId) {
+		Pageable pageable = PageRequest.of(num, 10);
+		List<UserDTO> dtos = new ArrayList<>();
+		List<User> users = userRepository.findByInterestedEventsId(eventId, pageable).getContent();
+		for (User user : users) {
+			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri()));
+		}
+		return dtos;
 	}
 }

@@ -41,4 +41,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			"or u.id in" +
 			"(SELECT f.requestSender.id from Friendship f where f.requestReceiver.id = ?1 and f.status = 0)")
 	Optional<List<User>> findUsersFriends(Long userId);
+    Page<User> findByGoingEventsId(Long eventId, Pageable pageable);
+    Page<User> findByInterestedEventsId(Long eventId, Pageable pageable);
 }

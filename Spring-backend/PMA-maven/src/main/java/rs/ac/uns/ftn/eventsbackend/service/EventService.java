@@ -236,13 +236,6 @@ public class EventService {
 	public ResponseEventDetailsDTO getDetails(RequestEventDetailsDTO dto) {
 		Optional<Event> event = eventRepository.findById(dto.getEventId());
 		ResponseEventDetailsDTO resDTO = new ResponseEventDetailsDTO();
-		if(dto.getUserId()!=null) {
-		Optional<User> user = userRepository.findById(dto.getUserId());
-			if(user.isPresent()) {
-				resDTO.setInterested(user.get().getInterestedEvents().contains(event.get()));
-				resDTO.setGoing(user.get().getGoingEvents().contains(event.get()));
-			}
-		}
 		if(event.isPresent()) {	
 			resDTO.setUserImage(event.get().getOwner().getImageUri());
 			resDTO.setUserName(event.get().getOwner().getName());
@@ -264,9 +257,15 @@ public class EventService {
 				}
 			}
 			for (Event e : eventRepository.findByType(event.get().getType())) {
-				events.add(new SimilarEventDTO(e.getName(), e.getCover().getSource()));
-				if(events.size()==5) {
-					break;
+				if(!e.getId().equals(event.get().getId())) {
+					if(e.getCover()!=null) {
+						events.add(new SimilarEventDTO(e.getName(), e.getCover().getSource()));
+					}else {
+						events.add(new SimilarEventDTO(e.getName(), null));
+					}
+					if(events.size()==5) {
+						break;
+					}
 				}
 			}
 			resDTO.setGoingImages(goingImages);
@@ -276,6 +275,22 @@ public class EventService {
 			return resDTO;
 		}
 		return null;
+	}
+
+	public List<EventDTO> getSimilarEvents(int num, Long eventId) {
+		Optional<Event> e = eventRepository.findById(eventId);
+		if(e.isPresent()) {
+			List<EventDTO> dtos = new ArrayList<>(); 
+			Pageable pageable = PageRequest.of(num, 10);
+			List<Event> events = eventRepository.findByTypeAndSyncStatusNot(e.get().getType(), SyncStatus.DELETE, pageable).getContent();
+			for (Event event : events) {
+				if(!event.getId().equals(eventId)) {
+					dtos.add(new EventDTO(event));
+				}
+			}
+			return dtos;
+		}
+		return new ArrayList<>();
 	}
 
 }

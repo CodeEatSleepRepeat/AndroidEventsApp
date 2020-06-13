@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -669,6 +670,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
             mo.position(new LatLng(lat, lng));
             mo.title(lat + " : " + lng);
             googleMap.addMarker(mo);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lng)));
         }
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
