@@ -27,9 +27,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query(value = "SELECT u from User u where " +
 			"u.id not in " +
-			"(SELECT f.requestReceiver.id from Friendship f where f.requestSender.id = ?1)" +
+			"(SELECT f.requestReceiver.id from Friendship f where f.requestSender.id = ?1 and f.status !=2)" +
 			"and u.id not in" +
-			"(SELECT f.requestSender.id from Friendship f where f.requestReceiver.id = ?1)" +
+			"(SELECT f.requestSender.id from Friendship f where f.requestReceiver.id = ?1 and f.status !=2)" +
 			"and u.id != ?1" +
 			"and u.name LIKE CONCAT('%', ?2, '%')" +
 			"and u.activatedAccount = true")

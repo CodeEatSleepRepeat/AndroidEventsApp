@@ -26,6 +26,7 @@ import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 public class LatestMessageItem extends Item<GroupieViewHolder> {
 
     private ChatMessage chatMessage;
+
     private FirebaseUserDTO chatPartnerUser;
 
     public LatestMessageItem(ChatMessage chatMessage,FirebaseUserDTO chatPartnerUser){
@@ -120,6 +121,10 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
     @Override
     public int getLayout() {
         return R.layout.item_latest_message;
+    }
+
+    public FirebaseUserDTO getChatPartnerUser() {
+        return chatPartnerUser;
     }
 
 }

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -72,6 +73,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     private String searchText ="";
     private GroupAdapter adapter;
     private Map<String, ChatMessage> latestMessagesMap =new HashMap<String, ChatMessage>();
+    private Map<String, FirebaseUserDTO> latestMessageToChatPartner = new HashMap<String, FirebaseUserDTO>();
     private FirebaseUserDTO chatPartnerUser;
     private Query emailQuery;
 
@@ -151,23 +153,6 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         outState.putString(SEARCH_TEXT_LIST_OF_USERS_LATEST_MESSAGES, searchText);
     }
 
-    private void onAdapterItemClick(){
-        Intent intent = new Intent(getActivity(), ChatLogActivity.class);
-        intent.putExtra(EXTRA_USER_FIREBASE_UID, chatPartnerUser.getUid());
-        intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
-        intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
-        intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
-        getActivity().startActivity(intent);
-    }
-
-    /**
-     * Refresh data from server
-     */
-    private void refreshData() {
-        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
-        refreshRecyclerViewMessages();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -176,6 +161,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
     private void listenForLatestMessages(){
         adapter = new GroupAdapter();
+        latestMessagesMap.clear();
         RecyclerView recyclerViewLatestMessages =
                 getActivity().findViewById(R.id.recyclerview_list_of_latest_messages);
 
@@ -221,7 +207,9 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull Item item, @NonNull View view) {
-                onAdapterItemClick();
+
+                LatestMessageItem latestMessageItem = (LatestMessageItem) item;
+                onAdapterItemClick(latestMessageItem.getChatPartnerUser());
             }
         });
 
@@ -230,16 +218,15 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     }
 
     private void refreshRecyclerViewMessages(){
-        adapter.clear();
-        for(ChatMessage message : latestMessagesMap.values()){
+        for(Map.Entry<String, ChatMessage> entry : latestMessagesMap.entrySet()){
             String chatPartnerUid = "";
-            if(message.getFromId().equals(FirebaseAuth.getInstance().getUid())){
-                chatPartnerUid = message.getToId();
+            if(entry.getValue().getFromId().equals(FirebaseAuth.getInstance().getUid())){
+                chatPartnerUid = entry.getValue().getToId();
             }
             else{
-                chatPartnerUid = message.getFromId();
+                chatPartnerUid = entry.getValue().getFromId();
             }
-            findChatPartnerInfo(chatPartnerUid, message);
+            findChatPartnerInfo(chatPartnerUid, entry.getValue(), entry.getKey());
         }
     }
 
@@ -354,7 +341,8 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         }
     };
 
-    private void findChatPartnerInfo(String chatPartnerId, final ChatMessage message){
+    private void findChatPartnerInfo(String chatPartnerId, final ChatMessage message,
+                                     final String messageKey){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         emailQuery = usersRef.orderByChild("uid").equalTo(chatPartnerId);
         emailQuery.addChildEventListener(new ChildEventListener() {
@@ -370,26 +358,49 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                sendDataAndUnregister(dataSnapshot);
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                sendDataAndUnregister(dataSnapshot);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                databaseError.toException().printStackTrace();
             }
 
             private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
                 emailQuery.removeEventListener(this);
-                chatPartnerUser = dataSnapshot.getValue(FirebaseUserDTO.class);
-                adapter.add(new LatestMessageItem(message, chatPartnerUser));
+                FirebaseUserDTO chatPartnerUser = dataSnapshot.getValue(FirebaseUserDTO.class);
+                latestMessageToChatPartner.put(messageKey, chatPartnerUser);
+                addLatestMessagesItemViewToView();
             }
         });
 
+    }
+
+    private void addLatestMessagesItemViewToView() {
+        adapter.clear();
+        for(Map.Entry<String, FirebaseUserDTO> entry : latestMessageToChatPartner.entrySet()){
+            adapter.add(new LatestMessageItem(latestMessagesMap.get(entry.getKey()), entry.getValue()));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void onAdapterItemClick(FirebaseUserDTO chatPartnerUser){
+        Intent intent = new Intent(getActivity(), ChatLogActivity.class);
+        intent.putExtra(EXTRA_USER_FIREBASE_UID, chatPartnerUser.getUid());
+        intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
+        intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
+        intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
+        getActivity().startActivity(intent);
+    }
+
+    /**
+     * Refresh data from server
+     */
+    private void refreshData() {
+        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+        refreshRecyclerViewMessages();
     }
 
     private UserAppApi getUserApi() {
@@ -401,5 +412,4 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
         userAppi = retrofit.create(UserAppApi.class);
         return userAppi;
     }
-
 }

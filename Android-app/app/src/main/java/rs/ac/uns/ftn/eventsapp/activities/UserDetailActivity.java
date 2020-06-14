@@ -37,6 +37,14 @@ import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class UserDetailActivity extends AppCompatActivity {
+    public static String EXTRA_USER_NAME = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_NAME";
+    public static String EXTRA_USER_IMAGE_PATH = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_IMAGE_PATH";
+    public static String EXTRA_USER_EMAIL = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_EMAIL";
+    public static String EXTRA_USER_FIREBASE_UID = "rs.ac.uns.ftn.eventsapp.views.UserSimpleItem" +
+            ".EXTRA_USER_FIREBASE_UID";
 
     private User user;
     private FriendshipDTO friendship;
@@ -188,8 +196,14 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void goToChatLog(){
-        Intent intent = new Intent(this, ChatLogActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(getActivity(), ChatLogActivity.class);
+//        intent.putExtra(EXTRA_USER_FIREBASE_UID, user.getUid());
+//        intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
+//        intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
+//        intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
+//        startActivity(intent);
+//        Intent intent = new Intent(this, ChatLogActivity.class);
+//        startActivity(intent);
     }
 
     private void fillUserEvents(){

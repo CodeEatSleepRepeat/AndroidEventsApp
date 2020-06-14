@@ -26,7 +26,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
+import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
@@ -140,11 +142,57 @@ public class AddFriendActivity extends AppCompatActivity {
 
     private void refreshFoundUserList() {
         //adapter.clear();
-        for(User user : foundUsers){
-            adapter.add(new UserSimpleItem(user, true, false));
+        for(int i = 0; i < foundUsers.size(); i++){
+            boolean isEndingUser = i == foundUsers.size()-1;
+            getFriendshipStatus(foundUsers.get(i), isEndingUser);
+
         }
-        adapter.notifyDataSetChanged();
-        isLoading = false;
+//        for(User user : foundUsers){
+//            //TODO: ovde pozvati funkciju koja trazi iz servisa friend rquest i na osnovu toga
+//            //TODO: stavlja addButton ili ne...
+//            getFriendshipStatus(user);
+//            adapter.add(new UserSimpleItem(user, true, false));
+//        }
+//        adapter.notifyDataSetChanged();
+//        isLoading = false;
+    }
+
+    private void getFriendshipStatus(final User user, final boolean isEndingUser) {
+        FriendshipAppAPI friendshipAppAPI = getFriendshipApi();
+
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
+        Call<FriendshipDTO> friendshipRequest =
+                friendshipAppAPI.getFriendshipOfTwoUsers(loggedUser.getId(), user.getId());
+        friendshipRequest.enqueue(new Callback<FriendshipDTO>() {
+            @Override
+            public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                }
+                if(response.body() != null){
+                    FriendshipDTO friendship = response.body();
+                    boolean isPending = friendship.getStatus().equals("PENDING");
+                    boolean isNonExisting = friendship.getStatus().equals("NOT EXISTS");
+
+                    if(isPending)
+                        adapter.add(new UserSimpleItem(user, false, false));
+                    else if(isNonExisting)
+                        adapter.add(new UserSimpleItem(user, true, false));
+
+                    adapter.notifyDataSetChanged();
+                    if(isEndingUser)
+                        isLoading = false;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FriendshipDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed,
+                        Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
     }
 
     private UserAppApi getUserApi() {
@@ -155,6 +203,16 @@ public class AddFriendActivity extends AppCompatActivity {
                 .build();
         userAppi = retrofit.create(UserAppApi.class);
         return userAppi;
+    }
+
+    private FriendshipAppAPI getFriendshipApi() {
+        FriendshipAppAPI friendshipAppAPI;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        friendshipAppAPI = retrofit.create(FriendshipAppAPI.class);
+        return friendshipAppAPI;
     }
 
     @Override
