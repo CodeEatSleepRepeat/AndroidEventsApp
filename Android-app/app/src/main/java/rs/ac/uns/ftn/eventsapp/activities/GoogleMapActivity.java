@@ -356,4 +356,5 @@ public class GoogleMapActivity extends AppCompatActivity
                 return;
             }
         }
-    }}
+    }
+}

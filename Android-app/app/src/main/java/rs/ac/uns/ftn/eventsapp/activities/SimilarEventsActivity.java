@@ -1,12 +1,12 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 

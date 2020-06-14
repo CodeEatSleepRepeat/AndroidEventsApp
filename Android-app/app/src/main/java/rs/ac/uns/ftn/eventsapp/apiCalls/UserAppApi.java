@@ -9,6 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import rs.ac.uns.ftn.eventsapp.dtos.UserDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserFBSyncChangeDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserProfileChangeDTO;
@@ -63,4 +64,10 @@ public interface UserAppApi {
                                                    @Path("username") String username);
     @GET("/user/{userId}")
     Call<User> getUser(@Path("userId") Long userId);
+
+    @GET("/user/goingTo/{num}/{eventId}")
+    Call<List<UserDTO>> getGoingToUsers(@Path("num") int num, @Path("eventId") Long eventId);
+
+    @GET("/user/interestedIn/{num}/{eventId}")
+    Call<List<UserDTO>> getInterestedInUsers(@Path("num") int num, @Path("eventId") Long eventId);
 }
