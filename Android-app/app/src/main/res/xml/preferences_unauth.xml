@@ -5,13 +5,6 @@
         <PreferenceCategory android:title="@string/title_pref_application">
             <ListPreference
                 android:defaultValue="2"
-                android:entries="@array/updateLanguage"
-                android:entryValues="@array/updateLanguageValue"
-                android:key="pref_language"
-                android:title="@string/title_pref_language"
-                android:summary="%s"/>
-            <ListPreference
-                android:defaultValue="2"
                 android:entries="@array/updateDefaultEventSort"
                 android:entryValues="@array/updateDefaultEventSortValues"
                 android:key="pref_default_event_sort"

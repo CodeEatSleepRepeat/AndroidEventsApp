@@ -3,7 +3,6 @@
     <string name="splash_text">Events are loading...</string>
     <string name="no_valid_email_message">Selected account doesn\'t have a valid email, please select another one.</string>
     <string name="select_account_with_email_message">Please select an account with a valid email address.</string>
-    <string name="action_settings">Settings</string>
     <string name="report">Report event</string>
     <string name="nav_social">Social</string>
     <string name="nav_item_create">Create Event</string>
@@ -26,7 +25,6 @@
     <string name="forYouFilter">For you</string>
     <string name="recentFilter">Recent</string>
     <string name="popularFilter">Popular</string>
-    <string name="categoryFilter">Category:</string>
     <string name="music">Music</string>
     <string name="party">Party</string>
     <string name="sports">Sports</string>
@@ -52,7 +50,7 @@
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_continue_with_social_media">Continue with social media</string>
     <string name="title_facebook_logo">Facebook</string>
-    <string name="title_google_logo">Google Gmail</string>
+    <string name="title_google_logo" translatable="false">Google Gmail</string>
     <string name="login_back_to_register">Back to Register</string>
     <string name="register_select_photo">SELECT&#10;PHOTO</string>
     <string name="register_repeat_password">Repeat password</string>
@@ -71,8 +69,7 @@
     <string name="title_pref_language">Language</string>
     <string name="msg_pref_language">Choose an application language</string>
     <string name="title_pref_default_event_filter_sort">Default event filter sort</string>
-    <string name="msg_pref_default_event_filter_sort">Choose a default event filter
-        sort for event filttering</string>
+    <string name="msg_pref_default_event_filter_sort">Choose a default event filter sort for event filtering</string>
     <string name="title_pref_map">Map</string>
     <string name="title_pref_default_distance_value">Default distance value</string>
     <string name="msg_pref_set_default_radius_distance">Set the default radius distance
@@ -81,7 +78,7 @@
     <string name="msg_pref_dialog_default_radius_distance">Choose default radius distance
         value</string>
     <string name="title_pref_default_map_zoom">Default map zoom</string>
-    <string name="msg_pref_defauilt_map_zoom">Choose an default map zoom for map feature</string>
+    <string name="msg_pref_defauilt_map_zoom">Choose a default map zoom for map feature</string>
     <string name="title_pref_facebook_events">Sync with your Facebook events</string>
     <string name="msg_pref_facebook_events">Manage your Facebook events with the Event app</string>
     <string name="title_pref_sync_data_facebook">Sync with your Facebook profile</string>
@@ -113,7 +110,7 @@
     <string name="failed">Failed :(</string>
     <string name="eventCreated">Event created!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="oops">Oops!</string>
+    <string name="oops" translatable="false">Oops!</string>
     <string name="check_your_internet">Please check your internet connection</string>
     <string name="there_is_no_internet">There is no internet connection</string>
     <string name="try_again_later">Please try again later</string>
@@ -152,9 +149,9 @@
     <string name="notGoing">Not going</string>
     <string name="notInterested">Not interested</string>
 
-    <string name="localhost_uri">http://192.168.0.108:8080</string>
-    <string name="facebook_app_id">xxx</string>
-    <string name="fb_login_protocol_scheme">xxx</string>
+    <string name="localhost_uri" translatable="false">http://192.168.0.108:8080</string>
+    <string name="facebook_app_id" translatable="false">xxx</string>
+    <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>
     <string name="eventOrganizer">Event organizer</string>
     <string name="eventsOrganized">events organized</string>
@@ -164,4 +161,18 @@
     <string name="cancel_request">Cancel request</string>
     <string name="friend_removed">Friend removed</string>
     <string name="friend_request_send">Friend request send</string>
+    <string name="categoryFilter">Category:</string>
+    <string name="action_settings">Settings</string>
+    <string name="your_profile_page">Your profile page</string>
+    <string name="remove_account">Remove account</string>
+    <string name="unlink_facebook">Unlink Facebook</string>
+    <string name="enter_message_chat_log">Enter Message</string>
+    <string name="send">Send</string>
+    <string name="invited_by">Invited by:</string>
+    <string name="email_user_detail">Email:</string>
+    <string name="street_preferences">Street</string>
+    <string name="city_preferences">City</string>
+    <string name="country_preferences">Country</string>
+
+
 </resources>

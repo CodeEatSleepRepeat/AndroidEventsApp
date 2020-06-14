@@ -53,7 +53,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
                 .into(eventImage);
 
         eventName.setText(invitation.getEvent().getName());
-        userUsername.setText("Invited by: " + invitation.getInvitationSender().getName());
+        userUsername.setText(viewHolder.itemView.getContext().getString(R.string.invited_by)+" " + invitation.getInvitationSender().getName());
         eventDate.setText(formatter.format(invitation.getEvent().getStart_time()));
 
     }

@@ -15,12 +15,12 @@
 
             <item android:id="@+id/action_unlink_fb_menu_item"
                 android:icon="@drawable/ic_facebook_remove"
-                android:title="Unlink Facebook"
+                android:title="@string/unlink_facebook"
                 />
 
             <item android:id="@+id/action_remove_account_menu_item"
                 android:icon="@drawable/ic_account_remove"
-                android:title="Remove Account" />
+                android:title="@string/remove_account" />
 
         </menu>
 

@@ -83,7 +83,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (savedInstanceState != null) imgUri = savedInstanceState.getString("imgUri");
 
         Toolbar toolbar = findViewById(R.id.toolbarUserProfile);
-        toolbar.setTitle("Your profile page");
+        toolbar.setTitle(R.string.your_profile_page);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

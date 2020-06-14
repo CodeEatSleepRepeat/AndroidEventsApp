@@ -147,14 +147,6 @@ public class AddFriendActivity extends AppCompatActivity {
             getFriendshipStatus(foundUsers.get(i), isEndingUser);
 
         }
-//        for(User user : foundUsers){
-//            //TODO: ovde pozvati funkciju koja trazi iz servisa friend rquest i na osnovu toga
-//            //TODO: stavlja addButton ili ne...
-//            getFriendshipStatus(user);
-//            adapter.add(new UserSimpleItem(user, true, false));
-//        }
-//        adapter.notifyDataSetChanged();
-//        isLoading = false;
     }
 
     private void getFriendshipStatus(final User user, final boolean isEndingUser) {

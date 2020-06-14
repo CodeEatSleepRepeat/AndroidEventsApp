@@ -28,9 +28,9 @@
     <!-- DEFAULT EVENT SORT-->
 
     <string-array name="updateDefaultEventSort">
-        <item>For you</item>
-        <item>Recent</item>
-        <item>Popular</item>
+        <item>@string/forYouFilter</item>
+        <item>@string/recentFilter</item>
+        <item>@string/popularFilter</item>
     </string-array>
 
     <string-array name="updateDefaultEventSortValues">
@@ -42,9 +42,9 @@
 
     <!-- DEFAULT ZOOM OPTION -->
     <string-array name="updateDefaultZoomOption">
-        <item>Street</item>
-        <item>City</item>
-        <item>Country</item>
+        <item>@string/street_preferences</item>
+        <item>@string/city_preferences</item>
+        <item>@string/country_preferences</item>
     </string-array>
 
     <string-array name="updateDefaultZoomOptionValues">

@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:text="Invited by: Veljko N95"
+                android:text="@string/invited_by"
                 android:textSize="14sp" />
 
             <LinearLayout

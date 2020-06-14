@@ -65,7 +65,7 @@ public class UserDetailActivity extends AppCompatActivity {
         String intentExtraUsername = getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_NAME);
         if(intentExtraUsername != null){
             TextView textUserEvents = findViewById(R.id.text_user_events_user_detail);
-            textUserEvents.setText(intentExtraUsername+ "'s Events");
+            textUserEvents.setText(intentExtraUsername+ " " +getString(R.string.app_name));
             getSupportActionBar().setTitle(intentExtraUsername);
         }
 
