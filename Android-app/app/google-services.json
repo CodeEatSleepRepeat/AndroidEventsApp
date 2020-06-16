@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "232231637412-lgtpug955fdaasjtooab35abv9pmt2tn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rs.ac.uns.ftn.eventsapp",
+            "certificate_hash": "33eab6a58eae09c5e242462c28e3c6b02167e28c"
+          }
+        },
+        {
           "client_id": "232231637412-9aoten9bam73h05niqonukjstiu6p449.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -24,6 +24,20 @@
         <receiver android:name=".sync.SyncReceiverInitTask" />
 
         <service android:name=".sync.SyncUserService" />
+        <service android:name=".firebase.notification.FirebaseService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_SERVICE"/>
+            </intent-filter>
+        </service>
+        <service android:name=".firebase.notification.FirebaseMessaging"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".activities.UpdateEventActivity"

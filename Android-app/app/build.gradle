@@ -69,12 +69,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     //Firebase SDK for Google Analytics
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
     //Firebase auth
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
     //Firebabase database and storage
     implementation 'com.google.firebase:firebase-storage-ktx:19.1.1'
-    implementation 'com.google.firebase:firebase-database-ktx:19.2.1'
+    implementation 'com.google.firebase:firebase-database-ktx:19.3.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
 
     //time for API<26
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'

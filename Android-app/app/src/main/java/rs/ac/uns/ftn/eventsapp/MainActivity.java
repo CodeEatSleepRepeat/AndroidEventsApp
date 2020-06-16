@@ -45,11 +45,16 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
 
@@ -67,6 +72,7 @@ import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserProfileActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
 import rs.ac.uns.ftn.eventsapp.fragments.GoingEventsListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.HomeEventListFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.InterestedEventsListFragment;
@@ -182,6 +188,25 @@ public class MainActivity extends AppCompatActivity{
             setNavigationListenerAuthorizedUser(navigationView, toolbar);
             changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
         }
+
+        boolean isUserLoggedToFirebase = FirebaseAuth.getInstance().getCurrentUser() != null;
+        if(isUserLoggedToFirebase){
+            updateFirebaseToken();
+        }
+
+    }
+
+    public void updateFirebaseToken(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,
+                new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String newToken = instanceIdResult.getToken();
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+                        Token mToken = new Token(newToken);
+                        ref.child(FirebaseAuth.getInstance().getUid()).setValue(mToken);
+                    }
+                });
     }
 
     private void setNavigationListenerUnauthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
