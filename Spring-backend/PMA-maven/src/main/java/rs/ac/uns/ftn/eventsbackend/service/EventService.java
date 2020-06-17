@@ -11,11 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.eventsbackend.dto.EventDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.RequestEventDetailsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.ResponseEventDetailsDTO;
+import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SimilarEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
@@ -294,4 +297,29 @@ public class EventService {
 		return new ArrayList<>();
 	}
 
+	public List<EventDTO> testiranje(SearchFilterEventsDTO dto) {
+		List<EventDTO> dtos = new ArrayList<>();
+		List<EventDistanceDTO> events = new ArrayList<>();
+		events = eventRepository.testiranje(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
+				dto.getEventStart(), dto.getEventEnd(), ZonedDateTime.now(),
+				dto.getEventTypes(),  dto.getFacebookPrivacy(), dto.getSortType());
+		for (EventDistanceDTO event : events) {
+			dtos.add(new EventDTO(event.getE()));
+		}
+		return dtos;
+		 
+	}
+
+	public List<EventDTO> testiranje2(SearchFilterEventsDTO dto) {
+		List<EventDTO> dtos = new ArrayList<>();
+		List<EventDistanceDTO> events = new ArrayList<>();
+		Pageable pageable = PageRequest.of(0, 10);
+		events = eventRepository.getOpenEventsNearCoordinates(dto.getLat(), dto.getLng(), new Double(dto.getDistance()), pageable).getContent();
+		for (EventDistanceDTO event : events) {
+			dtos.add(new EventDTO(event.getE()));
+		}
+		return dtos;
+		 
+	}
+	
 }

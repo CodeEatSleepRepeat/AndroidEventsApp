@@ -59,6 +59,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         viewHolder.eventAddressTextView.setText(item.getPlace());
         viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
         String imageUri = item.getImageUri();
+        Log.d("LINK", imageUri);
         if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
             imageUri = IMAGE_URI + imageUri;
         } else if (imageUri == null || imageUri.equals("")) {
