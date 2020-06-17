@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.dtos;
 
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.models.EventType;
@@ -10,18 +12,22 @@ public class SearchFilterEventsDTO {
 
     private String search;
     private int distance;
+    private Double lat;
+    private Double lng;
     private SortType sortType;
     private List<EventType> eventTypes;
-    private String eventStart;
-    private String eventEnd;
+    private ZonedDateTime eventStart = ZonedDateTime.now();
+    private ZonedDateTime eventEnd = ZonedDateTime.now();
     private FacebookPrivacy facebookPrivacy;
 
     public SearchFilterEventsDTO() {
     }
 
-    public SearchFilterEventsDTO(String search, int distance, SortType sortType, List<EventType> eventTypes, String eventStart, String eventEnd, FacebookPrivacy facebookPrivacy) {
+    public SearchFilterEventsDTO(String search, int distance, Double lat, Double lng, SortType sortType, List<EventType> eventTypes, ZonedDateTime eventStart, ZonedDateTime eventEnd, FacebookPrivacy facebookPrivacy) {
         this.search = search;
         this.distance = distance;
+        this.lat = lat;
+        this.lng = lng;
         this.sortType = sortType;
         this.eventTypes = eventTypes;
         this.eventStart = eventStart;
@@ -61,19 +67,19 @@ public class SearchFilterEventsDTO {
         this.eventTypes = eventTypes;
     }
 
-    public String getEventStart() {
+    public ZonedDateTime getEventStart() {
         return eventStart;
     }
 
-    public void setEventStart(String eventStart) {
+    public void setEventStart(ZonedDateTime eventStart) {
         this.eventStart = eventStart;
     }
 
-    public String getEventEnd() {
+    public ZonedDateTime getEventEnd() {
         return eventEnd;
     }
 
-    public void setEventEnd(String eventEnd) {
+    public void setEventEnd(ZonedDateTime eventEnd) {
         this.eventEnd = eventEnd;
     }
 
@@ -83,5 +89,21 @@ public class SearchFilterEventsDTO {
 
     public void setFacebookPrivacy(FacebookPrivacy facebookPrivacy) {
         this.facebookPrivacy = facebookPrivacy;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
     }
 }

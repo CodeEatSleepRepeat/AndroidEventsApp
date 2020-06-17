@@ -33,7 +33,6 @@ import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecyclerView.EventViewHolder> {
 
-    private static final String IMAGE_URI = "http://10.0.2.2:8080/event/image/";
     private List<EventDTO> mItems;
     private Context context;
     private int listRowResourceLayout;
@@ -61,7 +60,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         String imageUri = item.getImageUri();
         Log.d("LINK", imageUri);
         if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
-            imageUri = IMAGE_URI + imageUri;
+            imageUri = AppDataSingleton.IMAGE_URI + imageUri;
         } else if (imageUri == null || imageUri.equals("")) {
             imageUri = "image"; //for picasso to not crash if image is empty or null
         }
@@ -85,7 +84,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 EventDTO e = mItems.get(i);
                 String imageUri = e.getImageUri();
                 if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
-                    e.setImageUri(IMAGE_URI + imageUri);
+                    e.setImageUri(AppDataSingleton.IMAGE_URI + imageUri);
                 }
 
                 detailsIntent.putExtra("EVENT", e);

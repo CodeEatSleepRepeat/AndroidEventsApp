@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -429,10 +430,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                     return;
                 }
                 res = response.body();
-                if (res.getUserImage() == null || res.getUserImage().equals("")) {
-                    Picasso.get().load(R.drawable.ic_missing_event_icon_white).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg); //for picasso to not crash if image is empty or null
+                String imageUri = res.getUserImage();
+                if (!imageUri.equals("")) {
+                    Picasso.get().setLoggingEnabled(true);
+                    if (imageUri.startsWith("http")) {
+                        Picasso.get().load(Uri.parse(imageUri)).placeholder(R.drawable.ic_user_icon_black).into(authorImg);
+                    } else {
+                        Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imageUri)).placeholder(R.drawable.ic_user_icon_black).into(authorImg);
+                    }
                 } else {
-                    Picasso.get().load(res.getUserImage()).placeholder(R.drawable.ic_missing_event_icon_white).into(authorImg);
+                    authorImg.setImageResource(R.drawable.ic_user_icon_black);
                 }
                 ownerId = res.getUserId();
                 authorName.setText(res.getUserName());

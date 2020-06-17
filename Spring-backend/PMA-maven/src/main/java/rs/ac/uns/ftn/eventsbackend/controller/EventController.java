@@ -167,6 +167,7 @@ public class EventController {
 	@PostMapping("/goingevents/{id}/{num}")
 	public ResponseEntity<List<EventDTO>> goingEventsPageable(@PathVariable Long id, @PathVariable int num,
 			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
+		System.out.println("stigao");
 		Pageable pageable = PageRequest.of(num, 10);
 		List<Event> events = eventService.getGoingEvents(pageable, id);
 		List<EventDTO> dtos = new ArrayList<>();

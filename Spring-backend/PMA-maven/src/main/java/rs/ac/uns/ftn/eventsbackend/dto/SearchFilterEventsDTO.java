@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
+
 import java.time.ZonedDateTime;
 import java.util.List;
 
