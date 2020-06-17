@@ -555,10 +555,16 @@ public class UserController {
 	@GetMapping("/containsUsername/{userId}/{username}/page/{num}")
 	public ResponseEntity<List<User>> getUsersWhichContainsUsername(@PathVariable int num,
 			@PathVariable String username, @PathVariable Long userId) {
-		System.out.println("Usao je u metodu username:" + username + " num: " + num);
 		Pageable pageable = PageRequest.of(num, 10);
 		List<User> foundUsers = userService.findAllWhichContainsUsernamePageable(userId, username, pageable);
 		return ResponseEntity.ok(foundUsers);
+	}
+
+	@GetMapping("/getFriendsForEventsInvite/{senderId}/{eventId}")
+	public ResponseEntity<List<User>> getFriendsForEventsInvite(@PathVariable Long senderId,
+																@PathVariable Long eventId) throws Exception {
+		List<User> foundFriends = userService.findAllFriendsWhoAreNotYetInvitedToEvent(senderId, eventId);
+		return ResponseEntity.ok(foundFriends);
 	}
 
 	@GetMapping("/image/{name}")
