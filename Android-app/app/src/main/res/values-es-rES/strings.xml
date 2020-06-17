@@ -167,4 +167,5 @@
     <string name="city_preferences">Ciudad</string>
     <string name="country_preferences">País</string>
     <string name="says_notification_message">Dice:</string>
+    <string name="friend_request_notification">¡Tienes una nueva solicitud de amistad!</string>
 </resources>

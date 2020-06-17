@@ -173,6 +173,7 @@
     <string name="city_preferences">City</string>
     <string name="country_preferences">Country</string>
     <string name="says_notification_message">Says:</string>
+    <string name="friend_request_notification">You got new friend request!</string>
 
 
 </resources>

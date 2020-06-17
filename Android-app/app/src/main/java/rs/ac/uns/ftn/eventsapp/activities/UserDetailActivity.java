@@ -12,10 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,6 +41,13 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.FriendshipAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.FriendshipDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.APIFirebaseNotificationService;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Client;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Sender;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -52,6 +69,8 @@ public class UserDetailActivity extends AppCompatActivity {
     private String user_profile_picture_url;
     private Long userId;
     private Menu menu;
+    private Query emailQuery;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +279,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     setViewAsStillInPendingRequest();
                     friendship = response.body();
+                    findFirebaseReceiverUserThenSendNotification();
                 }
 
             }
@@ -315,4 +335,89 @@ public class UserDetailActivity extends AppCompatActivity {
         userAppi = retrofit.create(UserAppApi.class);
         return userAppi;
     }
+
+    private void findFirebaseReceiverUserThenSendNotification() {
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        emailQuery = usersRef.orderByChild("email").equalTo(user.getEmail());
+        emailQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+
+            private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
+                emailQuery.removeEventListener(this);
+                FirebaseUserDTO foundRequestReciever = dataSnapshot.getValue(FirebaseUserDTO.class);
+
+                APIFirebaseNotificationService apiFirebaseService =
+                        Client.getRetrofit("https://fcm.googleapis.com/").create(APIFirebaseNotificationService .class);
+
+                sendFriendRequestNotification(apiFirebaseService, foundRequestReciever.getUid());
+            }
+        });
+
+    }
+
+    private void sendFriendRequestNotification(final APIFirebaseNotificationService apiFirebaseService,
+                                               final String toId) {
+        final String loggedUserUid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(toId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    Token chatPartnerToken = ds.getValue(Token.class);
+                    String notificationBody =
+                            getResources().getString(R.string.friend_request_notification);
+                    String notificationTitle =
+                            getResources().getString(R.string.friend_requests);
+                    Data data = new Data(loggedUserUid, notificationBody, notificationTitle,
+                            toId, R.drawable.logo, NotificationTypeEnum.FRIEND_REQUEST);
+
+                    assert chatPartnerToken != null;
+                    Sender sender = new Sender(data, chatPartnerToken.getToken());
+                    apiFirebaseService.sendNotification(sender)
+                            .enqueue(new Callback<rs.ac.uns.ftn.eventsapp.firebase.notification.Response>() {
+                                @Override
+                                public void onResponse(Call<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> call, retrofit2.Response<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

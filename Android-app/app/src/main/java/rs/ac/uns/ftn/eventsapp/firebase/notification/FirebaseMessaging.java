@@ -29,6 +29,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
+import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.fragments.ChatLogFragment;
@@ -77,7 +78,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
             //TODO: Napraviti intent koji ide ka invitacijama
         }
         else if(notificationType.equals(NotificationTypeEnum.FRIEND_REQUEST.toString())){
-            //TODO: Napravi intent koji ide ka friend requestovima
+            makeIntentToFriendRequestThenMakeNotification(icon, body, title, defSoundUri, i);
         }
         else if(notificationType.equals(NotificationTypeEnum.MESSAGE.toString())){
             getChatPartnerInfoThenMakeIntentAndNotification(user, icon, body, title, defSoundUri,
@@ -91,6 +92,20 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 //            sendNormalNotification(icon, body, title, defSoundUri,
 //                    pIntent, i);
 //        }
+    }
+
+    private void makeIntentToFriendRequestThenMakeNotification(String icon, String body, String title, Uri defSoundUri, int i) {
+        Intent intent = new Intent(getApplicationContext(), FriendRequestsActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), i, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
+                    pIntent, i);
+        }
+        else{
+            sendNormalNotification(icon, body, title, defSoundUri,
+                    pIntent, i);
+        }
     }
 
     private void getChatPartnerInfoThenMakeIntentAndNotification(String chatPartnerUid, final String icon,
