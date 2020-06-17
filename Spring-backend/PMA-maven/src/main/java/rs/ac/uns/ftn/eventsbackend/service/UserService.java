@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
 import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
+import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
@@ -122,4 +123,30 @@ public class UserService {
 		}
 		return dtos;
 	}
+
+    public List<User> findAllFriendsWhoAreNotYetInvitedToEvent(Long senderId, Long eventId) throws Exception {
+		Optional<List<User>> foundFriendsOptional = userRepository.findFriendsForInvitation(senderId, eventId);
+		if(!foundFriendsOptional.isPresent())
+			throw new Exception("Not found any friends sorry");
+		List<User> friendsForInvitation = new ArrayList<User>();
+		for(User foundFriend : foundFriendsOptional.get()){
+			boolean heAlreadyKnowsAboutEvent = false;
+			for(Event goingEvent : foundFriend.getGoingEvents()){
+				if(goingEvent.getId().equals(eventId)) {
+					heAlreadyKnowsAboutEvent = true;
+					break;
+				}
+			}
+			for(Event interestedEvent : foundFriend.getInterestedEvents()){
+				if(interestedEvent.getId().equals(eventId)){
+					heAlreadyKnowsAboutEvent = true;
+					break;
+				}
+			}
+			if(!heAlreadyKnowsAboutEvent)
+				friendsForInvitation.add(foundFriend);
+		}
+
+		return friendsForInvitation;
+    }
 }

@@ -32,17 +32,13 @@ public class Invitation {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private Event event;
 
-	@NotNull
-	private InvitationStatus status;
 
-	public Invitation(Long id, @NotNull User invitationSender, @NotNull User invitationReceiver, @NotNull Event event,
-			@NotNull InvitationStatus status) {
+	public Invitation(Long id, @NotNull User invitationSender, @NotNull User invitationReceiver, @NotNull Event event) {
 		super();
 		this.id = id;
 		this.invitationSender = invitationSender;
 		this.invitationReceiver = invitationReceiver;
 		this.event = event;
-		this.status = status;
 	}
 
 	public Invitation() {
