@@ -35,6 +35,7 @@ import rs.ac.uns.ftn.eventsapp.firebase.notification.APIFirebaseNotificationServ
 import rs.ac.uns.ftn.eventsapp.firebase.notification.Client;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.Response;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Sender;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
 import rs.ac.uns.ftn.eventsapp.models.ChatMessage;
@@ -231,9 +232,10 @@ public class ChatLogFragment extends Fragment {
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
                     Token chatPartnerToken = ds.getValue(Token.class);
                     String notificationBody = chatMessage.getText();
-                    String notificationTitle = loggedUser.getName();
+                    String notificationTitle =
+                            loggedUser.getName() + " " + getResources().getString(R.string.says_notification_message);
                     Data data = new Data(fromId, notificationBody, notificationTitle,
-                             toId, R.drawable.logo);
+                             toId, R.drawable.logo, NotificationTypeEnum.MESSAGE);
 
                     Sender sender = new Sender(data, chatPartnerToken.getToken());
                     apiFirebaseService.sendNotification(sender)

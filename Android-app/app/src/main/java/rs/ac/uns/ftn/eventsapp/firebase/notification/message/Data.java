@@ -7,17 +7,27 @@ public class Data {
     private String title;
     private String sent;
     private Integer icon;
+    private NotificationTypeEnum type;
 
     public Data(){
 
     }
 
-    public Data(String user, String body, String title, String sent, Integer icon) {
+    public Data(String user, String body, String title, String sent, Integer icon, NotificationTypeEnum type) {
         this.user = user;
         this.body = body;
         this.title = title;
         this.sent = sent;
         this.icon = icon;
+        this.type = type;
+    }
+
+    public NotificationTypeEnum getType() {
+        return type;
+    }
+
+    public void setType(NotificationTypeEnum type) {
+        this.type = type;
     }
 
     public String getUser() {

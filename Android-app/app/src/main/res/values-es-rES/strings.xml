@@ -166,4 +166,5 @@
     <string name="street_preferences">Calle</string>
     <string name="city_preferences">Ciudad</string>
     <string name="country_preferences">País</string>
+    <string name="says_notification_message">Dice:</string>
 </resources>

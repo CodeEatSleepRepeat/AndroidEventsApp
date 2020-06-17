@@ -172,6 +172,7 @@
     <string name="street_preferences">Street</string>
     <string name="city_preferences">City</string>
     <string name="country_preferences">Country</string>
+    <string name="says_notification_message">Says:</string>
 
 
 </resources>

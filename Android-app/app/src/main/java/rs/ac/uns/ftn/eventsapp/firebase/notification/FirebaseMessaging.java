@@ -19,11 +19,24 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.fragments.ChatLogFragment;
+
+import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_EMAIL;
+import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_FIREBASE_UID;
+import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_IMAGE_PATH;
+import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_NAME;
 
 @SuppressLint({"MissingFirebaseInstanceTokenRefresh", "Registered"})
 public class FirebaseMessaging extends FirebaseMessagingService {
@@ -52,39 +65,69 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
+        String notificationType = remoteMessage.getData().get("type");
+
 
         assert user != null;
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
-        PendingIntent pIntent = null;
-        //TODO: Ovde se moze kreirati razlicit intent u zavisnosti koja je notifikacija
-        assert title != null;
-        if(title.contains(getResources().getString(R.string.invited_by))){
+        Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        //kreiranje razlicitog intenta u zavisnosti tipa notifikacije
+        assert notificationType != null;
+        if(notificationType.equals(NotificationTypeEnum.INVITATION.toString())){
             //TODO: Napraviti intent koji ide ka invitacijama
         }
-        else if(title.contains(getResources().getString(R.string.friend_requests))){
+        else if(notificationType.equals(NotificationTypeEnum.FRIEND_REQUEST.toString())){
             //TODO: Napravi intent koji ide ka friend requestovima
         }
-        else{
-            //TODO: Napravi intent koji ide ka chat logu
-            Intent intent = new Intent(this, ChatLogFragment.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("chatPartnerID", user);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            pIntent = PendingIntent.getActivity(this, i, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+        else if(notificationType.equals(NotificationTypeEnum.MESSAGE.toString())){
+            getChatPartnerInfoThenMakeIntentAndNotification(user, icon, body, title, defSoundUri,
+                    i);
         }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
+//                    pIntent, i);
+//        }
+//        else{
+//            sendNormalNotification(icon, body, title, defSoundUri,
+//                    pIntent, i);
+//        }
+    }
 
-        Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    private void getChatPartnerInfoThenMakeIntentAndNotification(String chatPartnerUid, final String icon,
+                                                                 final String body, final String title, final Uri defSoundUri, final int i) {
+        final DatabaseReference chatPartnerReference = FirebaseDatabase.getInstance().getReference().child("users").child(chatPartnerUid);
+        chatPartnerReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                FirebaseUserDTO chatPartner = dataSnapshot.getValue(FirebaseUserDTO.class);
+                if(chatPartner != null){
+                    chatPartnerReference.removeEventListener(this);
+                    Intent intent = new Intent(getApplicationContext(), ChatLogActivity.class);
+                    intent.putExtra(EXTRA_USER_FIREBASE_UID, chatPartner.getUid());
+                    intent.putExtra(EXTRA_USER_NAME, chatPartner.getUsername());
+                    intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartner.getProfileImageUrl());
+                    intent.putExtra(EXTRA_USER_EMAIL, chatPartner.getEmail());
 
+                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), i, intent,
+                            PendingIntent.FLAG_ONE_SHOT);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
-                    pIntent, i);
-        }
-        else{
-            sendNormalNotification(icon, body, title, defSoundUri,
-                    pIntent, i);
-        }
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
+                                pIntent, i);
+                    }
+                    else{
+                        sendNormalNotification(icon, body, title, defSoundUri,
+                                pIntent, i);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void sendNormalNotification(String icon, String body, String title, Uri defSoundUri,
