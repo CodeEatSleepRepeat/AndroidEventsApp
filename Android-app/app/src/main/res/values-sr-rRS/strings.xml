@@ -168,4 +168,6 @@
     <string name="country_preferences">Држава</string>
     <string name="says_notification_message">Каже:</string>
     <string name="friend_request_notification">Добили сте нови захтев за пријатеља!</string>
+    <string name="joined_event_invitations">Поставили сте да идете на догађај!</string>
+    <string name="interested_event_invitations">Ви сте сада заинтересовани за догађај!</string>
 </resources>

@@ -426,12 +426,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void sendEventInvitation(final Long userId, final String userEmail) {
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
-                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
-                .build();
-
-        InvitationAppApi invitationApi = retrofit.create(InvitationAppApi.class);
+        InvitationAppApi invitationApi = getInvitationApi();
         Call<InvitationDTO> invitationCall = invitationApi.sendInvitation(loggedUser.getId(),
                 userId, idEvent);
 

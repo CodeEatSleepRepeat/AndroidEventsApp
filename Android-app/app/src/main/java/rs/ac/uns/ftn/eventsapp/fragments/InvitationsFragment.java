@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -20,15 +21,24 @@ import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
+import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
+import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
 
 
@@ -36,6 +46,7 @@ public class InvitationsFragment extends Fragment {
 
     private ArrayList<Invitation> invitations;
     private RecyclerView recyclerView;
+    private GroupAdapter<GroupieViewHolder> adapter;
 
     public InvitationsFragment() {
         // Required empty public constructor
@@ -58,6 +69,8 @@ public class InvitationsFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_invitations, container, false);
         recyclerView = v.findViewById(R.id.recyclerview_fragment_invitations);
+        adapter = new GroupAdapter<GroupieViewHolder>();
+        recyclerView.setAdapter(adapter);
 
         final SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -75,7 +88,7 @@ public class InvitationsFragment extends Fragment {
      * Refresh data from server
      */
     private void refreshData() {
-        //TODO: pozovi refresh data sa servera, osvezi bazu i ponovo iscrtaj listu u ovom fragmentu
+        getAllInvitations();
     }
 
     @Override
@@ -160,16 +173,32 @@ public class InvitationsFragment extends Fragment {
     }
 
     private void getAllInvitations() {
-        GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<GroupieViewHolder>();
-        RecyclerView recyclerView =
-                getActivity().findViewById(R.id.recyclerview_fragment_invitations);
+        adapter.clear();
 
-        invitations = TestMockup.invitations;
-        for (Invitation invitation : invitations) {
-            adapter.add(new InvitationItem(invitation));
-        }
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-        recyclerView.setAdapter(adapter);
+        InvitationAppApi invitationApi = getInvitationApi();
+        Call<List<InvitationDTO>> invitationCall =
+                invitationApi.getUserInvitations(loggedUser.getId());
+
+        invitationCall.enqueue(new Callback<List<InvitationDTO>>() {
+            @Override
+            public void onResponse(Call<List<InvitationDTO>> call, retrofit2.Response<List<InvitationDTO>> response) {
+                if (response.isSuccessful()){
+                    adapter.clear();
+                    for (InvitationDTO invitationDTO : response.body()) {
+                        adapter.add(new InvitationItem(invitationDTO));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InvitationDTO>> call, Throwable t) {
+
+            }
+
+        });
     }
 
     @Override
@@ -203,5 +232,15 @@ public class InvitationsFragment extends Fragment {
 
     public ArrayList<Invitation> getItems() {
         return invitations;
+    }
+
+    private InvitationAppApi getInvitationApi() {
+        InvitationAppApi invitationApi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        invitationApi = retrofit.create(InvitationAppApi.class);
+        return invitationApi;
     }
 }

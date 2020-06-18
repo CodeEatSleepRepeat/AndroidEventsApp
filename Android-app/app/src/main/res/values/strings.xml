@@ -148,7 +148,7 @@
     <string name="commentAdded">Comment added!</string>
     <string name="notGoing">Not going</string>
     <string name="notInterested">Not interested</string>
-    <string name="localhost_uri" translatable="false">http://10.0.2.2:8080</string>
+    <string name="localhost_uri" translatable="false">http://192.168.0.108:8080</string>
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>
@@ -174,6 +174,8 @@
     <string name="country_preferences">Country</string>
     <string name="says_notification_message">Says:</string>
     <string name="friend_request_notification">You got new friend request!</string>
+    <string name="joined_event_invitations">You assigned as going to the event!</string>
+    <string name="interested_event_invitations">You are now interested in the event!</string>
 
 
 </resources>
