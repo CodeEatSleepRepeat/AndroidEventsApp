@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.eventsbackend.service;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import rs.ac.uns.ftn.eventsbackend.dto.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SearchFilterEventsDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.SimilarEventDTO;
 import rs.ac.uns.ftn.eventsbackend.dto.UpdateEventDTO;
+import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
 import rs.ac.uns.ftn.eventsbackend.model.User;
@@ -300,9 +302,17 @@ public class EventService {
 	public List<EventDTO> testiranje(SearchFilterEventsDTO dto) {
 		List<EventDTO> dtos = new ArrayList<>();
 		List<EventDistanceDTO> events = new ArrayList<>();
-		events = eventRepository.testiranje(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
-				dto.getEventStart(), dto.getEventEnd(), ZonedDateTime.now(),
-				dto.getEventTypes(),  dto.getFacebookPrivacy(), dto.getSortType());
+		List<EventType> types = dto.getEventTypes();
+		/*EventType charity = null;
+		EventType educational = null;
+		EventType talks = null;
+		EventType sports = null;
+		EventType music = null;
+		EventType party = null;*/
+		int enumNum = dto.getFacebookPrivacy().ordinal();
+		events = eventRepository.testiranje3(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
+				dto.getEventStart(), dto.getEventEnd(), enumNum,
+				types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now());
 		for (EventDistanceDTO event : events) {
 			dtos.add(new EventDTO(event.getE()));
 		}
