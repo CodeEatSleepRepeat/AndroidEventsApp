@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
+
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -18,10 +20,12 @@ public class SearchFilterEventsDTO {
 	
 	private String search;
     private int distance;
+    private Double lat;
+    private Double lng;
     private SortType sortType;
     private List<EventType> eventTypes;
-    private String eventStart;
-    private String eventEnd;
+    private ZonedDateTime eventStart;
+    private ZonedDateTime eventEnd;
     private FacebookPrivacy facebookPrivacy;
 
 }

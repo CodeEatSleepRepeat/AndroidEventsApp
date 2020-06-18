@@ -16,6 +16,7 @@ import java.util.List;
 
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.SimilarEventDTO;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class EventDetailsSimilarEventsRecyclerView extends RecyclerView.Adapter<EventDetailsSimilarEventsRecyclerView.ViewHolder>{
 
@@ -37,8 +38,14 @@ public class EventDetailsSimilarEventsRecyclerView extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SimilarEventDTO dto = dtos.get(position);
+        String uri = dto.getEventImg();
+        if (uri != null && !uri.equals("") && !uri.startsWith("http")) {
+            uri = AppDataSingleton.IMAGE_URI + uri;
+        }else if (uri == null || uri.equals("")) {
+            uri = "image"; //for picasso to not crash if image is empty or null
+        }
         Picasso.get()
-                .load(dto.getEventImg())
+                .load(uri)
                 .placeholder(R.drawable.ic_missing_event_icon)
                 .error(R.drawable.ic_missing_event_icon)
                 .into(holder.image);

@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,6 @@ import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class CommentsArrayAdapter extends RecyclerView.Adapter<CommentsArrayAdapter.ViewHolder>{
 
-    private static final int IMAGE_URI = R.string.localhost_uri;
     private List<CommentDTO> mItems;
     private Context context;
 
@@ -52,14 +52,17 @@ public class CommentsArrayAdapter extends RecyclerView.Adapter<CommentsArrayAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CommentDTO dto = mItems.get(position);
         String imageUri = dto.getImgUri();
-        if (imageUri!=null && !imageUri.equals("") && !imageUri.startsWith("http")){
-            imageUri = IMAGE_URI + AppDataSingleton.PROFILE_IMAGE_URI + imageUri;
+        if (!imageUri.equals("")) {
+            Picasso.get().setLoggingEnabled(true);
+            if (imageUri.startsWith("http")) {
+                Picasso.get().load(Uri.parse(imageUri)).placeholder(R.drawable.ic_user_icon_black).into(holder.image);
+            } else {
+                Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imageUri)).placeholder(R.drawable.ic_user_icon_black).into(holder.image);
+            }
+        } else {
+            holder.image.setImageResource(R.drawable.ic_user_icon_black);
         }
-        Picasso.get()
-                .load(imageUri)
-                .placeholder(R.drawable.ic_missing_event_icon)
-                .error(R.drawable.ic_missing_event_icon)
-                .into(holder.image);
+
         holder.comment.setText(dto.getText());
         holder.name.setText(dto.getImePrezime());
     }

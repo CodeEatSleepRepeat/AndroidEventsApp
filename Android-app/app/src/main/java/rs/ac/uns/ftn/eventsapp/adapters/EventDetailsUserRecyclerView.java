@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDetailsUserRecyclerView.ViewHolder>{
 
@@ -36,18 +38,16 @@ public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDeta
 
     @Override
     public void onBindViewHolder(@NonNull EventDetailsUserRecyclerView.ViewHolder holder, int position) {
-        if (mItems.get(position).equals("")){
-            Picasso.get()
-                    .load(R.drawable.ic_missing_event_icon)
-                    .placeholder(R.drawable.ic_missing_event_icon)
-                    .error(R.drawable.ic_missing_event_icon)
-                    .into(holder.image);
+        String imageUri = mItems.get(position);
+        if (!imageUri.equals("")) {
+            Picasso.get().setLoggingEnabled(true);
+            if (imageUri.startsWith("http")) {
+                Picasso.get().load(Uri.parse(imageUri)).placeholder(R.drawable.ic_user_icon_black).into(holder.image);
+            } else {
+                Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + imageUri)).placeholder(R.drawable.ic_user_icon_black).into(holder.image);
+            }
         } else {
-            Picasso.get()
-                    .load(mItems.get(position))
-                    .placeholder(R.drawable.ic_missing_event_icon)
-                    .error(R.drawable.ic_missing_event_icon)
-                    .into(holder.image);
+            holder.image.setImageResource(R.drawable.ic_user_icon_black);
         }
     }
 
