@@ -1,6 +1,4 @@
-package rs.ac.uns.ftn.eventsbackend.dto;
-
-import rs.ac.uns.ftn.eventsbackend.model.Invitation;
+package rs.ac.uns.ftn.eventsapp.dtos;
 
 public class InvitationDTO {
 
@@ -12,13 +10,11 @@ public class InvitationDTO {
     public InvitationDTO(){
     }
 
-    public InvitationDTO(Invitation invitation){
-        id = invitation.getId();
-        sender = new UserDTO(invitation.getInvitationSender().getId(), invitation.getInvitationSender().getName(),
-                invitation.getInvitationSender().getImageUri());
-        reciever = new UserDTO(invitation.getInvitationReceiver().getId(), invitation.getInvitationReceiver().getName(),
-                invitation.getInvitationReceiver().getImageUri());
-        event = new EventDTO(invitation.getEvent());
+    public InvitationDTO(Long id, UserDTO sender, UserDTO reciever, EventDTO event) {
+        this.id = id;
+        this.sender = sender;
+        this.reciever = reciever;
+        this.event = event;
     }
 
     public Long getId() {

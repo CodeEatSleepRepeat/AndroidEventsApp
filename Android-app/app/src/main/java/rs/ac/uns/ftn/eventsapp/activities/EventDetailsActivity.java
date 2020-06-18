@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,14 +35,17 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsSimilarEventsRecyclerView;
 import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsUserRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
+import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.RequestEventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.ResponseEventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
+import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -401,13 +405,50 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (requestCode == LAUNCH_SEND_INVITATIONS_ACTIVITY) {
             //send invitations vraca listu prijatelja, mozda
             if (resultCode == Activity.RESULT_OK) {
-                //user je dodao neke prijatelje
+                List<Long> userIds = (ArrayList<Long>) data.getSerializableExtra(
+                        "SHARED_FRIENDS_IDS");
+                List<String> userEmails = data.getStringArrayListExtra("SHARED_FRIENDS_EMAILS");
+
+                for(int i=0; i<userIds.size(); i++){
+                    //sendInvitation
+                    sendEventInvitation(userIds.get(i), userEmails.get(i));
+                }
+
 
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 //user je kliknuo na nesto drugo
 
             }
         }
+    }
+
+    private void sendEventInvitation(final Long userId, final String userEmail) {
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+
+        InvitationAppApi invitationApi = retrofit.create(InvitationAppApi.class);
+        Call<InvitationDTO> invitationCall = invitationApi.sendInvitation(loggedUser.getId(),
+                userId, idEvent);
+
+        invitationCall.enqueue(new Callback<InvitationDTO>() {
+            @Override
+            public void onResponse(Call<InvitationDTO> call, retrofit2.Response<InvitationDTO> response) {
+                if (response.isSuccessful()){
+                    //sendInvitationNotification(userEmail);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InvitationDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed,
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void getDetails(){
@@ -489,5 +530,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-
+    private InvitationAppApi getInvitationApi() {
+        InvitationAppApi invitationApi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        invitationApi = retrofit.create(InvitationAppApi.class);
+        return invitationApi;
+    }
 }

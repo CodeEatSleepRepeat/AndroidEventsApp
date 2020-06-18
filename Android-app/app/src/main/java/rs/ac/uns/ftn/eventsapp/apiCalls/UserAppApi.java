@@ -70,4 +70,8 @@ public interface UserAppApi {
 
     @GET("/user/interestedIn/{num}/{eventId}")
     Call<List<UserDTO>> getInterestedInUsers(@Path("num") int num, @Path("eventId") Long eventId);
+
+    @GET("/user/getFriendsForEventsInvite/{senderId}/{eventId}")
+    Call<List<User>> getFriendsForInvitation(@Path("senderId") Long senderId,
+                                             @Path("eventId") Long eventId);
 }

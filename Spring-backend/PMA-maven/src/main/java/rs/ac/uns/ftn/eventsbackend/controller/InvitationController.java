@@ -10,6 +10,9 @@ import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.Invitation;
 import rs.ac.uns.ftn.eventsbackend.service.InvitationService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequestMapping("/invitation")
 @RestController
 public class InvitationController {
@@ -35,5 +38,18 @@ public class InvitationController {
 
 		return ResponseEntity.ok(deletedInvitationDTO);
 	}
+
+	@GetMapping("/getInvitationsOf/{userId}")
+	public ResponseEntity<List<InvitationDTO>> getUserInvitations(@PathVariable Long userId){
+		List<Invitation> receivedInvitations = invitationService.getUserReceivedInvitations(userId);
+		List<InvitationDTO> receivedInvitationsDTO = new ArrayList<InvitationDTO>();
+		for(Invitation invitation : receivedInvitations){
+			InvitationDTO invitationDTO = new InvitationDTO(invitation);
+			receivedInvitationsDTO.add(invitationDTO);
+		}
+
+		return ResponseEntity.ok(receivedInvitationsDTO);
+	}
+
 
 }

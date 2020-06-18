@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.eventsapp.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,27 +26,43 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserShareDTO;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
+import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem;
 
 public class SendInvitationsActivity extends AppCompatActivity implements Filterable {
 
     private Toolbar toolbar;
-    private ArrayList<Long> checkedUsers = new ArrayList<>();
+    private ArrayList<Long> checkedUsersIds = new ArrayList<>();
+    private ArrayList<String> checkedUsersEmails = new ArrayList<>();
     private List<UserShareDTO> userList = new ArrayList<>();
     private List<UserShareDTO> userListAll = new ArrayList<>();
     private GroupAdapter adapter;
     private FloatingActionButton sendBtn;
     private TextView selectionText;
     private CheckBox selectionCheckbox;
+    private Long eventId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
+
+        Intent intent = getIntent();
+        eventId = intent.getLongExtra("eventId", -1);
+
+        adapter = new GroupAdapter<>();
+        RecyclerView recyclerView = findViewById(R.id.recyclerview_list_of_users);
+        recyclerView.setAdapter(adapter);
 
         toolbar = findViewById(R.id.toolbarShareFriends);
         setSupportActionBar(toolbar);
@@ -63,8 +80,14 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkedUsersEmails.clear();
+                for(UserShareDTO user : userListAll){
+                    if(checkedUsersIds.contains(user.getUser().getId()))
+                        checkedUsersEmails.add(user.getUser().getEmail());
+                }
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("SHARED_FRIENDS", checkedUsers);
+                returnIntent.putExtra("SHARED_FRIENDS_IDS", checkedUsersIds);
+                returnIntent.putExtra("SHARED_FRIENDS_EMAILS", checkedUsersEmails);
                 setResult(Activity.RESULT_OK, returnIntent);
 
                 Toast.makeText(getApplicationContext(), "Invitations send!", Toast.LENGTH_SHORT).show();
@@ -102,7 +125,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         for (UserShareDTO user : userListAll) {
             user.setChecked(false);
         }
-        checkedUsers = new ArrayList<>();
+        checkedUsersIds = new ArrayList<>();
 
         adapter.notifyDataSetChanged();
 
@@ -114,7 +137,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
     private void selectAllUsers() {
         for (UserShareDTO user : userListAll) {
             user.setChecked(true);
-            checkedUsers.add(user.getUser().getId());
+            checkedUsersIds.add(user.getUser().getId());
         }
 
         adapter.notifyDataSetChanged();
@@ -126,39 +149,77 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
 
     public void checkedUserCountChanged(Boolean checked, Long userId) {
         if (checked) {
-            checkedUsers.add(userId);
+            checkedUsersIds.add(userId);
             sendBtn.show();
 
-            if (checkedUsers.size() == userListAll.size()) {
+            if (checkedUsersIds.size() == userListAll.size()) {
                 selectionCheckbox.setChecked(true);
                 selectionText.setText("Deselect all");
             }
         } else {
-            checkedUsers.remove(userId);
+            checkedUsersIds.remove(userId);
             selectionCheckbox.setChecked(false);
             selectionText.setText("Select all");
 
-            if (checkedUsers.size() == 0) {
+            if (checkedUsersIds.size() == 0) {
                 sendBtn.hide();
             }
         }
     }
 
     private void getAllFriendUsers() {
+        UserAppApi userAppi;
+        userAppi = getUserApi();
 
-        adapter = new GroupAdapter<>();
-        RecyclerView recyclerView = findViewById(R.id.recyclerview_list_of_users);
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-        ArrayList<User> users = TestMockup.users;
-        for (User user : users) {
-            UserShareDTO newUserShare = new UserShareDTO(user, false);
-            userList.add(newUserShare);
-            userListAll.add(newUserShare);
-            adapter.add(new ShareUserSimpleItem(newUserShare, this));
-        }
+        Call<List<User>> userFriends =
+                userAppi.getFriendsForInvitation(loggedUser.getId(),eventId);
+        userFriends.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.failed,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (response.body() != null) {
+                    adapter.clear();
 
-        recyclerView.setAdapter(adapter);
+                    for(User user : response.body()){
+                        UserShareDTO newUserShare = new UserShareDTO(user, false);
+                        userList.add(newUserShare);
+                        userListAll.add(newUserShare);
+                        adapter.add(new ShareUserSimpleItem(newUserShare,
+                                SendInvitationsActivity.this));
+                    }
+                    adapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
+
     }
+//    {
+//
+//        adapter = new GroupAdapter<>();
+//        RecyclerView recyclerView = findViewById(R.id.recyclerview_list_of_users);
+//
+//        ArrayList<User> users = TestMockup.users;
+//        for (User user : users) {
+//            UserShareDTO newUserShare = new UserShareDTO(user, false);
+//            userList.add(newUserShare);
+//            userListAll.add(newUserShare);
+//            adapter.add(new ShareUserSimpleItem(newUserShare, this));
+//        }
+//
+//        recyclerView.setAdapter(adapter);
+//    }
 
     /*
      * Filter za filtriranje korisnika
@@ -227,9 +288,9 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        long[] longList = new long[checkedUsers.size()];
-        for (int i = 0; i < checkedUsers.size(); i++) {
-            longList[i] = checkedUsers.get(i);
+        long[] longList = new long[checkedUsersIds.size()];
+        for (int i = 0; i < checkedUsersIds.size(); i++) {
+            longList[i] = checkedUsersIds.get(i);
         }
         outState.putLongArray("checkedUsers", longList);
     }
@@ -244,7 +305,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
             sendBtn.show();
 
             for (int i = 0; i < checkedUsersOld.length; i++) {
-                checkedUsers.add(checkedUsersOld[i]);
+                checkedUsersIds.add(checkedUsersOld[i]);
                 for (UserShareDTO user : userListAll) {
                     if (user.getUser().getId().equals(checkedUsersOld[i])) {
                         user.setChecked(true);
@@ -281,6 +342,16 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
             }
         });
         return true;
+    }
+
+    private UserAppApi getUserApi() {
+        UserAppApi userAppi;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.localhost_uri))
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        userAppi = retrofit.create(UserAppApi.class);
+        return userAppi;
     }
 
 }

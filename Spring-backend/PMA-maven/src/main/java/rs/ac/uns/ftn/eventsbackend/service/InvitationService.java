@@ -10,6 +10,9 @@ import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.InvitationRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,5 +59,11 @@ public class InvitationService {
         invitationRepository.delete(invitationOptional.get());
 
         return invitationOptional.get();
+    }
+
+    public List<Invitation> getUserReceivedInvitations(Long userId) {
+        Optional<List<Invitation>> receivedInvitations = invitationRepository.findByInvitationReceiverId(userId);
+
+        return receivedInvitations.orElse(Collections.emptyList());
     }
 }

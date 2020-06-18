@@ -84,14 +84,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
             getChatPartnerInfoThenMakeIntentAndNotification(user, icon, body, title, defSoundUri,
                     i);
         }
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
-//                    pIntent, i);
-//        }
-//        else{
-//            sendNormalNotification(icon, body, title, defSoundUri,
-//                    pIntent, i);
-//        }
     }
 
     private void makeIntentToFriendRequestThenMakeNotification(String icon, String body, String title, Uri defSoundUri, int i) {
