@@ -176,6 +176,8 @@
     <string name="friend_request_notification">You got new friend request!</string>
     <string name="joined_event_invitations">You assigned as going to the event!</string>
     <string name="interested_event_invitations">You are now interested in the event!</string>
+    <string name="event_invitation_notification">You have new event invitation!</string>
+    <string name="invitations">Invitations</string>
 
 
 </resources>

@@ -15,12 +15,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.threeten.bp.format.DateTimeFormatter;
@@ -37,14 +47,19 @@ import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsSimilarEventsRecyclerView;
 import rs.ac.uns.ftn.eventsapp.adapters.EventDetailsUserRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
-import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.RequestEventDetailsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.ResponseEventDetailsDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.APIFirebaseNotificationService;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Client;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Sender;
 import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
@@ -81,6 +96,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView authorInfo;
     private Button goingBtn;
     private Button interestedBtn;
+    private Query profileImageUrlQuery;
+
 
     @Override
     protected void onPostResume() {
@@ -435,6 +452,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<InvitationDTO> call, retrofit2.Response<InvitationDTO> response) {
                 if (response.isSuccessful()){
                     //sendInvitationNotification(userEmail);
+                    InvitationDTO createdInvitation = response.body();
+                    findFirebaseReceiverUserThenSendNotification(createdInvitation.getReciever().getImgUri());
                 }
             }
 
@@ -530,6 +549,89 @@ public class EventDetailsActivity extends AppCompatActivity {
             seeAllSimilarPostsEventDetailsTextView.setText("No similar events");
             seeAllSimilarPostsEventDetailsTextView.setOnClickListener(null);
         }
+    }
+
+    private void findFirebaseReceiverUserThenSendNotification(String invitedUserImageUri) {
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        profileImageUrlQuery = usersRef.orderByChild("profileImageUrl").equalTo(invitedUserImageUri);
+        profileImageUrlQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                //sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+
+            private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
+                profileImageUrlQuery.removeEventListener(this);
+                FirebaseUserDTO foundRequestReciever = dataSnapshot.getValue(FirebaseUserDTO.class);
+
+                APIFirebaseNotificationService apiFirebaseService =
+                        Client.getRetrofit("https://fcm.googleapis.com/").create(APIFirebaseNotificationService .class);
+
+                sendEventInvitationNotification(apiFirebaseService, foundRequestReciever.getUid());
+            }
+        });
+
+    }
+
+    private void sendEventInvitationNotification(final APIFirebaseNotificationService apiFirebaseService, final String toId) {
+        final String loggedUserUid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(toId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    Token chatPartnerToken = ds.getValue(Token.class);
+                    String notificationBody =
+                            getResources().getString(R.string.event_invitation_notification);
+                    String notificationTitle =
+                            getResources().getString(R.string.invitations);
+                    Data data = new Data(loggedUserUid, notificationBody, notificationTitle,
+                            toId, R.drawable.logo, NotificationTypeEnum.INVITATION);
+
+                    assert chatPartnerToken != null;
+                    Sender sender = new Sender(data, chatPartnerToken.getToken());
+                    apiFirebaseService.sendNotification(sender)
+                            .enqueue(new Callback<rs.ac.uns.ftn.eventsapp.firebase.notification.Response>() {
+                                @Override
+                                public void onResponse(Call<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> call, retrofit2.Response<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private InvitationAppApi getInvitationApi() {

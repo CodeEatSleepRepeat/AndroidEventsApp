@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.Query;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 
@@ -37,7 +37,6 @@ import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
 import rs.ac.uns.ftn.eventsapp.models.Invitation;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 import rs.ac.uns.ftn.eventsapp.views.InvitationItem;
 
@@ -229,6 +228,7 @@ public class InvitationsFragment extends Fragment {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
     }
+
 
     public ArrayList<Invitation> getItems() {
         return invitations;

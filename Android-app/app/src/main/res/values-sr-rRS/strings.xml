@@ -170,4 +170,6 @@
     <string name="friend_request_notification">Добили сте нови захтев за пријатеља!</string>
     <string name="joined_event_invitations">Поставили сте да идете на догађај!</string>
     <string name="interested_event_invitations">Ви сте сада заинтересовани за догађај!</string>
+    <string name="event_invitation_notification">Имате нову позивницу за догађај!</string>
+    <string name="invitations">Позивнице</string>
 </resources>

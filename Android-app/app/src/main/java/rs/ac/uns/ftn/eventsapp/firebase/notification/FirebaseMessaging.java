@@ -33,6 +33,7 @@ import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.fragments.ChatLogFragment;
+import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 
 import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_EMAIL;
 import static rs.ac.uns.ftn.eventsapp.views.UserSimpleItem.EXTRA_USER_FIREBASE_UID;
@@ -75,7 +76,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         //kreiranje razlicitog intenta u zavisnosti tipa notifikacije
         assert notificationType != null;
         if(notificationType.equals(NotificationTypeEnum.INVITATION.toString())){
-            //TODO: Napraviti intent koji ide ka invitacijama
+            makeIntentToInvitationsThenMakeNotification(icon, body, title, defSoundUri, i);
         }
         else if(notificationType.equals(NotificationTypeEnum.FRIEND_REQUEST.toString())){
             makeIntentToFriendRequestThenMakeNotification(icon, body, title, defSoundUri, i);
@@ -83,6 +84,20 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         else if(notificationType.equals(NotificationTypeEnum.MESSAGE.toString())){
             getChatPartnerInfoThenMakeIntentAndNotification(user, icon, body, title, defSoundUri,
                     i);
+        }
+    }
+
+    private void makeIntentToInvitationsThenMakeNotification(String icon, String body, String title, Uri defSoundUri, int i) {
+        Intent intent = new Intent(getApplicationContext(), InvitationsFragment.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), i, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            sendOAndAboveVersionNotification(icon, body, title, defSoundUri,
+                    pIntent, i);
+        }
+        else{
+            sendNormalNotification(icon, body, title, defSoundUri,
+                    pIntent, i);
         }
     }
 
