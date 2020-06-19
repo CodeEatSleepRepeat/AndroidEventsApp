@@ -119,7 +119,7 @@ public class FirebaseSignIn {
         return UUID.randomUUID().toString();
     }
 
-    private void saveOrUpdateUserInFirebase(String profileImageUrl, String username, String email) {
+    public void saveOrUpdateUserInFirebase(String profileImageUrl, String username, String email) {
         Log.d(FIREBASE_REGISTER_TAG, "Entered saveOrUpdateUserInFirebase");
         String uid = firebaseAuthInstance.getUid();
         DatabaseReference userDatabaseReference = FirebaseDatabase.getInstance().getReference(

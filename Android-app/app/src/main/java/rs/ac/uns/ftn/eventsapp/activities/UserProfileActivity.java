@@ -47,6 +47,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserLoginDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UserProfileChangeDTO;
+import rs.ac.uns.ftn.eventsapp.firebase.FirebaseSignIn;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
@@ -515,11 +516,16 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                 } else {
                     User loggedUser = response.body();
+                    FirebaseSignIn firebaseSignIn = new FirebaseSignIn(getApplicationContext());
+                    firebaseSignIn.saveOrUpdateUserInFirebase(loggedUser.getImageUri(),
+                            loggedUser.getName(),loggedUser.getEmail());
                     if (bitmap != null) {
                         uploadImage(loggedUser.getId());
+
                     } else {
                         //update user in db
                         AppDataSingleton.getInstance().updateUser(response.body());
+
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
                         finish();
