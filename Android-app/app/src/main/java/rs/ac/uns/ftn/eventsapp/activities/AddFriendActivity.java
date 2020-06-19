@@ -78,9 +78,6 @@ public class AddFriendActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-//        foundUsers.clear();
-//        currentPage = PAGE_START;
-//        searchUsersByUsername();
     }
 
     private void addPaginationScrollListenerToRecyclerView() {
@@ -88,7 +85,6 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
-                Log.d("salepare", "usao ovde opet");
                 currentPage += 1;
                 searchUsersByUsername();
             }
@@ -145,7 +141,6 @@ public class AddFriendActivity extends AppCompatActivity {
         for(int i = 0; i < foundUsers.size(); i++){
             boolean isEndingUser = i == foundUsers.size()-1;
             getFriendshipStatus(foundUsers.get(i), isEndingUser);
-
         }
     }
 

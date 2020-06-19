@@ -36,8 +36,12 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
 
     @Override
     public void bind(@NonNull GroupieViewHolder viewHolder, int position) {
-
         bindDataToView(viewHolder);
+    }
+
+    @Override
+    public int getLayout() {
+        return R.layout.item_latest_message;
     }
 
     private void bindDataToView(@NonNull GroupieViewHolder viewHolder) {
@@ -116,11 +120,6 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
         } else {
             imageUser.setImageResource(R.drawable.ic_user_icon);
         }
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.item_latest_message;
     }
 
     public FirebaseUserDTO getChatPartnerUser() {

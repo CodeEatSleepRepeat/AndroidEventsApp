@@ -65,12 +65,9 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private User user;
     private FriendshipDTO friendship;
-    private String username;
-    private String user_profile_picture_url;
     private Long userId;
     private Menu menu;
     private Query emailQuery;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,14 +212,47 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void goToChatLog(){
-//        Intent intent = new Intent(getActivity(), ChatLogActivity.class);
-//        intent.putExtra(EXTRA_USER_FIREBASE_UID, user.getUid());
-//        intent.putExtra(EXTRA_USER_NAME, chatPartnerUser.getUsername());
-//        intent.putExtra(EXTRA_USER_IMAGE_PATH, chatPartnerUser.getProfileImageUrl());
-//        intent.putExtra(EXTRA_USER_EMAIL, chatPartnerUser.getEmail());
-//        startActivity(intent);
-//        Intent intent = new Intent(this, ChatLogActivity.class);
-//        startActivity(intent);
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        emailQuery = usersRef.orderByChild("email").equalTo(user.getEmail());
+        emailQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                sendDataAndUnregister(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+
+            private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
+                emailQuery.removeEventListener(this);
+                FirebaseUserDTO foundRequestReciever = dataSnapshot.getValue(FirebaseUserDTO.class);
+
+                Intent intent = new Intent(UserDetailActivity.this, ChatLogActivity.class);
+                intent.putExtra(EXTRA_USER_FIREBASE_UID, foundRequestReciever.getUid());
+                intent.putExtra(EXTRA_USER_NAME, foundRequestReciever.getUsername());
+                intent.putExtra(EXTRA_USER_IMAGE_PATH, foundRequestReciever.getProfileImageUrl());
+                intent.putExtra(EXTRA_USER_EMAIL, foundRequestReciever.getEmail());
+                startActivity(intent);
+        }
+        });
     }
 
     private void fillUserEvents(){

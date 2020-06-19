@@ -56,6 +56,11 @@ public class MessageFromChatPartnerItem extends Item<GroupieViewHolder> {
         });
     }
 
+    @Override
+    public int getLayout() {
+        return R.layout.item_message_from_chat_partner;
+    }
+
     private void bindUserImageToUI(ImageView imageUser) {
         String userImageUrl = user.getProfileImageUrl();
         if (userImageUrl != null && !userImageUrl.equals("")) {
@@ -72,10 +77,5 @@ public class MessageFromChatPartnerItem extends Item<GroupieViewHolder> {
         } else {
             imageUser.setImageResource(R.drawable.ic_user_icon);
         }
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.item_message_from_chat_partner;
     }
 }

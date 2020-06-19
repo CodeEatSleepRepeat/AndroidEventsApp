@@ -28,7 +28,6 @@ import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class FriendRequestItem extends Item<GroupieViewHolder> {
-
     private User user;
     private Long friendRequestId;
     private RecyclerView.ViewHolder viewHolder;

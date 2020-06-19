@@ -96,7 +96,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView authorInfo;
     private Button goingBtn;
     private Button interestedBtn;
-    private Query profileImageUrlQuery;
+    private Query emailQuery;
 
 
     @Override
@@ -453,7 +453,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     //sendInvitationNotification(userEmail);
                     InvitationDTO createdInvitation = response.body();
-                    findFirebaseReceiverUserThenSendNotification(createdInvitation.getReciever().getImgUri());
+                    findFirebaseReceiverUserThenSendNotification(createdInvitation.getReciever().getEmail());
                 }
             }
 
@@ -551,11 +551,11 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void findFirebaseReceiverUserThenSendNotification(String invitedUserImageUri) {
+    private void findFirebaseReceiverUserThenSendNotification(String invitedUserEmail) {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
-        profileImageUrlQuery = usersRef.orderByChild("profileImageUrl").equalTo(invitedUserImageUri);
-        profileImageUrlQuery.addChildEventListener(new ChildEventListener() {
+        emailQuery = usersRef.orderByChild("email").equalTo(invitedUserEmail);
+        emailQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 sendDataAndUnregister(dataSnapshot);
@@ -582,7 +582,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
 
             private void sendDataAndUnregister(DataSnapshot dataSnapshot) {
-                profileImageUrlQuery.removeEventListener(this);
+                emailQuery.removeEventListener(this);
                 FirebaseUserDTO foundRequestReciever = dataSnapshot.getValue(FirebaseUserDTO.class);
 
                 APIFirebaseNotificationService apiFirebaseService =
