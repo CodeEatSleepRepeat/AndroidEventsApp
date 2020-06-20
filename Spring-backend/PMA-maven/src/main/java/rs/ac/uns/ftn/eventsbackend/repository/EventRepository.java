@@ -69,10 +69,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 			+ " AND (?6 IS NULL OR e.end_time<?6)"
 			+ " AND (?7 IS NULL OR e.privacy = ?7)"
 			+ " AND (e.type IN (?8, ?9, ?10, ?11, ?12, ?13))"
-			+ " AND e.end_time<?14"
+			+ " AND e.end_time>?14"
+			+ " AND e.syncStatus != ?15"
 			+ " ORDER BY distance")
-	List<EventDistanceDTO> testiranje(String search, Double distance, Double lat, Double lng, ZonedDateTime eventStart, ZonedDateTime eventEnd, int facebookPrivacy,
-			EventType charity, EventType educational, EventType talks, EventType sports, EventType music, EventType party, ZonedDateTime now);
+	Page<EventDistanceDTO> getEventsSearchFilterForYou(String search, Double distance, Double lat, Double lng, ZonedDateTime eventStart, ZonedDateTime eventEnd, int facebookPrivacy,
+			EventType charity, EventType educational, EventType talks, EventType sports, EventType music, EventType party, ZonedDateTime now, SyncStatus ss, Pageable pageable);
 	
 	@Query(value =" SELECT new rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO(e, (6371 * acos (cos(radians(?3))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(?4))+sin(radians(?3))*sin(radians(e.latitude)))) AS distance)"
 			+ " FROM Event e WHERE (6371 * acos (cos(radians(?3))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(?4))+sin(radians(?3))*sin(radians(e.latitude)))) < ?2"
@@ -81,10 +82,24 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 			+ " AND (?6 IS NULL OR e.end_time<?6)"
 			+ " AND (?7 IS NULL OR e.privacy = ?7)"
 			+ " AND (e.type IN (?8, ?9, ?10, ?11, ?12, ?13))"
-			+ " AND e.end_time<?14"
+			+ " AND e.end_time>?14"
+			+ " AND e.syncStatus != ?15"
 			+ " ORDER BY e.created_time DESC")
-	List<EventDistanceDTO> testiranje3(String search, Double distance, Double lat, Double lng, ZonedDateTime eventStart, ZonedDateTime eventEnd, int facebookPrivacy,
-			EventType charity, EventType educational, EventType talks, EventType sports, EventType music, EventType party, ZonedDateTime now);
+	Page<EventDistanceDTO> getEventsSearchFilterRecent(String search, Double distance, Double lat, Double lng, ZonedDateTime eventStart, ZonedDateTime eventEnd, int facebookPrivacy,
+			EventType charity, EventType educational, EventType talks, EventType sports, EventType music, EventType party, ZonedDateTime now, SyncStatus ss, Pageable pageable);
+	
+	@Query(value =" SELECT new rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO(e, (6371 * acos (cos(radians(?3))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(?4))+sin(radians(?3))*sin(radians(e.latitude)))) AS distance)"
+			+ " FROM Event e WHERE (6371 * acos (cos(radians(?3))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(?4))+sin(radians(?3))*sin(radians(e.latitude)))) < ?2"
+			+ " AND (?1 IS NULL OR e.name LIKE %?1%)"
+			+ " AND (?5 IS NULL OR e.start_time>?5)"
+			+ " AND (?6 IS NULL OR e.end_time<?6)"
+			+ " AND (?7 IS NULL OR e.privacy = ?7)"
+			+ " AND (e.type IN (?8, ?9, ?10, ?11, ?12, ?13))"
+			+ " AND e.end_time>?14"
+			+ " AND e.syncStatus != ?15"
+			+ " ORDER BY e.start_time ASC")
+	Page<EventDistanceDTO> getEventsSearchFilterSoonest(String search, Double distance, Double lat, Double lng, ZonedDateTime eventStart, ZonedDateTime eventEnd, int facebookPrivacy,
+			EventType charity, EventType educational, EventType talks, EventType sports, EventType music, EventType party, ZonedDateTime now, SyncStatus ss, Pageable pageable);
 	
 /*	@Query(value =" SELECT new rs.ac.uns.ftn.eventsbackend.dto.EventDistanceDTO(e, (6371 * acos (cos(radians(?3))*cos(radians(e.latitude))*cos(radians(e.longitude)-radians(?4))+sin(radians(?3))*sin(radians(e.latitude)))) AS distance)"
 			+ " FROM Event e inner join"

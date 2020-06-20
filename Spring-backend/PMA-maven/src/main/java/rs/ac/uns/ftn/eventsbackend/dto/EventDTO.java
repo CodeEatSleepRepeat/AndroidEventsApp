@@ -32,6 +32,7 @@ public class EventDTO {
 	private SyncStatus syncStatus;
 	private ZonedDateTime updated_time;
 	private ZonedDateTime created_time;
+	private Double distance;
 	
 	public EventDTO(Event event) {
 		id = event.getId();
@@ -51,6 +52,27 @@ public class EventDTO {
 		syncStatus = event.getSyncStatus();
 		updated_time = event.getUpdated_time();
 		created_time = event.getCreated_time();
+	}
+	
+	public EventDTO(Event event, double distance) {
+		id = event.getId();
+		latitude = event.getLatitude();
+		longitude = event.getLongitude();
+		name = event.getName();
+		place = event.getPlace();
+		description = event.getDescription();
+		type = event.getType();
+		start_time = event.getStart_time();
+		end_time = event.getEnd_time();
+		privacy = event.getPrivacy();
+		owner = event.getOwner().getId();
+		if(event.getCover()!=null) {
+			imageUri = event.getCover().getSource();
+		}
+		syncStatus = event.getSyncStatus();
+		updated_time = event.getUpdated_time();
+		created_time = event.getCreated_time();
+		this.distance = distance;
 	}
 	
 }

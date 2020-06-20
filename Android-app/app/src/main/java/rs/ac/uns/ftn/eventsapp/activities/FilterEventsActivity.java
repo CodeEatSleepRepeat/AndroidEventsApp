@@ -31,6 +31,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 public class FilterEventsActivity extends AppCompatActivity {
 
     private final Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar2 = Calendar.getInstance();
     private Toolbar toolbar;
     //distance
     private TextView showProgress;
@@ -113,20 +114,21 @@ public class FilterEventsActivity extends AppCompatActivity {
         resetEndingDateTime = findViewById(R.id.resetEndDateTimeFilterImgBtn);
 
         privateEventFilterCheckBox = findViewById(R.id.privateEventFilterCheckBox);
+        privateEventFilterCheckBox.setVisibility(View.INVISIBLE);
 
         resetStartDateTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startingDateEditText.getText().clear();
-                startingTimeEditText.getText().clear();
+                startingDateEditText.setText("");
+                startingTimeEditText.setText("");
             }
         });
 
         resetEndingDateTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                endingDateEditText.getText().clear();
-                endingTimeEditText.getText().clear();
+                endingDateEditText.setText("");
+                endingTimeEditText.setText("");
             }
         });
 
@@ -203,12 +205,12 @@ public class FilterEventsActivity extends AppCompatActivity {
         final DatePickerDialog.OnDateSetListener endingDate = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendar2.set(Calendar.YEAR, year);
+                calendar2.set(Calendar.MONTH, month);
+                calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
-                endingDateEditText.setText(sdf.format(calendar.getTime()));
+                endingDateEditText.setText(sdf.format(calendar2.getTime()));
             }
         };
 
@@ -219,8 +221,8 @@ public class FilterEventsActivity extends AppCompatActivity {
         final TimePickerDialog.OnTimeSetListener endingTime = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                calendar2.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar2.set(Calendar.MINUTE, minute);
                 if (minute < 10) {
                     endingTimeEditText.setText(hourOfDay + ":0" + minute);
                 } else {
@@ -234,7 +236,7 @@ public class FilterEventsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (endingTimeEditText.getText().toString().equals("")) {
                     new TimePickerDialog(FilterEventsActivity.this, endingTime,
-                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                            calendar2.get(Calendar.HOUR_OF_DAY), calendar2.get(Calendar.MINUTE), true).show();
                 } else {
                     //postavi ga na osnovu vrednosti iz polja
                     final int date = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[0]);
@@ -250,8 +252,8 @@ public class FilterEventsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (endingDateEditText.getText().toString().equals("")) {
                     new DatePickerDialog(FilterEventsActivity.this, endingDate,
-                            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH)).show();
+                            calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH),
+                            calendar2.get(Calendar.DAY_OF_MONTH)).show();
                 } else {
                     //postavi ga na osnovu vrednosti iz polja
                     final int day = Integer.parseInt(endingDateEditText.getText().toString().split("/")[0]);
@@ -292,8 +294,34 @@ public class FilterEventsActivity extends AppCompatActivity {
                 returnIntent.putExtra("CATEGORY", getCategory());
                 returnIntent.putExtra("START_DATE", startingDateEditText.getText().toString());
                 returnIntent.putExtra("START_TIME", startingTimeEditText.getText().toString());
+                if(!startingDateEditText.getText().toString().equals("") && !startingTimeEditText.getText().toString().equals("")) {
+                    int hour = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[0]);
+                    int min = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[1]);
+                    int day = Integer.parseInt(startingDateEditText.getText().toString().split("/")[0]);
+                    int month = Integer.parseInt(startingDateEditText.getText().toString().split("/")[1]) - 1;
+                    int year = Integer.parseInt(startingDateEditText.getText().toString().split("/")[2]);
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    calendar.set(Calendar.HOUR_OF_DAY, hour);
+                    calendar.set(Calendar.MINUTE, min);
+                    returnIntent.putExtra("START", calendar.getTime().toString());
+                }
                 returnIntent.putExtra("END_DATE", endingDateEditText.getText().toString());
                 returnIntent.putExtra("END_TIME", endingTimeEditText.getText().toString());
+                if(!endingDateEditText.getText().toString().equals("") && !endingTimeEditText.getText().toString().equals("")){
+                    int hour = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[0]);
+                    int min = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[1]);
+                    int day = Integer.parseInt(endingDateEditText.getText().toString().split("/")[0]);
+                    int month = Integer.parseInt(endingDateEditText.getText().toString().split("/")[1]) - 1;
+                    int year = Integer.parseInt(endingDateEditText.getText().toString().split("/")[2]);
+                    calendar2.set(Calendar.YEAR, year);
+                    calendar2.set(Calendar.MONTH, month);
+                    calendar2.set(Calendar.DAY_OF_MONTH, day);
+                    calendar2.set(Calendar.HOUR_OF_DAY, hour);
+                    calendar2.set(Calendar.MINUTE, min);
+                    returnIntent.putExtra("END", calendar2.getTime().toString());
+                }
                 returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
                 setResult(Activity.RESULT_OK, returnIntent);

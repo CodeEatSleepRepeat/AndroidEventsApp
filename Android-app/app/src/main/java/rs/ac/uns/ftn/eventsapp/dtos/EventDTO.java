@@ -26,6 +26,7 @@ public class EventDTO implements Serializable {
     private SyncStatus syncStatus;
     private ZonedDateTime updated_time;
     private ZonedDateTime created_time;
+    private Double distance;
 
     public EventDTO() {
     }
@@ -184,5 +185,13 @@ public class EventDTO implements Serializable {
 
     public void setCreated_time(ZonedDateTime created_time) {
         this.created_time = created_time;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }

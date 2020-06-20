@@ -34,6 +34,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -58,7 +59,14 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
 
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -80,6 +88,9 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
+import rs.ac.uns.ftn.eventsapp.models.EventType;
+import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
+import rs.ac.uns.ftn.eventsapp.models.SortType;
 import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
@@ -101,13 +112,21 @@ public class MainActivity extends AppCompatActivity{
     private boolean accepted = true;
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
+    private int distance = 100;
+    private SortType sortType = SortType.RECENT;
+    private ArrayList<String> eventTypes = new ArrayList<>();
+    private String start = "min";// = Instant.ofEpochMilli(Long.MIN_VALUE).atZone(ZoneOffset.UTC);
+    private String end = "max"; //= Instant.ofEpochMilli(Long.MAX_VALUE).atZone(ZoneOffset.UTC);
+    private FacebookPrivacy facebookPrivacy;
+    private Location location;
+
     //private NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
-
+        Log.d("SORTRF", sortType.toString());
         AppDataSingleton.getInstance().setContext(this);
 
         toolbar = findViewById(R.id.toolbar);
@@ -139,7 +158,10 @@ public class MainActivity extends AppCompatActivity{
 
         if (savedInstanceState == null) {
             try {
-                FragmentTransition.to(HomeEventListFragment.class.newInstance(), this, false);
+                Bundle bundle = setUpSearchFilter();
+                Fragment f = HomeEventListFragment.class.newInstance();
+                f.setArguments(bundle);
+                FragmentTransition.to(f, this, false);
                 FrameLayout frameLayout = findViewById(R.id.fragment_view);
                 View fragmentView = frameLayout.getChildAt(0);
 
@@ -461,7 +483,10 @@ public class MainActivity extends AppCompatActivity{
     private void onClickNavItem(Class<?> intentClass) {
         //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_view, intentClass).commit();
         try {
-            FragmentTransition.to((Fragment) intentClass.newInstance(), this, true);
+            Bundle bundle = setUpSearchFilter();
+            Fragment f = (Fragment) intentClass.newInstance();
+            f.setArguments(bundle);
+            FragmentTransition.to(f, this, true);
         } catch (Exception e) {
             Log.d(this.getClass().getName(), "onClickNavItem: ");
             e.printStackTrace();
@@ -513,20 +538,32 @@ public class MainActivity extends AppCompatActivity{
 
                 if (dist > 0) {
                     chipTexts.add(dist + "km");
+                    distance = dist;
+                }else{
+                    distance = 100;
                 }
 
                 if (!startDate.equals("") && !startTime.equals("")) {
+                    Log.d("DATE", data.getStringExtra("START"));
                     chipTexts.add("Starts " + startDate + " " + startTime);
+                    start =  data.getStringExtra("START");
+                }else{
+                    start = "min";
                 }
 
                 if (!endDate.equals("") && !endTime.equals("")) {
+                    Log.d("DATE", data.getStringExtra("END"));
                     chipTexts.add("Ends " + endDate + " " + endTime);
+                    end =  data.getStringExtra("END");
+                }else{
+                    end = "max";
                 }
-
+                Log.d("END", end + "");
+                eventTypes.clear();
                 for (String categoryItem : category) {
+                    eventTypes.add(categoryItem);
                     chipTexts.add(categoryItem);
                 }
-
                 if (privateEvents) {
                     chipTexts.add("Private events");
                 }
@@ -535,12 +572,15 @@ public class MainActivity extends AppCompatActivity{
                 switch (sort) {
                     case "For you":
                         ((TextView) findViewById(R.id.sortFilterTextView)).setText("Events for you");
+                        sortType = SortType.FOR_YOU;
                         break;
-                    case "Recent":
-                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Recent events");
+                    case "Popular":
+                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Popular events");
+                        sortType = SortType.POPULAR;
                         break;
                     default:
-                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Popular events");
+                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Recent events");
+                        sortType = SortType.RECENT;
                         break;
                 }
 
@@ -552,6 +592,28 @@ public class MainActivity extends AppCompatActivity{
                 //user je kliknuo na brisanje svih filtera
                 removeFilterChips();
             }
+
+            FragmentManager fm = MainActivity.this.getSupportFragmentManager();
+            List<Fragment> fragments = fm.getFragments();
+            if (fragments != null) {
+                for (Fragment f : fragments) {
+                    if (f != null && f.isVisible()) {
+                        if (f instanceof GoingEventsListFragment) {
+                            //items = ((GoingEventsListFragment) f).getItems();
+                        } else if (f instanceof HomeEventListFragment) {
+                            Log.d("USAOOO", distance+"");
+                            FragmentTransaction ftr = getSupportFragmentManager().beginTransaction();
+                            ftr.detach(f).commitNow();
+                            ftr.attach(f).commitNow();
+                        } else if (f instanceof InterestedEventsListFragment) {
+                            //items = ((InterestedEventsListFragment) f).getItems();
+                        } else if (f instanceof MyEventsListFragment) {
+                            //items = ((MyEventsListFragment) f).getItems();
+                        }
+                    }
+                }
+            }
+
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
             changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
@@ -818,6 +880,19 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("SORTRF", sortType.toString());
+    }
+
+    private Bundle setUpSearchFilter(){
+        Bundle bundle = new Bundle();
+        bundle.putString("SORT", sortType.name());
+        bundle.putStringArrayList("TYPES", eventTypes);
+        bundle.putString("START", start);
+        bundle.putString("END", end);
+        bundle.putString("LAT", "45.5484");
+        bundle.putString("LNG", "19.7927");
+        bundle.putString("DIST", distance+"");
+        return bundle;
     }
 }
 

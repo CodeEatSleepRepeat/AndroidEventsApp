@@ -441,9 +441,9 @@ public class EventController {
 		return ResponseEntity.ok(eventService.getSimilarEvents(num, eventId));
 	}
 
-	@PostMapping("/test/test")
-	public ResponseEntity<List<EventDTO>> testiranje(@RequestBody SearchFilterEventsDTO dto){
-		return ResponseEntity.ok(eventService.testiranje(dto));
+	@PostMapping("/search/filter/{num}")
+	public ResponseEntity<List<EventDTO>> getEventsSearchFilter(@PathVariable int num, @RequestBody SearchFilterEventsDTO dto){
+		return ResponseEntity.ok(eventService.getEventsSearchFilter(num, dto));
 	}
 	
 	@PostMapping("/test/test/distance")

@@ -33,7 +33,7 @@ public interface EventsAppAPI {
     @POST("/event/upload/{id}")
     Call<EventDTO> uploadEventImg(@Body RequestBody file, @Path("id") Long id);
 
-    @POST("/event/page/{num}")
+    @POST("/event/search/filter/{num}")
     Call<List<EventDTO>> getInitialEvents(@Path("num") int num, @Body SearchFilterEventsDTO searchFilterEventsDTO);
 
     @POST("/event/myevents/{id}/{num}")

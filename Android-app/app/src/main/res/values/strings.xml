@@ -148,7 +148,7 @@
     <string name="commentAdded">Comment added!</string>
     <string name="notGoing">Not going</string>
     <string name="notInterested">Not interested</string>
-    <string name="localhost_uri" translatable="false">http://192.168.0.108:8080</string>
+    <string name="localhost_uri" translatable="false">http://10.0.2.2:8080</string>
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>

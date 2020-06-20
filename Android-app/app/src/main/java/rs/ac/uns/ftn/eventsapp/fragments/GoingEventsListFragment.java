@@ -56,7 +56,6 @@ public class GoingEventsListFragment extends Fragment {
             items = new ArrayList<>();
             getEventsPage(PAGE_START);
         }*/
-
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
         layoutManager = new LinearLayoutManager(getActivity());
