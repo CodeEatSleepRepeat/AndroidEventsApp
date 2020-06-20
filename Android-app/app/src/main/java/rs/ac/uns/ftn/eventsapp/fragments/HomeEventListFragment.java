@@ -69,7 +69,7 @@ public class HomeEventListFragment extends Fragment {
             getEventsPage(PAGE_START);
         }*/
 
-        Log.d("FINISH", "" + items);
+        Log.d("CREATE_HOME", "da");
         //items = TestMockup.getInstance().events;
         setItUp();
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
@@ -91,8 +91,10 @@ public class HomeEventListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, fab, null) {
             @Override
-            protected void loadMoreItems() {        //TODO: da li ovde uposte ulazi?
+            protected void loadMoreItems() {//TODO: da li ovde uposte ulazi?
+                Log.d("LOCATIONSCROLL", dto.getLat() + " " + dto.getLng());
                 isLoading = true;
+                //getEventsPage(currentPage, dto);
                 currentPage += 1;
                 getEventsPage(currentPage, dto);
             }
@@ -146,6 +148,7 @@ public class HomeEventListFragment extends Fragment {
         super.onResume();
 
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_home);
+        Log.d("OnResumeHome", dto.getLat() + " " + dto.getLng());
         items.clear();
         currentPage = PAGE_START;
         getEventsPage(PAGE_START, dto);

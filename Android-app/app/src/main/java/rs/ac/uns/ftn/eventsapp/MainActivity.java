@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -100,7 +101,8 @@ import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
 import rs.ac.uns.ftn.eventsapp.utils.ClusterMarker;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
     private static final int LAUNCH_USER_PROFILE_ACTIVITY = 5001;
@@ -119,6 +121,16 @@ public class MainActivity extends AppCompatActivity{
     private String end = "max"; //= Instant.ofEpochMilli(Long.MAX_VALUE).atZone(ZoneOffset.UTC);
     private FacebookPrivacy facebookPrivacy;
     private Location location;
+    private GoogleApiClient googleApiClient;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private LocationRequest locationRequest;
+    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
+    // lists for permissions
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissionsRejected = new ArrayList<>();
+    private ArrayList<String> permissions = new ArrayList<>();
+    // integer for permissions results request
+    private static final int ALL_PERMISSIONS_RESULT = 1011;
 
     //private NoInternetDialog noInternetDialog;
 
@@ -126,11 +138,27 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
-        Log.d("SORTRF", sortType.toString());
+        Log.d("SORTRFC", sortType.toString());
         AppDataSingleton.getInstance().setContext(this);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // we add permissions we need to request location of the users
+        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        permissionsToRequest = permissionsToRequest(permissions);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (permissionsToRequest.size() > 0) {
+                requestPermissions(permissionsToRequest.toArray(
+                        new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+            }
+        }
+
+        // we build google api client
+
 
         //ovo je super za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta -> etapa 3
         /*noInternetDialog = new NoInternetDialog.Builder(this)
@@ -147,7 +175,7 @@ public class MainActivity extends AppCompatActivity{
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
         //actionBar.setDisplayHomeAsUpEnabled(true);
-        isMapsEnabled();
+        //isMapsEnabled();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
@@ -155,8 +183,14 @@ public class MainActivity extends AppCompatActivity{
         toggle.syncState();
 
         navigationView = findViewById(R.id.navigation_view);
+        isMapsEnabled();
+        googleApiClient = new GoogleApiClient.Builder(this).
+                addApi(LocationServices.API).
+                addConnectionCallbacks(this).
+                addOnConnectionFailedListener(this).build();
 
-        if (savedInstanceState == null) {
+
+        /*if (savedInstanceState == null) {
             try {
                 Bundle bundle = setUpSearchFilter();
                 Fragment f = HomeEventListFragment.class.newInstance();
@@ -171,6 +205,7 @@ public class MainActivity extends AppCompatActivity{
                     chipGroup.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
+                Log.d("exc", e.getMessage());
             }
         } else {
             int selectedNavItem = savedInstanceState.getInt("SELECTED_NAV_ITEM");
@@ -222,7 +257,7 @@ public class MainActivity extends AppCompatActivity{
                     "INVITATION_NOTIFICATION", false);
             if(isEnteredFromInvitationNotification)
                 onClickNavItem(InvitationsFragment.class);
-        }
+        }*/
 
     }
 
@@ -609,7 +644,7 @@ public class MainActivity extends AppCompatActivity{
                         if (f instanceof GoingEventsListFragment) {
                             //items = ((GoingEventsListFragment) f).getItems();
                         } else if (f instanceof HomeEventListFragment) {
-                            Log.d("USAOOO", distance+"");
+                            Log.d("ZameniFragment", "da");
                             FragmentTransaction ftr = getSupportFragmentManager().beginTransaction();
                             ftr.detach(f).commitNow();
                             ftr.attach(f).commitNow();
@@ -626,7 +661,8 @@ public class MainActivity extends AppCompatActivity{
             //imamo novu sliku i user name za nav drawer
             changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
         }else if (requestCode == PERMISSION_REQUEST_ENABLE_GPS){
-            return;
+            Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intentMA);
         }
 
     }
@@ -733,6 +769,7 @@ public class MainActivity extends AppCompatActivity{
         if (navigationView != null) clearCheckedItems(navigationView.getMenu());
 
         if (fragment instanceof HomeEventListFragment) {
+            Log.d("AttachHome", "yep");
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_home);
             if (navigationView != null)
                 navigationView.getMenu().findItem(R.id.navigation_item_home).setChecked(true);
@@ -867,14 +904,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void buildAlertMessageNoGps(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.gps_dialog).setCancelable(false).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                accepted = false;
-                Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intentMA);
-            }
-        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.gps_dialog).setCancelable(true).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -897,10 +927,220 @@ public class MainActivity extends AppCompatActivity{
         bundle.putStringArrayList("TYPES", eventTypes);
         bundle.putString("START", start);
         bundle.putString("END", end);
-        bundle.putString("LAT", "45.5484");
-        bundle.putString("LNG", "19.7927");
+        Log.d("NamestiFilterEE", "da");
+        if(location!=null) {
+            bundle.putString("LAT", location.getLatitude() + "");
+            bundle.putString("LNG", location.getLongitude() + "");
+        }else{
+            bundle.putString("LAT", "-300");
+            bundle.putString("LNG", "-300");
+        }
         bundle.putString("DIST", distance+"");
         return bundle;
+    }
+
+    private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (String perm : wantedPermissions) {
+            if (!hasPermission(perm)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean hasPermission(String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (googleApiClient != null) {
+            Log.d("KonektujCoor", "da");
+            googleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // stop location updates
+        if (googleApiClient != null  &&  googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            googleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle savedInstanceState) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&  ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // Permissions ok, we get last location
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        setupAfterGettingLocation(savedInstanceState);
+
+        if (location != null) {
+            //locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+            Log.d("LOCATION", location.getLatitude() + " " + location.getLongitude());
+        }
+
+        startLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&  ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Log.d("LOCATION", location.getLatitude() + " " + location.getLongitude());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode) {
+            case ALL_PERMISSIONS_RESULT:
+                for (String perm : permissionsToRequest) {
+                    if (!hasPermission(perm)) {
+                        permissionsRejected.add(perm);
+                    }
+                }
+
+                if (permissionsRejected.size() > 0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
+                            new AlertDialog.Builder(MainActivity.this).
+                                    setMessage(R.string.gps_dialog2).
+                                    setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermissions(permissionsRejected.
+                                                        toArray(new String[permissionsRejected.size()]), ALL_PERMISSIONS_RESULT);
+                                            }
+                                        }
+                                    }).setNegativeButton(R.string.no, null).create().show();
+
+                            return;
+                        }
+                    }
+                } else {
+                    if (googleApiClient != null) {
+                        googleApiClient.connect();
+                    }
+                }
+
+                break;
+        }
+    }
+
+    private void setupAfterGettingLocation(Bundle savedInstanceState){
+        if (savedInstanceState == null) {
+            try {
+                Bundle bundle = setUpSearchFilter();
+                Fragment f = HomeEventListFragment.class.newInstance();
+                f.setArguments(bundle);
+                FragmentTransition.to(f, this, false);
+                FrameLayout frameLayout = findViewById(R.id.fragment_view);
+                View fragmentView = frameLayout.getChildAt(0);
+
+                //check if there was chip-group
+                if (chipGroup == null) {
+                    chipGroup = fragmentView.findViewById(R.id.chipsGroup);
+                    chipGroup.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                Log.d("exc", e.getMessage());
+            }
+        } else {
+            int selectedNavItem = savedInstanceState.getInt("SELECTED_NAV_ITEM");
+            if (selectedNavItem != -1) {
+                clearCheckedItems(navigationView.getMenu());
+
+                if (selectedNavItem / 10 > 0) {
+                    navigationView.getMenu().getItem(selectedNavItem / 10).getSubMenu().getItem(selectedNavItem % 10).setChecked(true);
+                } else {
+                    navigationView.getMenu().getItem(selectedNavItem % 10).setChecked(true);
+                }
+            }
+        }
+
+        FloatingActionButton fab = findViewById(R.id.floating_add_btn);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickCreateEvent();
+            }
+        });
+
+        FloatingActionButton fabMap = findViewById(R.id.floating_map_btn);
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMap();
+            }
+        });
+
+        if (!AppDataSingleton.getInstance().isLoggedIn()) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_drawer_unauthorized_user);
+            setNavigationListenerUnauthorizedUser(navigationView, toolbar);
+            changeNavBarUnauthorized();
+        } else {
+            setNavigationListenerAuthorizedUser(navigationView, toolbar);
+            changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
+        }
+
+        boolean isUserLoggedToFirebase = FirebaseAuth.getInstance().getCurrentUser() != null;
+        if(isUserLoggedToFirebase){
+            updateFirebaseToken();
+        }
+
+        Intent intent = getIntent();
+        if(intent != null){
+            Boolean isEnteredFromInvitationNotification = intent.getBooleanExtra(
+                    "INVITATION_NOTIFICATION", false);
+            if(isEnteredFromInvitationNotification)
+                onClickNavItem(InvitationsFragment.class);
+        }
+
     }
 }
 
