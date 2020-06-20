@@ -216,6 +216,14 @@ public class MainActivity extends AppCompatActivity{
             updateFirebaseToken();
         }
 
+        Intent intent = getIntent();
+        if(intent != null){
+            Boolean isEnteredFromInvitationNotification = intent.getBooleanExtra(
+                    "INVITATION_NOTIFICATION", false);
+            if(isEnteredFromInvitationNotification)
+                onClickNavItem(InvitationsFragment.class);
+        }
+
     }
 
     public void updateFirebaseToken(){

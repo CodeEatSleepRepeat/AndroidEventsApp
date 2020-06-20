@@ -5,8 +5,8 @@ import rs.ac.uns.ftn.eventsbackend.model.Invitation;
 public class InvitationDTO {
 
     private Long id;
-    private UserDTO sender;
-    private UserDTO reciever;
+    private UserInvitationDTO sender;
+    private UserInvitationDTO reciever;
     private EventDTO event;
 
     public InvitationDTO(){
@@ -14,10 +14,10 @@ public class InvitationDTO {
 
     public InvitationDTO(Invitation invitation){
         id = invitation.getId();
-        sender = new UserDTO(invitation.getInvitationSender().getId(), invitation.getInvitationSender().getName(),
-                invitation.getInvitationSender().getImageUri());
-        reciever = new UserDTO(invitation.getInvitationReceiver().getId(), invitation.getInvitationReceiver().getName(),
-                invitation.getInvitationReceiver().getImageUri());
+        sender = new UserInvitationDTO(invitation.getInvitationSender().getId(), invitation.getInvitationSender().getName(),
+                invitation.getInvitationSender().getImageUri(), invitation.getInvitationSender().getEmail());
+        reciever = new UserInvitationDTO(invitation.getInvitationReceiver().getId(), invitation.getInvitationReceiver().getName(),
+                invitation.getInvitationReceiver().getImageUri(), invitation.getInvitationReceiver().getEmail());
         event = new EventDTO(invitation.getEvent());
     }
 
@@ -29,19 +29,19 @@ public class InvitationDTO {
         this.id = id;
     }
 
-    public UserDTO getSender() {
+    public UserInvitationDTO getSender() {
         return sender;
     }
 
-    public void setSender(UserDTO sender) {
+    public void setSender(UserInvitationDTO sender) {
         this.sender = sender;
     }
 
-    public UserDTO getReciever() {
+    public UserInvitationDTO getReciever() {
         return reciever;
     }
 
-    public void setReciever(UserDTO reciever) {
+    public void setReciever(UserInvitationDTO reciever) {
         this.reciever = reciever;
     }
 

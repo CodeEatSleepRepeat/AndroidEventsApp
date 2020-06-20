@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.SendInvitationsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.UserDetailActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.UserShareDTO;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
 public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
     public static String EXTRA_USER_NAME = "rs.ac.uns.ftn.eventsapp.views.ShareUserSimpleItem" +
@@ -47,11 +49,17 @@ public class ShareUserSimpleItem extends Item<GroupieViewHolder> {
         textUsername.setText(user.getUser().getName());
         selectedCB.setChecked(user.getChecked());
 
-        Picasso.get()
-                .load(user.getUser().getImageUri())
-                .placeholder(R.drawable.ic_veljko)
-                .error(R.drawable.ic_user_icon)
-                .into(imageUser);
+        Picasso.get().setLoggingEnabled(true);
+        if (user.getUser().getImageUri().startsWith("http")){
+            Picasso.get().load(Uri.parse(user.getUser().getImageUri())).placeholder(R.drawable.ic_user_icon).into(imageUser);
+        } else {
+            Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + user.getUser().getImageUri())).placeholder(R.drawable.ic_user_icon).into(imageUser);
+        }
+//        Picasso.get()
+//                .load(user.getUser().getImageUri())
+//                .placeholder(R.drawable.ic_veljko)
+//                .error(R.drawable.ic_user_icon)
+//                .into(imageUser);
 
         ConstraintLayout userRow = viewHolder.itemView.findViewById(R.id.share_user_item_row);
         userRow.setOnClickListener(new View.OnClickListener() {

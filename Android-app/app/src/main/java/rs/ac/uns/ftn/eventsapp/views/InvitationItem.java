@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,15 +26,14 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class InvitationItem extends Item<GroupieViewHolder> {
-
     private InvitationDTO invitation;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
     private GroupieViewHolder viewHolder;
 
-   
     public InvitationItem(InvitationDTO invitation){
         this.invitation = invitation;
     }
@@ -48,12 +48,18 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         this.viewHolder = viewHolder;
         
         setOnClickListeners(viewHolder);
-        // TODO: Ovde postaviti pravi url lol :D
-        Picasso.get()
-                .load(invitation.getEvent().getImageUri())
-                .placeholder(R.drawable.ic_facebook_logo)
-                .error(R.drawable.ic_facebook_logo)
-                .into(eventImage);
+//        // TODO: Ovde postaviti pravi url lol :D
+//        Picasso.get()
+//                .load(invitation.getEvent().getImageUri())
+//                .placeholder(R.drawable.ic_facebook_logo)
+//                .error(R.drawable.ic_facebook_logo)
+//                .into(eventImage);
+        Picasso.get().setLoggingEnabled(true);
+        if (invitation.getEvent().getImageUri().startsWith("http")){
+            Picasso.get().load(Uri.parse(invitation.getEvent().getImageUri())).placeholder(R.drawable.ic_user_icon).into(eventImage);
+        } else {
+            Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + invitation.getEvent().getImageUri())).placeholder(R.drawable.ic_user_icon).into(eventImage);
+        }
 
         eventName.setText(invitation.getEvent().getName());
         userUsername.setText(viewHolder.itemView.getContext().getString(R.string.invited_by)+" " + invitation.getSender().getName());

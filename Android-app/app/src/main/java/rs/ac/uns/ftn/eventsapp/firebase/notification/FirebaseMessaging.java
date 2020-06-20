@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.ChatLogActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FriendRequestsActivity;
@@ -88,7 +89,8 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     }
 
     private void makeIntentToInvitationsThenMakeNotification(String icon, String body, String title, Uri defSoundUri, int i) {
-        Intent intent = new Intent(getApplicationContext(), InvitationsFragment.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("INVITATION_NOTIFICATION", true);
         PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), i, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){

@@ -126,7 +126,6 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         });
     }
 
-
     @Override
     public int getLayout() {
         return R.layout.item_user_simple;
