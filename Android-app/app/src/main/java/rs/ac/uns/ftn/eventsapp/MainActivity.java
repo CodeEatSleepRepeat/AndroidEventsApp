@@ -31,6 +31,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -41,13 +42,19 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ChipGroup chipGroup;
-    private boolean accepted = true;
+    private Boolean mLocationPermissionGranted = true;
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
     private int distance = 100;
@@ -131,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ArrayList<String> permissions = new ArrayList<>();
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
+
 
     //private NoInternetDialog noInternetDialog;
 
@@ -183,7 +191,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         toggle.syncState();
 
         navigationView = findViewById(R.id.navigation_view);
+        Log.d("PreIsMapEnabled", "da");
         isMapsEnabled();
+        Log.d("PosleIsMapEnabled", "da");
         googleApiClient = new GoogleApiClient.Builder(this).
                 addApi(LocationServices.API).
                 addConnectionCallbacks(this).
@@ -660,7 +670,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
             changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
-        }else if (requestCode == PERMISSION_REQUEST_ENABLE_GPS){
+        }else if (requestCode == PERMISSION_REQUEST_ENABLE_GPS && resultCode == Activity.RESULT_OK){
+            Log.d("AcceptedGPS", "da");
             Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intentMA);
         }
@@ -894,6 +905,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public boolean isMapsEnabled(){
+        Log.d("MapEnabled", "da");
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             buildAlertMessageNoGps();
@@ -903,11 +915,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void buildAlertMessageNoGps(){
+        Log.d("MakeDialog", "da");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.gps_dialog).setCancelable(true).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivityForResult(intent, PERMISSION_REQUEST_ENABLE_GPS);
             }
         });
@@ -929,9 +942,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         bundle.putString("END", end);
         Log.d("NamestiFilterEE", "da");
         if(location!=null) {
+            Log.d("Location is not null", "da");
             bundle.putString("LAT", location.getLatitude() + "");
             bundle.putString("LNG", location.getLongitude() + "");
         }else{
+            Log.d("Location is null", "da");
             bundle.putString("LAT", "-300");
             bundle.putString("LNG", "-300");
         }
@@ -991,7 +1006,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // Permissions ok, we get last location
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
         setupAfterGettingLocation(savedInstanceState);
 
         if (location != null) {
@@ -1056,8 +1070,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                                         toArray(new String[permissionsRejected.size()]), ALL_PERMISSIONS_RESULT);
                                             }
                                         }
-                                    }).setNegativeButton(R.string.no, null).create().show();
-
+                                    });
                             return;
                         }
                     }
@@ -1072,6 +1085,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void setupAfterGettingLocation(Bundle savedInstanceState){
+        Log.d("setupAfterLocation", "da");
         if (savedInstanceState == null) {
             try {
                 Bundle bundle = setUpSearchFilter();
@@ -1142,6 +1156,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
     }
+
 }
 
 
