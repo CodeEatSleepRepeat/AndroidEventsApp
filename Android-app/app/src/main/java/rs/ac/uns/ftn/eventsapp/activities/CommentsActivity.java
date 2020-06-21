@@ -109,7 +109,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void getComments(int num) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -138,7 +138,7 @@ public class CommentsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.blankFieldError, Toast.LENGTH_LONG).show();
         }else {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(getString(R.string.localhost_uri))
+                    .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                     .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                     .build();
             EventsAppAPI e = retrofit.create(EventsAppAPI.class);

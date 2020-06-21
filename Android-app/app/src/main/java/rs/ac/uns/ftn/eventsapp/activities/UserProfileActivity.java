@@ -326,7 +326,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void sendUnlinkFBRequest(String email, String password) {
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -400,7 +400,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void removeAccount(String email, String password) {
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -494,7 +494,7 @@ public class UserProfileActivity extends AppCompatActivity {
         UserProfileChangeDTO user = new UserProfileChangeDTO(email_profile.getText().toString(), name_profile.getText().toString().trim(), imgUri, password_current_profile.getText().toString(), password_new1_profile.getText().toString(), password_new2_profile.getText().toString());
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -595,7 +595,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);

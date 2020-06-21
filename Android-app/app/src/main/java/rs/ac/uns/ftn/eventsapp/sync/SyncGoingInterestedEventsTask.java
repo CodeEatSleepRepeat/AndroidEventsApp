@@ -53,7 +53,7 @@ public class SyncGoingInterestedEventsTask extends AsyncTask<Void, Void, Void> {
 
         //call backend method for synchronization
         retrofit = new Retrofit.Builder()
-                .baseUrl(context.getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI api = retrofit.create(EventsAppAPI.class);

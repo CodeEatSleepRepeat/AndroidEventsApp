@@ -49,7 +49,7 @@ public class SyncUserTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         //call backend method for synchronization
         retrofit = new Retrofit.Builder()
-                .baseUrl(context.getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);

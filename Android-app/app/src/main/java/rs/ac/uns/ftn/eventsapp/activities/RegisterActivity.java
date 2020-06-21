@@ -173,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Instantiate the backend request
                 retrofit = new Retrofit.Builder()
-                        .baseUrl(getString(R.string.localhost_uri))
+                        .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                         .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                         .build();
                 UserAppApi api = retrofit.create(UserAppApi.class);
@@ -231,7 +231,7 @@ public class RegisterActivity extends AppCompatActivity {
         UserRegisterDTO registerUser = new UserRegisterDTO(email.getText().toString().trim(), psw1.getText().toString().trim(), username.getText().toString().trim());
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);
@@ -266,7 +266,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void uploadImage(Long userId) {
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);

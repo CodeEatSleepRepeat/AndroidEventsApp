@@ -18,7 +18,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserFBSyncChangeDTO;
@@ -26,7 +25,7 @@ import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsFBUserActivity extends AppCompatActivity {
 
     public static int MIN_DISTANCE = 1;
     public static int MAX_DISTANCE = 100;
@@ -39,8 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         getSupportActionBar().setTitle(R.string.nav_settings);
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new MyPreferenceFragment()).commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -50,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
+            addPreferencesFromResource(R.xml.preferences_fb);
 
             EditTextPreference pref = (EditTextPreference) findPreference("pref_default_distance2");
             pref.getEditText().setFilters(new InputFilter[]{
@@ -70,6 +68,12 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     }
             });
+
+            SwitchPreference syncFbEvents = (SwitchPreference) findPreference("pref_facebook_events");
+            syncFbEvents.setChecked(AppDataSingleton.getInstance().getLoggedUser().getSyncFacebookEvents());
+
+            SwitchPreference syncFbProfile = (SwitchPreference) findPreference("pref_sync_user_data_facebook");
+            syncFbProfile.setChecked(AppDataSingleton.getInstance().getLoggedUser().getSyncFacebookProfile());
         }
 
         @Override

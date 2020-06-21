@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.threeten.bp.ZonedDateTime;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.NoServerActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
 import rs.ac.uns.ftn.eventsapp.database.GoingInterestedEventsSQLiteHelper;
 import rs.ac.uns.ftn.eventsapp.database.MyEventsSQLiteHelper;
 import rs.ac.uns.ftn.eventsapp.database.UserSQLiteHelper;
@@ -29,6 +32,8 @@ public class AppDataSingleton {
     private ArrayList<GoingInterestedEventsDTO> goingEvents;
     private ArrayList<GoingInterestedEventsDTO> interestedEvents;
 
+    public String SERVER_IP = "";
+
     private UserSQLiteHelper dbUserHelper;
     private MyEventsSQLiteHelper dbMyEventsHelper;
     private GoingInterestedEventsSQLiteHelper dbGoingInterestedEventsHelper;
@@ -42,10 +47,17 @@ public class AppDataSingleton {
     }
 
     public void setContext(Context context) {
+        //get server ip address from preferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SplashScreenActivity.SYNC_PREFERENCE, context.MODE_PRIVATE);
+        SERVER_IP = sharedPreferences.getString(NoServerActivity.preferenceServerIpAddress, "http://10.0.2.2:8080");
+
+        //set uris to images on server
         if (IMAGE_URI.startsWith("/")) {
-            IMAGE_URI = context.getString(R.string.localhost_uri) + IMAGE_URI;
-            PROFILE_IMAGE_URI = context.getString(R.string.localhost_uri) + PROFILE_IMAGE_URI;
+            IMAGE_URI = SERVER_IP + IMAGE_URI;
+            PROFILE_IMAGE_URI = SERVER_IP + PROFILE_IMAGE_URI;
         }
+
+        //init DB helpers
         dbUserHelper = new UserSQLiteHelper(context);
         dbMyEventsHelper = new MyEventsSQLiteHelper(context);
         dbGoingInterestedEventsHelper = new GoingInterestedEventsSQLiteHelper(context);
@@ -103,6 +115,22 @@ public class AppDataSingleton {
         }
         interestedEvents = dbGoingInterestedEventsHelper.readEventsWithStatus(GoingInterestedStatus.INTERESTED);
         return interestedEvents;
+    }
+
+    public ArrayList<EventDTO> getGoingEventsDTO(){
+        ArrayList<EventDTO> retList = new ArrayList<>();
+        for (GoingInterestedEventsDTO event: getGoingEvents()) {
+            retList.add(event.getEvent());
+        }
+        return retList;
+    }
+
+    public ArrayList<EventDTO> getInterestedEventsDTO(){
+        ArrayList<EventDTO> retList = new ArrayList<>();
+        for (GoingInterestedEventsDTO event: getInterestedEvents()) {
+            retList.add(event.getEvent());
+        }
+        return retList;
     }
 
     public void updateUser(User user) {
@@ -324,6 +352,14 @@ public class AppDataSingleton {
 
     public boolean isLoggedIn() {
         return loggedUser != null;
+    }
+
+    public boolean isLoggedInFBUser() {
+        if (loggedUser == null) return false;
+        if (loggedUser.getFacebookId().equals("")){
+            return false;
+        }
+        return true;
     }
 
     public ArrayList<UpdateEventDTO> getUserEventsForUpdate(Long lastSyncTime) {

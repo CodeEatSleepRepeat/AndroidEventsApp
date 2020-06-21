@@ -217,7 +217,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     private InvitationAppApi getInvitationApi() {
         InvitationAppApi invitationApi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(viewHolder.itemView.getContext().getResources().getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         invitationApi = retrofit.create(InvitationAppApi.class);
@@ -227,7 +227,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     private EventsAppAPI getEventApi() {
         EventsAppAPI eventApi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(viewHolder.itemView.getContext().getResources().getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         eventApi = retrofit.create(EventsAppAPI.class);

@@ -416,7 +416,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -453,7 +453,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private void uploadImage(Long id) throws URISyntaxException {
         if(bitmap!=null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(getString(R.string.localhost_uri))
+                    .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                     .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                     .build();
             EventsAppAPI e = retrofit.create(EventsAppAPI.class);

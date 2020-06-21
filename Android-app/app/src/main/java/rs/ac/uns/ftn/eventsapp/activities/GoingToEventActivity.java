@@ -19,6 +19,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.GoingInterestedUsersAdapter;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserDTO;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -59,7 +60,7 @@ public class GoingToEventActivity extends AppCompatActivity {
 
     private void getUsers(int num) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi e = retrofit.create(UserAppApi.class);

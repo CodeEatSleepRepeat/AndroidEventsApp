@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.eventsbackend.model.Event;
@@ -9,11 +12,6 @@ import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.InvitationRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InvitationService {

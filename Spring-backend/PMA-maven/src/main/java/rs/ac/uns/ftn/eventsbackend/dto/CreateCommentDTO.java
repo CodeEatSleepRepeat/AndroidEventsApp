@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.eventsbackend.dto;
 
-import javax.validation.constraints.NegativeOrZero;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

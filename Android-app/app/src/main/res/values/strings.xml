@@ -72,11 +72,9 @@
     <string name="msg_pref_default_event_filter_sort">Choose a default event filter sort for event filtering</string>
     <string name="title_pref_map">Map</string>
     <string name="title_pref_default_distance_value">Default distance value</string>
-    <string name="msg_pref_set_default_radius_distance">Set the default radius distance
-        value</string>
+    <string name="msg_pref_set_default_radius_distance">Set the default radius distance value</string>
     <string name="title_pref_dialog_default_radius_distance">Default distance value</string>
-    <string name="msg_pref_dialog_default_radius_distance">Choose default radius distance
-        value</string>
+    <string name="msg_pref_dialog_default_radius_distance">Choose default radius distance value</string>
     <string name="title_pref_default_map_zoom">Default map zoom</string>
     <string name="msg_pref_defauilt_map_zoom">Choose a default map zoom for map feature</string>
     <string name="title_pref_facebook_events">Sync with your Facebook events</string>
@@ -148,9 +146,6 @@
     <string name="commentAdded">Comment added!</string>
     <string name="notGoing">Not going</string>
     <string name="notInterested">Not interested</string>
-    <string name="localhost_uri" translatable="false">http://10.0.2.2:8080</string>
-    <string name="facebook_app_id" translatable="false">xxx</string>
-    <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
     <string name="notLoggedInComment">\"You must  log in to comment\"</string>
     <string name="eventOrganizer">Event organizer</string>
     <string name="eventsOrganized">events organized</string>
@@ -179,5 +174,6 @@
     <string name="event_invitation_notification">You have new event invitation!</string>
     <string name="invitations">Invitations</string>
 
-
+    <string name="facebook_app_id" translatable="false">xxx</string>
+    <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
 </resources>

@@ -10,7 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import rs.ac.uns.ftn.eventsbackend.enums.InvitationStatus;
 
 @Entity
 @Data

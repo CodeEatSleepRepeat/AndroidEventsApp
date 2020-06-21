@@ -28,4 +28,17 @@
             android:summary="%s"
             android:title="@string/title_pref_default_map_zoom" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_facebook_logo">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_facebook_events"
+            android:summary="@string/msg_pref_facebook_events"
+            android:title="@string/title_pref_facebook_events" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_sync_user_data_facebook"
+            android:summary="@string/msg_pref__sync_data_facebook"
+            android:title="@string/title_pref_sync_data_facebook" />
+    </PreferenceCategory>
 </PreferenceScreen>

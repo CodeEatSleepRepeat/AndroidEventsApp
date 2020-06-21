@@ -274,7 +274,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void goingToEvent() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -303,7 +303,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void interestedInEvent() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -332,7 +332,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void removeFromInterested() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -358,7 +358,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     public void removeFromGoing() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -468,7 +468,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void getDetails(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -637,7 +637,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private InvitationAppApi getInvitationApi() {
         InvitationAppApi invitationApi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         invitationApi = retrofit.create(InvitationAppApi.class);

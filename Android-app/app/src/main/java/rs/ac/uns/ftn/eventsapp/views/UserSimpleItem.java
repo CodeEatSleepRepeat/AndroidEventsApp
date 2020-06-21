@@ -192,7 +192,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(viewHolder.itemView.getContext().getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
 

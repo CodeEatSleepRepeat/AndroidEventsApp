@@ -1,17 +1,19 @@
 package rs.ac.uns.ftn.eventsbackend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import rs.ac.uns.ftn.eventsbackend.dto.FriendshipDTO;
-import rs.ac.uns.ftn.eventsbackend.dto.InvitationDTO;
-import rs.ac.uns.ftn.eventsbackend.model.Friendship;
-import rs.ac.uns.ftn.eventsbackend.model.Invitation;
-import rs.ac.uns.ftn.eventsbackend.service.InvitationService;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import rs.ac.uns.ftn.eventsbackend.dto.InvitationDTO;
+import rs.ac.uns.ftn.eventsbackend.model.Invitation;
+import rs.ac.uns.ftn.eventsbackend.service.InvitationService;
 
 @RequestMapping("/invitation")
 @RestController

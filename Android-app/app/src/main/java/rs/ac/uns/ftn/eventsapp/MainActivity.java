@@ -13,8 +13,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +29,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -40,21 +37,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,24 +51,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
+import am.appwise.components.ni.NoInternetDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.FilterEventsActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SettingsFBUserActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsUnAuthUserActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SignInActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SplashScreenActivity;
@@ -96,7 +77,6 @@ import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.ListOfUsersFragment;
 import rs.ac.uns.ftn.eventsapp.fragments.MyEventsListFragment;
-import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
 import rs.ac.uns.ftn.eventsapp.models.SortType;
 import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
@@ -104,12 +84,10 @@ import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncUserTask;
 import rs.ac.uns.ftn.eventsapp.tools.FragmentTransition;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
-import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
-import rs.ac.uns.ftn.eventsapp.utils.ClusterMarker;
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener{
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int LAUNCH_FILTER_ACTIVITY = 1001;
     private static final int LAUNCH_USER_PROFILE_ACTIVITY = 5001;
@@ -139,8 +117,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
 
-
-    //private NoInternetDialog noInternetDialog;
+    private NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         //ovo je super za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta -> etapa 3
-        /*noInternetDialog = new NoInternetDialog.Builder(this)
+        noInternetDialog = new NoInternetDialog.Builder(this)
                 .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
                 .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
                 //.setBgGradientEnd(getResources().getColor(R.color.colorBlack)) // End color for background gradient
@@ -177,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 //.setButtonTextColor(R.color.colorWhite) // Set custom text color for dialog buttons
                 //.setButtonIconsColor(R.color.colorWhite) // Set custom color for icons of dialog buttons
                 .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
-                .setCancelable(false)
-                .build();*/
+                .setCancelable(true)
+                .build();
 
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
@@ -199,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
 
-
-        /*if (savedInstanceState == null) {
+/*
+        if (savedInstanceState == null) {
             try {
                 Bundle bundle = setUpSearchFilter();
                 Fragment f = HomeEventListFragment.class.newInstance();
@@ -267,11 +244,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     "INVITATION_NOTIFICATION", false);
             if(isEnteredFromInvitationNotification)
                 onClickNavItem(InvitationsFragment.class);
-        }*/
-
+        }
+*/
     }
 
-    public void updateFirebaseToken(){
+    public void updateFirebaseToken() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,
                 new OnSuccessListener<InstanceIdResult>() {
                     @Override
@@ -369,7 +346,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         onClickNavItem(InvitationsFragment.class);
                         break;
                     case R.id.navigation_item_settings:
-                        openSettings();
+                        if (AppDataSingleton.getInstance().isLoggedInFBUser()) {
+                            openFBSettings();
+                        } else {
+                            openSettings();
+                        }
                         break;
                     default:
                         Toast.makeText(MainActivity.this, menuItem.getItemId(), Toast.LENGTH_LONG).show();
@@ -437,7 +418,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings_home:
-                openSettings();
+                if (AppDataSingleton.getInstance().isLoggedInFBUser()) {
+                    openFBSettings();
+                } else {
+                    openSettings();
+                }
                 return true;
             case R.id.filterEventsBtn:
                 onClickFilterImg();
@@ -592,23 +577,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if (dist > 0) {
                     chipTexts.add(dist + "km");
                     distance = dist;
-                }else{
+                } else {
                     distance = 100;
                 }
 
                 if (!startDate.equals("") && !startTime.equals("")) {
                     Log.d("DATE", data.getStringExtra("START"));
                     chipTexts.add("Starts " + startDate + " " + startTime);
-                    start =  data.getStringExtra("START");
-                }else{
+                    start = data.getStringExtra("START");
+                } else {
                     start = "min";
                 }
 
                 if (!endDate.equals("") && !endTime.equals("")) {
                     Log.d("DATE", data.getStringExtra("END"));
                     chipTexts.add("Ends " + endDate + " " + endTime);
-                    end =  data.getStringExtra("END");
-                }else{
+                    end = data.getStringExtra("END");
+                } else {
                     end = "max";
                 }
                 Log.d("END", end + "");
@@ -646,31 +631,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 removeFilterChips();
             }
 
-            FragmentManager fm = MainActivity.this.getSupportFragmentManager();
-            List<Fragment> fragments = fm.getFragments();
-            if (fragments != null) {
-                for (Fragment f : fragments) {
-                    if (f != null && f.isVisible()) {
-                        if (f instanceof GoingEventsListFragment) {
-                            //items = ((GoingEventsListFragment) f).getItems();
-                        } else if (f instanceof HomeEventListFragment) {
-                            Log.d("ZameniFragment", "da");
-                            FragmentTransaction ftr = getSupportFragmentManager().beginTransaction();
-                            ftr.detach(f).commitNow();
-                            ftr.attach(f).commitNow();
-                        } else if (f instanceof InterestedEventsListFragment) {
-                            //items = ((InterestedEventsListFragment) f).getItems();
-                        } else if (f instanceof MyEventsListFragment) {
-                            //items = ((MyEventsListFragment) f).getItems();
-                        }
-                    }
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+            if (f != null) {
+                Log.d("ZameniFragment", "da");
+                try {
+                    Bundle bundle = setUpSearchFilter();
+                    f.setArguments(bundle);
+                    if (f instanceof HomeEventListFragment) ((HomeEventListFragment)f).setItUp(bundle);
+                    FragmentTransition.to(f, this, true);
+                } catch (Exception e) {
+                    Log.d(this.getClass().getName(), "onClickNavItem: ");
+                    e.printStackTrace();
                 }
             }
 
         } else if (requestCode == LAUNCH_USER_PROFILE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             //imamo novu sliku i user name za nav drawer
             changeNavBarProfile(AppDataSingleton.getInstance().getLoggedUser().getName(), AppDataSingleton.getInstance().getLoggedUser().getImageUri());
-        }else if (requestCode == PERMISSION_REQUEST_ENABLE_GPS && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == PERMISSION_REQUEST_ENABLE_GPS && resultCode == Activity.RESULT_OK) {
             Log.d("AcceptedGPS", "da");
             Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intentMA);
@@ -873,6 +851,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startActivity(intent);
     }
 
+    private void openFBSettings() {
+        Intent intent = new Intent(this, SettingsFBUserActivity.class);
+        startActivity(intent);
+    }
+
     private void openSettingsUnauth() {
         Intent intent = new Intent(this, SettingsUnAuthUserActivity.class);
         startActivity(intent);
@@ -904,17 +887,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         userImage.setImageResource(R.drawable.icon);
     }
 
-    public boolean isMapsEnabled(){
+    public boolean isMapsEnabled() {
         Log.d("MapEnabled", "da");
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
             return false;
         }
         return true;
     }
 
-    private void buildAlertMessageNoGps(){
+    private void buildAlertMessageNoGps() {
         Log.d("MakeDialog", "da");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.gps_dialog).setCancelable(true).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -934,23 +917,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d("SORTRF", sortType.toString());
     }
 
-    private Bundle setUpSearchFilter(){
+    private Bundle setUpSearchFilter() {
         Bundle bundle = new Bundle();
         bundle.putString("SORT", sortType.name());
         bundle.putStringArrayList("TYPES", eventTypes);
         bundle.putString("START", start);
         bundle.putString("END", end);
         Log.d("NamestiFilterEE", "da");
-        if(location!=null) {
+        if (location != null) {
             Log.d("Location is not null", "da");
             bundle.putString("LAT", location.getLatitude() + "");
             bundle.putString("LNG", location.getLongitude() + "");
-        }else{
+        } else {
             Log.d("Location is null", "da");
             bundle.putString("LAT", "-300");
             bundle.putString("LNG", "-300");
         }
-        bundle.putString("DIST", distance+"");
+        bundle.putString("DIST", distance + "");
         return bundle;
     }
 
@@ -989,7 +972,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onPause();
 
         // stop location updates
-        if (googleApiClient != null  &&  googleApiClient.isConnected()) {
+        if (googleApiClient != null && googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             googleApiClient.disconnect();
         }
@@ -999,7 +982,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(@Nullable Bundle savedInstanceState) {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
+                && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -1024,7 +1007,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
+                && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
@@ -1049,7 +1032,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
+        switch (requestCode) {
             case ALL_PERMISSIONS_RESULT:
                 for (String perm : permissionsToRequest) {
                     if (!hasPermission(perm)) {
@@ -1084,14 +1067,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private void setupAfterGettingLocation(Bundle savedInstanceState){
+    private void setupAfterGettingLocation(Bundle savedInstanceState) {
         Log.d("setupAfterLocation", "da");
         if (savedInstanceState == null) {
             try {
                 Bundle bundle = setUpSearchFilter();
-                Fragment f = HomeEventListFragment.class.newInstance();
+                //Fragment f = HomeEventListFragment.class.newInstance();
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+                if (f == null) {
+                    f = HomeEventListFragment.class.newInstance();
+                }
                 f.setArguments(bundle);
-                FragmentTransition.to(f, this, false);
+                FragmentTransition.to(f, this, false);    //NI POD KOJIM RAZLOGOM DA SE OVO ODKOMENTARISE - OVO SE ASINHORNO POZIVA OD STRANE ANDROIDA I IZAZIVA PROMENU FRAGMENATA KOJA NE SME DA BUDE NA OVAJ NACIN REGULISANA> IZAZIVA VRACANJE NA HOME FRAGMENT BEZ BACKSTACKA I GUBITKA POSLEDNJIH FRAGMENATA!!!
                 FrameLayout frameLayout = findViewById(R.id.fragment_view);
                 View fragmentView = frameLayout.getChildAt(0);
 
@@ -1143,15 +1130,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         boolean isUserLoggedToFirebase = FirebaseAuth.getInstance().getCurrentUser() != null;
-        if(isUserLoggedToFirebase){
+        if (isUserLoggedToFirebase) {
             updateFirebaseToken();
         }
 
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             Boolean isEnteredFromInvitationNotification = intent.getBooleanExtra(
                     "INVITATION_NOTIFICATION", false);
-            if(isEnteredFromInvitationNotification)
+            if (isEnteredFromInvitationNotification)
                 onClickNavItem(InvitationsFragment.class);
         }
 

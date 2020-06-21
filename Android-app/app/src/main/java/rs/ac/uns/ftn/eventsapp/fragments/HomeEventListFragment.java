@@ -71,7 +71,7 @@ public class HomeEventListFragment extends Fragment {
 
         Log.d("CREATE_HOME", "da");
         //items = TestMockup.getInstance().events;
-        setItUp();
+        setItUp(getArguments());
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         layoutManager = new LinearLayoutManager(getActivity());
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row);
@@ -160,7 +160,7 @@ public class HomeEventListFragment extends Fragment {
 
     private void getEventsPage(int num, SearchFilterEventsDTO dto) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -196,8 +196,7 @@ public class HomeEventListFragment extends Fragment {
         return pullToRefresh;
     }
 
-    public void setItUp(){
-        Bundle bundle = this.getArguments();
+    public void setItUp(Bundle bundle){
         Log.d("SORT", bundle.getString("SORT"));
         ArrayList<String> types = bundle.getStringArrayList("TYPES");
         List<EventType> eventTypes = new ArrayList<>();

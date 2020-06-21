@@ -121,7 +121,7 @@ public class InterestedEventsListFragment extends Fragment {
 
     private void getEventsPage(int num) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
@@ -140,8 +140,9 @@ public class InterestedEventsListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<EventDTO>> call, Throwable t) {
-                Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 Log.d("ERROR", t.toString());
+                setItems(AppDataSingleton.getInstance().getInterestedEventsDTO());
             }
         });
     }

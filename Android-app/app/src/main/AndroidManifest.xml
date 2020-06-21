@@ -19,25 +19,36 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:theme">
-        <activity android:name=".activities.FriendRequestsActivity"></activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="tajna" />
+
 
         <receiver android:name=".sync.SyncReceiverInitTask" />
 
+
         <service android:name=".sync.SyncUserService" />
-        <service android:name=".firebase.notification.FirebaseService"
+        <service
+            android:name=".firebase.notification.FirebaseService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_SERVICE"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_SERVICE" />
             </intent-filter>
         </service>
-        <service android:name=".firebase.notification.FirebaseMessaging"
+        <service
+            android:name=".firebase.notification.FirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
 
         <activity
             android:name=".activities.UpdateEventActivity"
@@ -51,9 +62,11 @@
             android:name=".activities.CommentsActivity"
             android:label="@string/comments" />
         <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.SettingsFBUserActivity" />
         <activity android:name=".activities.AddFriendActivity" />
         <activity android:name=".activities.UserDetailActivity" />
         <activity android:name=".activities.ChatLogActivity" />
+        <activity android:name=".activities.FriendRequestsActivity" />
         <activity android:name=".activities.LatestMessagesActivity" />
         <activity
             android:name=".activities.LoginActivity"
@@ -122,14 +135,6 @@
             android:name=".activities.ForgottenPasswordActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="tajna" />
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -146,6 +151,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

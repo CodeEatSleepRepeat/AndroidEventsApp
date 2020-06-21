@@ -295,7 +295,7 @@ public class UserDetailActivity extends AppCompatActivity {
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
 
@@ -349,7 +349,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private FriendshipAppAPI getFriendshipApi() {
         FriendshipAppAPI friendshipAppAPI;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         friendshipAppAPI = retrofit.create(FriendshipAppAPI.class);
@@ -359,7 +359,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private UserAppApi getUserApi() {
         UserAppApi userAppi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         userAppi = retrofit.create(UserAppApi.class);

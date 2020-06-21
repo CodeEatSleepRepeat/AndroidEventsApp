@@ -406,7 +406,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     private UserAppApi getUserApi() {
         UserAppApi userAppi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         userAppi = retrofit.create(UserAppApi.class);

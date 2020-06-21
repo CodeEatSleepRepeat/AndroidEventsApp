@@ -15,9 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.eventsbackend.dto.UserDTO;
-import rs.ac.uns.ftn.eventsbackend.enums.FriendshipStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
-import rs.ac.uns.ftn.eventsbackend.model.Friendship;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 

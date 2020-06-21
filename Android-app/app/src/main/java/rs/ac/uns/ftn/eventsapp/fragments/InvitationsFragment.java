@@ -31,6 +31,7 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.activities.GoogleMapActivity;
 import rs.ac.uns.ftn.eventsapp.activities.SettingsActivity;
+import rs.ac.uns.ftn.eventsapp.activities.SettingsFBUserActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
@@ -211,7 +212,11 @@ public class InvitationsFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_settings_only_menu_item) {
-            openSettings();
+            if (AppDataSingleton.getInstance().isLoggedInFBUser()){
+                openFBSettings();
+            } else {
+                openSettings();
+            }
             return true;
         }
 
@@ -220,6 +225,11 @@ public class InvitationsFragment extends Fragment {
 
     private void openSettings() {
         Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void openFBSettings() {
+        Intent intent = new Intent(getActivity(), SettingsFBUserActivity.class);
         startActivity(intent);
     }
 
@@ -237,7 +247,7 @@ public class InvitationsFragment extends Fragment {
     private InvitationAppApi getInvitationApi() {
         InvitationAppApi invitationApi;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.localhost_uri))
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         invitationApi = retrofit.create(InvitationAppApi.class);
