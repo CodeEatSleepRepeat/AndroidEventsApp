@@ -61,10 +61,15 @@ public class EventService {
 		return page.getContent();
 	}
 
-	public List<Event> getMyEvents(Pageable pageable, Long id) throws Exception {
+	public List<Event> getMyEvents(Pageable pageable, Long id, SearchFilterEventsDTO dto) throws Exception {
 		Optional<User> user = userRepository.findById(id);
 		if (user.isPresent()) {
-			Page<Event> page = eventRepository.findByOwnerAndSyncStatusNot(user.get(), SyncStatus.DELETE, pageable);
+			Page<Event> page;
+			if(dto.getSearch()!=null && !dto.getSearch().equals("")) {
+				page = eventRepository.findByOwnerAndSyncStatusNotAndNameContainingIgnoreCase(user.get(), SyncStatus.DELETE, dto.getSearch(), pageable);
+			}else {
+				page = eventRepository.findByOwnerAndSyncStatusNot(user.get(), SyncStatus.DELETE, pageable);
+			}
 			return page.getContent();
 		}
 		throw new Exception("User with id " + id + " not found!");
@@ -74,13 +79,23 @@ public class EventService {
 		return eventRepository.findAllByOwnerAndUpdatedTime(id, timestamp);
 	}
 
-	public List<Event> getGoingEvents(Pageable pageable, Long id) {
-		Page<Event> page = eventRepository.findByGoingIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
+	public List<Event> getGoingEvents(Pageable pageable, Long id, SearchFilterEventsDTO dto) {
+		Page<Event> page;
+		if(dto.getSearch()!=null && !dto.getSearch().equals("")) {
+			page = eventRepository.findByGoingIdAndSyncStatusNotAndNameContainingIgnoreCase(id, SyncStatus.DELETE, dto.getSearch(), pageable);
+		}else {
+			page = eventRepository.findByGoingIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
+		}
 		return page.getContent();
 	}
 
-	public List<Event> getInterestedEvents(Pageable pageable, Long id) {
-		Page<Event> page = eventRepository.findByInterestedIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
+	public List<Event> getInterestedEvents(Pageable pageable, Long id, SearchFilterEventsDTO dto) {
+		Page<Event> page;
+		if(dto.getSearch()!=null && !dto.getSearch().equals("")) {
+			page = eventRepository.findByInterestedIdAndSyncStatusNotAndNameContainingIgnoreCase(id, SyncStatus.DELETE, dto.getSearch(), pageable);
+		}else {
+			page = eventRepository.findByInterestedIdAndSyncStatusNot(id, SyncStatus.DELETE, pageable);
+		}
 		return page.getContent();
 	}
 
@@ -310,7 +325,7 @@ public class EventService {
 		EventType party = null;*/
 		Pageable pageable = PageRequest.of(num, 10);
 		if(dto.getSortType().equals(SortType.FOR_YOU)) {
-		events = eventRepository.getEventsSearchFilterForYou(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
+			events = eventRepository.getEventsSearchFilterForYou(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 				dto.getEventStart(), dto.getEventEnd(), 1,
 				types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
 		}else if(dto.getSortType().equals(SortType.RECENT)) {

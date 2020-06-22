@@ -197,6 +197,7 @@ public class HomeEventListFragment extends Fragment {
     }
 
     public void setItUp(Bundle bundle){
+
         Log.d("SORT", bundle.getString("SORT"));
         ArrayList<String> types = bundle.getStringArrayList("TYPES");
         List<EventType> eventTypes = new ArrayList<>();
@@ -205,6 +206,9 @@ public class HomeEventListFragment extends Fragment {
         Log.d("LAT", bundle.getString("LAT"));
         Log.d("LNG", bundle.getString("LNG"));
         Log.d("DIST", bundle.getString("DIST"));
+        if(bundle.getString("SEARCH")!=null && !bundle.getString("SEARCH").equals("")){
+            dto.setSearch(bundle.getString("SEARCH"));
+        }
         if(!types.isEmpty()){
             for (String categoryItem : types) {
                 Log.d("CATEGORYITEM", categoryItem);

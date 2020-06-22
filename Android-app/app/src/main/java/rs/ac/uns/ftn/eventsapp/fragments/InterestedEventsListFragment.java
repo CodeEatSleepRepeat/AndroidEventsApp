@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -16,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,17 +50,23 @@ public class InterestedEventsListFragment extends Fragment {
     private SwipeRefreshLayout pullToRefresh;
     private boolean isLoading = false;
     private int currentPage = PAGE_START;
+    private SearchFilterEventsDTO dto = new SearchFilterEventsDTO();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.findItem(R.id.filterEventsBtn).setVisible(false);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        /*if(currentPage==-1){
-            currentPage = PAGE_START;
-        }
-        if(items==null) {
-            items = new ArrayList<>();
-            getEventsPage(PAGE_START);
-        }*/
 
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.recyclerview);
@@ -87,7 +97,7 @@ public class InterestedEventsListFragment extends Fragment {
             protected void loadMoreItems() {
                 isLoading = true;
                 currentPage += 1;
-                getEventsPage(currentPage);
+                getEventsPage(currentPage, dto);
             }
 
             @Override
@@ -105,7 +115,7 @@ public class InterestedEventsListFragment extends Fragment {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_interested);
         items.clear();
         currentPage = PAGE_START;
-        getEventsPage(PAGE_START);
+        getEventsPage(PAGE_START, dto);
     }
 
     public List<EventDTO> getItems() {
@@ -119,13 +129,13 @@ public class InterestedEventsListFragment extends Fragment {
         new SyncInterestedList(this).execute();
     }
 
-    private void getEventsPage(int num) {
+    private void getEventsPage(int num, SearchFilterEventsDTO dto) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInterestedEvents(AppDataSingleton.getInstance().getLoggedUser().getId(), num, new SearchFilterEventsDTO());
+        Call<List<EventDTO>> events = e.getInterestedEvents(AppDataSingleton.getInstance().getLoggedUser().getId(), num, dto);
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
@@ -156,5 +166,20 @@ public class InterestedEventsListFragment extends Fragment {
 
     public SwipeRefreshLayout getPullToRefresh() {
         return pullToRefresh;
+    }
+
+    private void setItUp(Bundle bundle){
+        if(bundle.getString("SEARCH")!=null && !bundle.getString("SEARCH").equals("")){
+            dto.setSearch(bundle.getString("SEARCH"));
+            dto.setEventStart(ZonedDateTime.now());
+            dto.setEventEnd(ZonedDateTime.now());
+        }
+    }
+
+    public void onSearch(Bundle bundle){
+        setItUp(bundle);
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START, dto);
     }
 }

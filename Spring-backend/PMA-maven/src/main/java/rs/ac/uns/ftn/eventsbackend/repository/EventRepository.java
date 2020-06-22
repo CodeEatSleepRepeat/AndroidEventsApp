@@ -52,8 +52,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	
 	Page<Event> findAllBySyncStatusNot(SyncStatus s, Pageable pageable);
 	Page<Event> findByOwnerAndSyncStatusNot(User user, SyncStatus s, Pageable pageable);
+	Page<Event> findByOwnerAndSyncStatusNotAndNameContainingIgnoreCase(User user, SyncStatus s, String name, Pageable pageable);
 	Page<Event> findByGoingIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
+	Page<Event> findByGoingIdAndSyncStatusNotAndNameContainingIgnoreCase(Long id, SyncStatus s, String name, Pageable pageable);
 	Page<Event> findByInterestedIdAndSyncStatusNot(Long id, SyncStatus s, Pageable pageable);
+	Page<Event> findByInterestedIdAndSyncStatusNotAndNameContainingIgnoreCase(Long id, SyncStatus s, String name, Pageable pageable);
 	List<Event> findByType(EventType et);
 	
 	Page<Event> findAllBySyncStatus(SyncStatus s, Pageable pageable);

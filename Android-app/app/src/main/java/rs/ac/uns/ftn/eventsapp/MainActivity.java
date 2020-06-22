@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ChipGroup chipGroup;
+    private SearchView searchView;
     private Boolean mLocationPermissionGranted = true;
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
@@ -128,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         // we add permissions we need to request location of the users
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -404,6 +405,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.settings_drawer_home, menu);
+        MenuItem menuItem = menu.findItem(R.id.searchEventsBtn);
+        //Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+        searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+              @Override
+              public boolean onQueryTextSubmit(String query) {
+                  Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+                  if(f instanceof HomeEventListFragment) {
+                      HomeEventListFragment homeEventListFragment = (HomeEventListFragment) f;
+                      homeEventListFragment.afterChipRemoved(setUpSearchFilter());
+                  }else if(f instanceof GoingEventsListFragment){
+                      GoingEventsListFragment goingEventsListFragment = (GoingEventsListFragment) f;
+                      goingEventsListFragment.onSearch(setUpSearchFilter());
+                  }else if(f instanceof InterestedEventsListFragment){
+                      InterestedEventsListFragment interestedEventsListFragment = (InterestedEventsListFragment) f;
+                      interestedEventsListFragment.onSearch(setUpSearchFilter());
+                  }else if(f instanceof MyEventsListFragment){
+                      MyEventsListFragment myEventsListFragment = (MyEventsListFragment) f;
+                      myEventsListFragment.onSearch(setUpSearchFilter());
+                  }
+                  searchView.setQuery("",false);
+                  return false;
+              }
+
+              @Override
+              public boolean onQueryTextChange(String newText) {
+                  return false;
+              }
+          }
+        );
         return true;
     }
 
@@ -815,20 +846,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (fragment instanceof HomeEventListFragment) {
             Log.d("AttachHome", "yep");
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_home);
-            if (navigationView != null)
+            if (navigationView != null) {
                 navigationView.getMenu().findItem(R.id.navigation_item_home).setChecked(true);
+            }
         } else if (fragment instanceof MyEventsListFragment) {
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_myEvents);
-            if (navigationView != null)
+            if (navigationView != null) {
                 navigationView.getMenu().findItem(R.id.navigation_item_myEvents).setChecked(true);
+                //findViewById(R.id.filterEventsBtn).setVisibility(View.INVISIBLE);
+            }
         } else if (fragment instanceof InterestedEventsListFragment) {
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_interested);
-            if (navigationView != null)
+            if (navigationView != null) {
                 navigationView.getMenu().findItem(R.id.navigation_item_interested).setChecked(true);
+                //findViewById(R.id.filterEventsBtn).setVisibility(View.INVISIBLE);
+            }
         } else if (fragment instanceof GoingEventsListFragment) {
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_going);
-            if (navigationView != null)
+            if (navigationView != null) {
                 navigationView.getMenu().findItem(R.id.navigation_item_going).setChecked(true);
+                //findViewById(R.id.filterEventsBtn).setVisibility(View.INVISIBLE);
+            }
         } else if (fragment instanceof LatestMessagesFragment) {
             if (toolbar != null) toolbar.setTitle(R.string.nav_item_messages);
             if (navigationView != null)
@@ -974,6 +1012,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private Bundle setUpSearchFilter() {
         Bundle bundle = new Bundle();
+        if(searchView.getQuery()!=null && !searchView.getQuery().toString().equals("")){
+            bundle.putString("SEARCH", searchView.getQuery().toString());
+        }
         bundle.putString("SORT", sortType.name());
         bundle.putStringArrayList("TYPES", eventTypes);
         bundle.putString("START", start);
@@ -991,6 +1032,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         bundle.putString("DIST", distance + "");
         return bundle;
     }
+
+    /*private Bundle setUpSearchFilterWhenSearchClicked() {
+        Bundle bundle = new Bundle();
+        if(!searchView.getQuery().toString().equals("")){
+            bundle.putString("SEARCH", searchView.getQuery().toString());
+        }
+        bundle.putString("SORT", sortType.name());
+        bundle.putStringArrayList("TYPES", eventTypes);
+        bundle.putString("START", start);
+        bundle.putString("END", end);
+        Log.d("NamestiFilterEE", "da");
+        if (location != null) {
+            Log.d("Location is not null", "da");
+            bundle.putString("LAT", location.getLatitude() + "");
+            bundle.putString("LNG", location.getLongitude() + "");
+        } else {
+            Log.d("Location is null", "da");
+            bundle.putString("LAT", "-300");
+            bundle.putString("LNG", "-300");
+        }
+
+        bundle.putString("DIST", distance + "");
+        return bundle;
+    }*/
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
         ArrayList<String> result = new ArrayList<>();
@@ -1159,7 +1224,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             }
         }
-
         FloatingActionButton fab = findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1198,6 +1262,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (isEnteredFromInvitationNotification)
                 onClickNavItem(InvitationsFragment.class);
         }
+
+
 
     }
 

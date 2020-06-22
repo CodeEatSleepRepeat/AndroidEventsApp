@@ -152,7 +152,7 @@ public class EventController {
 				facebookService.pullEvents(dbUser.getFacebookToken(), dbUser);
 			}
 			
-			events = eventService.getMyEvents(pageable, id);
+			events = eventService.getMyEvents(pageable, id, searchFilterEventsDTO);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
@@ -169,7 +169,7 @@ public class EventController {
 			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		System.out.println("stigao");
 		Pageable pageable = PageRequest.of(num, 10);
-		List<Event> events = eventService.getGoingEvents(pageable, id);
+		List<Event> events = eventService.getGoingEvents(pageable, id, searchFilterEventsDTO);
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
@@ -182,7 +182,7 @@ public class EventController {
 	public ResponseEntity<List<EventDTO>> interestedEventsPageable(@PathVariable Long id, @PathVariable int num,
 			@RequestBody SearchFilterEventsDTO searchFilterEventsDTO) {
 		Pageable pageable = PageRequest.of(num, 10);
-		List<Event> events = eventService.getInterestedEvents(pageable, id);
+		List<Event> events = eventService.getInterestedEvents(pageable, id, searchFilterEventsDTO);
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);

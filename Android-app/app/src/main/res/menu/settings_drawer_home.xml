@@ -13,6 +13,7 @@
         android:orderInCategory="110"
         android:title="FilterEvents"
         app:showAsAction="always" />
+
     <item
         android:id="@+id/searchEventsBtn"
         android:icon="@drawable/ic_mysearch"
