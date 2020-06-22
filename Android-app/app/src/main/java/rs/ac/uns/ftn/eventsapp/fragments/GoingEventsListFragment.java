@@ -45,6 +45,7 @@ public class GoingEventsListFragment extends Fragment {
     private SwipeRefreshLayout pullToRefresh;
     private boolean isLoading = false;
     private int currentPage = PAGE_START;
+    private boolean isVisible = false;
 
     @Nullable
     @Override
@@ -101,6 +102,7 @@ public class GoingEventsListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_going);
+        //getActivity().findViewById(R.id.filterEventsBtn).setVisibility(View.INVISIBLE);
         items.clear();
         currentPage = PAGE_START;
         getEventsPage(PAGE_START);

@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d("PreIsMapEnabled", "da");
         isMapsEnabled();
         Log.d("PosleIsMapEnabled", "da");
+
         googleApiClient = new GoogleApiClient.Builder(this).
                 addApi(LocationServices.API).
                 addConnectionCallbacks(this).
@@ -727,6 +728,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
+        if (chip.getText().toString().endsWith("km")) {
+            distance = 100;
+        }else{
+            List<String> types = new ArrayList<>();
+            types.addAll(eventTypes);
+            switch (chip.getText().toString()) {
+                case "Charity":
+                    for (String type : types) {
+                        if(type.equals("Charity")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                case "Educational":
+                    for (String type : types) {
+                        if(type.equals("Educational")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                case "Talks":
+                    for (String type : types) {
+                        if(type.equals("Talks")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                case "Music":
+                    for (String type : types) {
+                        if(type.equals("Music")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                case "Party":
+                    for (String type : types) {
+                        if(type.equals("Party")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                case "Sports":
+                    for (String type : types) {
+                        if(type.equals("Sports")){
+                            eventTypes.remove(type);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        HomeEventListFragment f = (HomeEventListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+        f.afterChipRemoved(setUpSearchFilter());
         chip.startAnimation(anim);
     }
 
@@ -1054,13 +1109,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                             }
                                         }
                                     });
-                            return;
+                            mLocationPermissionGranted = false;
+                            finish();
+                            startActivity(getIntent());
                         }
                     }
                 } else {
-                    if (googleApiClient != null) {
-                        googleApiClient.connect();
-                    }
+                    mLocationPermissionGranted = true;
+                    finish();
+                    startActivity(getIntent());
                 }
 
                 break;

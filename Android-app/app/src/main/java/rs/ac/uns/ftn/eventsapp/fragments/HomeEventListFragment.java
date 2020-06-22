@@ -270,4 +270,11 @@ public class HomeEventListFragment extends Fragment {
             dto.setLng(Double.parseDouble(bundle.getString("LNG")));
         }
     }
+
+    public void afterChipRemoved(Bundle bundle){
+        setItUp(bundle);
+        items.clear();
+        currentPage = PAGE_START;
+        getEventsPage(PAGE_START, dto);
+    }
 }
