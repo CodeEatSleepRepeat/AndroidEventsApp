@@ -11,11 +11,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +40,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.text.DateFormat;
@@ -59,7 +63,7 @@ public class GoogleMapActivity extends AppCompatActivity
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
+    private static final long UPDATE_INTERVAL = 10000, FASTEST_INTERVAL = 10000; // = 5 seconds
     // lists for permissions
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
@@ -82,7 +86,7 @@ public class GoogleMapActivity extends AppCompatActivity
         setContentView(R.layout.activity_google_map);
         mMapView = findViewById(R.id.mapView);
         events = (ArrayList<EventForMapDTO>) getIntent().getSerializableExtra("EVENTS");
-        // we add permissions we need to request location of the users
+        // we add permissions we need to request location of the user
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
@@ -111,14 +115,31 @@ public class GoogleMapActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        /*googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        float zoom = 17.0f;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(pref.getString("pref_default_map_zoom", "1")!=null) {
+            if(pref.getString("pref_default_map_zoom", "1").equals("1")){
+                zoom = 17.0f;
+            }else if(pref.getString("pref_default_map_zoom", "1").equals("2")){
+                zoom = 13.0f;
+            }else if(pref.getString("pref_default_map_zoom", "1").equals("3")){
+                zoom = 8.0f;
+            }
+        }
         Log.d("onMapReady", "called" + location.getLatitude() + " : " + location.getLatitude());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions currentLocationMarker = new MarkerOptions().position(latLng).title("You");
-        //googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomGesturesEnabled(false);
         googleMap.clear();
         googleMap.addMarker(currentLocationMarker);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         addEventsOnMap(googleMap, events);
     }
 
@@ -137,7 +158,7 @@ public class GoogleMapActivity extends AppCompatActivity
 
         for(EventForMapDTO e : events){
             ClusterMarker newClusterMarker = new ClusterMarker(
-                    new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), e.getEventName(), e.getEventImageURI()
+                    new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), "", e.getEventImageURI()
             );
             Log.d("Podaci: ", " " + newClusterMarker.getPosition());
             mClusterManager.addItem(newClusterMarker);
@@ -146,6 +167,8 @@ public class GoogleMapActivity extends AppCompatActivity
         mClusterManager.cluster();
 
     }
+
+
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
         ArrayList<String> result = new ArrayList<>();

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +29,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.models.SortType;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
@@ -132,6 +135,27 @@ public class FilterEventsActivity extends AppCompatActivity {
             }
         });
 
+        /*SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(pref.getString("pref_default_event_sort", "2")!=null){
+            if(pref.getString("pref_default_event_sort", "2").equals("1")){
+                forYouFilterBtn.setChecked(true);
+                recentFilterBtn.setChecked(false);
+                popularFilterBtn.setChecked(false);
+            }else if(pref.getString("pref_default_event_sort", "2").equals("2")){
+                forYouFilterBtn.setChecked(false);
+                recentFilterBtn.setChecked(true);
+                popularFilterBtn.setChecked(false);
+            }else if(pref.getString("pref_default_event_sort", "2").equals("3")){
+                forYouFilterBtn.setChecked(false);
+                recentFilterBtn.setChecked(false);
+                popularFilterBtn.setChecked(true);
+            }
+        }else{
+            forYouFilterBtn.setChecked(true);
+            recentFilterBtn.setChecked(false);
+            popularFilterBtn.setChecked(false);
+        }*/
+
         /*
          * Listener koji se odnosi na kalendar
          * Postavlja izabrani pocetni datum u edit text
@@ -145,6 +169,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
                 startingDateEditText.setText(sdf.format(calendar.getTime()));
+                startingDateEditText.setError(null);
             }
         };
 
@@ -162,6 +187,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 } else {
                     startingTimeEditText.setText(hourOfDay + ":" + minute);
                 }
+                startingTimeEditText.setError(null);
             }
         };
 
@@ -211,6 +237,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.FRANCE);
                 endingDateEditText.setText(sdf.format(calendar2.getTime()));
+                endingDateEditText.setError(null);
             }
         };
 
@@ -228,6 +255,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 } else {
                     endingTimeEditText.setText(hourOfDay + ":" + minute);
                 }
+                endingTimeEditText.setError(null);
             }
         };
 
@@ -285,8 +313,6 @@ public class FilterEventsActivity extends AppCompatActivity {
         saveFilterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Ovde se vade podaci koje je korisnik izabrao i proverava se validnost unetih podataka
-                Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("DISTANCE", seekbar.getProgress());
@@ -324,8 +350,11 @@ public class FilterEventsActivity extends AppCompatActivity {
                 }
                 returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                if(validationSuccess()) {
+                    Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
             }
         });
 
@@ -432,5 +461,33 @@ public class FilterEventsActivity extends AppCompatActivity {
             list[i] = array.get(i);
         }
         return list;
+    }
+
+    private Boolean validationSuccess() {
+        if (startingDateEditText.getText().toString().trim().equals("") && !startingTimeEditText.getText().toString().trim().equals("")) {
+            Toast.makeText(getApplicationContext(), "Both start date and start time need to be filled in!", Toast.LENGTH_LONG).show();
+            startingDateEditText.setError(Integer.toString(R.string.blankFieldError));
+            return false;
+        }
+        if (!startingDateEditText.getText().toString().trim().equals("") && startingTimeEditText.getText().toString().trim().equals("")) {
+            Toast.makeText(getApplicationContext(), "Both start date and start time need to be filled in!", Toast.LENGTH_LONG).show();
+            startingTimeEditText.setError(Integer.toString(R.string.blankFieldError));
+            return false;
+        }
+        if (endingDateEditText.getText().toString().trim().equals("") && !endingTimeEditText.getText().toString().trim().equals("")) {
+            Toast.makeText(getApplicationContext(), "Both end date and end time need to be filled in!", Toast.LENGTH_LONG).show();
+            endingDateEditText.setError(Integer.toString(R.string.blankFieldError));
+            return false;
+        }
+        if (!endingDateEditText.getText().toString().trim().equals("") && endingTimeEditText.getText().toString().trim().equals("")) {
+            Toast.makeText(getApplicationContext(), "Both end date and end time need to be filled in!", Toast.LENGTH_LONG).show();
+            endingTimeEditText.setError(Integer.toString(R.string.blankFieldError));
+            return false;
+        }
+        if (calendar.getTimeInMillis() >= calendar2.getTimeInMillis()) {
+            Toast.makeText(getApplicationContext(), R.string.createEventValidation10, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 }

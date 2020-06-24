@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.List;
@@ -56,7 +57,8 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         EventDTO item = mItems.get(i);
         viewHolder.eventNameTextView.setText(item.getName());
         viewHolder.eventAddressTextView.setText(item.getPlace());
-        viewHolder.eventStartDate.setText(formatter.format(item.getStart_time()));
+        String startDate = formatter.format(item.getStart_time());
+        viewHolder.eventStartDate.setText(startDate.substring(0, startDate.length() - 6));
         String imageUri = item.getImageUri();
         Log.d("LINK", imageUri);
         if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
@@ -64,6 +66,10 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         } else if (imageUri == null || imageUri.equals("")) {
             imageUri = "image"; //for picasso to not crash if image is empty or null
         }
+        if(item.getDistance()!=null){
+            viewHolder.eventDistance.setText( String.valueOf(item.getDistance()).substring(0, 6)+ " km");
+        }
+
         Picasso.get()
                 .load(imageUri)
                 .placeholder(R.drawable.ic_missing_event_icon)
@@ -113,6 +119,19 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
                 viewHolder.itemView.findViewById(R.id.image_not_interested_item_invitation);
         ImageView notGoing =
                 viewHolder.itemView.findViewById(R.id.image_not_going_item_invitation);
+
+        if(item.getExpired()!=null){
+            if(imageInterestedAction!= null && item.getExpired()){
+                imageInterestedAction.setVisibility(View.INVISIBLE);
+            }else if(imageInterestedAction!= null && !item.getExpired()){
+                imageInterestedAction.setVisibility(View.VISIBLE);
+            }
+            if(imageGoingAction!= null && item.getExpired().equals(true)){
+                imageGoingAction.setVisibility(View.INVISIBLE);
+            }else if(imageGoingAction!= null && !item.getExpired()){
+                imageGoingAction.setVisibility(View.VISIBLE);
+            }
+        }
 
         if (imageInterestedAction != null) {
             imageInterestedAction.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +221,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         private final TextView eventNameTextView;
         private final TextView eventAddressTextView;
         private final TextView eventStartDate;
+        private final TextView eventDistance;
         private final ImageView eventImage;
 
         EventViewHolder(View v) {
@@ -210,6 +230,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             eventAddressTextView = v.findViewById(R.id.event_list_address);
             eventStartDate = v.findViewById(R.id.event_list_start_date);
             eventImage = v.findViewById(R.id.event_list_image);
+            eventDistance = v.findViewById(R.id.event_distance);
         }
     }
 

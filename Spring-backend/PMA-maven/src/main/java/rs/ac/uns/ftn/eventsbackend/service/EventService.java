@@ -24,8 +24,10 @@ import rs.ac.uns.ftn.eventsbackend.enums.EventType;
 import rs.ac.uns.ftn.eventsbackend.enums.SortType;
 import rs.ac.uns.ftn.eventsbackend.enums.SyncStatus;
 import rs.ac.uns.ftn.eventsbackend.model.Event;
+import rs.ac.uns.ftn.eventsbackend.model.Invitation;
 import rs.ac.uns.ftn.eventsbackend.model.User;
 import rs.ac.uns.ftn.eventsbackend.repository.EventRepository;
+import rs.ac.uns.ftn.eventsbackend.repository.InvitationRepository;
 import rs.ac.uns.ftn.eventsbackend.repository.UserRepository;
 
 @Service
@@ -39,6 +41,9 @@ public class EventService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private InvitationRepository invitationRepository;
 
 	public Event findById(Long id) {
 		try {
@@ -113,6 +118,7 @@ public class EventService {
 				going.add(e.get());
 				u.get().setGoingEvents(going);
 				userRepository.save(u.get());
+				deleteInvitationsForUserAndEvent(e, u);
 				return e.get();
 			}
 			throw new Exception("User is already going to this event!");
@@ -134,11 +140,21 @@ public class EventService {
 				interested.add(e.get());
 				u.get().setInterestedEvents(interested);
 				userRepository.save(u.get());
+				deleteInvitationsForUserAndEvent(e, u);
 				return e.get();
 			}
 			throw new Exception("User is already interested in this event!");
 		}
 		throw new Exception("User or event not found!");
+	}
+	
+	private void deleteInvitationsForUserAndEvent(Optional<Event> e, Optional<User> u) {
+		Optional<List<Invitation>> eventInvitationThowardsUser = invitationRepository.findAllByInvitationReceiverIdAndEventId(u.get().getId(), e.get().getId());
+		if(eventInvitationThowardsUser.isPresent()) {
+			for(Invitation invitation : eventInvitationThowardsUser.get()) {
+				invitationRepository.delete(invitation);
+			}
+		}
 	}
 
 	public Event removeFromInterested(Long eventId, Long userId) throws Exception {

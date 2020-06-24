@@ -33,6 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
@@ -146,7 +147,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         goingBtn = findViewById(R.id.goingEventDetailsBtn);
         interestedBtn = findViewById(R.id.interestedEventDetailsBtn);
 
-        if (AppDataSingleton.getInstance().getLoggedUser()==null || AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getOwner())) {
+        if (dto.getEnd_time().isBefore(ZonedDateTime.now()) || AppDataSingleton.getInstance().getLoggedUser()==null || AppDataSingleton.getInstance().getLoggedUser().getId().equals(dto.getOwner())) {
             goingBtn.setVisibility(View.INVISIBLE);
             interestedBtn.setVisibility(View.INVISIBLE);
         }

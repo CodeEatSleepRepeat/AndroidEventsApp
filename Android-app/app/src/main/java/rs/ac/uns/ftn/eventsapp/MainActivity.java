@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
     private int distance = 100;
+    private int settingsDistance;
     private SortType sortType = SortType.RECENT;
     private ArrayList<String> eventTypes = new ArrayList<>();
     private String start = "min";// = Instant.ofEpochMilli(Long.MIN_VALUE).atZone(ZoneOffset.UTC);
@@ -125,9 +127,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
-        Log.d("SORTRFC", sortType.toString());
         AppDataSingleton.getInstance().setContext(this);
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(pref.getString("pref_default_distance2", "100")!=null) {
+            distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
+        }else{
+            distance = 100;
+        }
+        if(pref.getString("pref_default_event_sort", "2")!=null){
+            if(pref.getString("pref_default_event_sort", "2").equals("1")){
+                sortType = SortType.FOR_YOU;
+            }else if(pref.getString("pref_default_event_sort", "2").equals("2")){
+                sortType = SortType.RECENT;
+            }else if(pref.getString("pref_default_event_sort", "2").equals("3")){
+                sortType = SortType.POPULAR;
+            }
+        }else{
+            sortType = SortType.RECENT;
+        }
+        Log.d("izabranSortCreate", sortType.name());
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // we add permissions we need to request location of the users
@@ -610,7 +629,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     chipTexts.add(dist + "km");
                     distance = dist;
                 } else {
-                    distance = 100;
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    if(pref.getString("pref_default_distance2", "100")!=null) {
+                        distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
+                    }else{
+                        distance = 100;
+                    }
                 }
 
                 if (!startDate.equals("") && !startTime.equals("")) {
@@ -760,7 +784,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         });
 
         if (chip.getText().toString().endsWith("km")) {
-            distance = 100;
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if(pref.getString("pref_default_distance2", "100")!=null) {
+                distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
+            }else {
+                distance = 100;
+            }
         }else{
             List<String> types = new ArrayList<>();
             types.addAll(eventTypes);
@@ -1007,7 +1036,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("SORTRF", sortType.toString());
+        /*SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(pref.getString("pref_default_distance2", "100")!=null) {
+            if(settingsDistance != Integer.parseInt(pref.getString("pref_default_distance2", "100"))) {
+                distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
+                settingsDistance = distance;
+            }
+        }else{
+            distance = 100;
+        }
+        if(pref.getString("pref_default_event_sort", "2")!=null){
+            if(pref.getString("pref_default_event_sort", "2").equals("1")){
+                sortType = SortType.FOR_YOU;
+            }else if(pref.getString("pref_default_event_sort", "2").equals("2")){
+                sortType = SortType.RECENT;
+            }else if(pref.getString("pref_default_event_sort", "2").equals("3")){
+                sortType = SortType.POPULAR;
+            }
+        }else{
+            sortType = SortType.RECENT;
+        }
+        Log.d("izabranSort", sortType.name());*/
     }
 
     private Bundle setUpSearchFilter() {

@@ -27,6 +27,7 @@ public class EventDTO implements Serializable {
     private ZonedDateTime updated_time;
     private ZonedDateTime created_time;
     private Double distance;
+    private Boolean expired;
 
     public EventDTO() {
     }
@@ -193,5 +194,13 @@ public class EventDTO implements Serializable {
 
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+
+    public Boolean getExpired() {
+        return expired;
+    }
+
+    public void setExpired(Boolean expired) {
+        this.expired = expired;
     }
 }

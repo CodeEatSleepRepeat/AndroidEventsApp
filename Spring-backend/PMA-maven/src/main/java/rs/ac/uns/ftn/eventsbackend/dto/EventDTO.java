@@ -33,6 +33,7 @@ public class EventDTO {
 	private ZonedDateTime updated_time;
 	private ZonedDateTime created_time;
 	private Double distance;
+	private Boolean expired;
 	
 	public EventDTO(Event event) {
 		id = event.getId();

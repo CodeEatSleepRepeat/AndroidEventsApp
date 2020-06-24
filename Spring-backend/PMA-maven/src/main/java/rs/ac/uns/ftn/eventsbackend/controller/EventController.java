@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.eventsbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -173,6 +174,11 @@ public class EventController {
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
+			if(dto.getEnd_time().isBefore(ZonedDateTime.now())) {
+				dto.setExpired(true);
+			}else {
+				dto.setExpired(false);
+			}
 			dtos.add(dto);
 		}
 		return ResponseEntity.ok(dtos);
@@ -186,6 +192,11 @@ public class EventController {
 		List<EventDTO> dtos = new ArrayList<>();
 		for (Event event : events) {
 			EventDTO dto = new EventDTO(event);
+			if(dto.getEnd_time().isBefore(ZonedDateTime.now())) {
+				dto.setExpired(true);
+			}else {
+				dto.setExpired(false);
+			}
 			dtos.add(dto);
 		}
 		return ResponseEntity.ok(dtos);

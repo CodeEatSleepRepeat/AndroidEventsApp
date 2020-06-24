@@ -56,8 +56,23 @@
                 android:paddingLeft="5dp"
                 android:text="Event Start Date"
                 android:textSize="14sp" />
-        </LinearLayout>
 
+            <ImageView
+                android:id="@+id/event_distance_img"
+                android:layout_width="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/event_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:text="100 km"
+                android:textSize="14sp" />
+        </LinearLayout>
 
     </LinearLayout>
 
