@@ -181,6 +181,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed,
                             Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if (response.body() != null) {
                     adapter.clear();

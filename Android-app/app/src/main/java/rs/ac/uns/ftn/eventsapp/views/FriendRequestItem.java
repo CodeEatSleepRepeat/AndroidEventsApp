@@ -90,6 +90,7 @@ public class FriendRequestItem extends Item<GroupieViewHolder> {
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null) {
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
@@ -120,6 +121,7 @@ public class FriendRequestItem extends Item<GroupieViewHolder> {
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null) {
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),

@@ -339,7 +339,7 @@ public class EventService {
 		EventType sports = null;
 		EventType music = null;
 		EventType party = null;*/
-		Pageable pageable = PageRequest.of(num, 10);
+		try{Pageable pageable = PageRequest.of(num, 10);
 		if(dto.getSortType().equals(SortType.FOR_YOU)) {
 			events = eventRepository.getEventsSearchFilterForYou(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 				dto.getEventStart(), dto.getEventEnd(), 1,
@@ -352,6 +352,8 @@ public class EventService {
 			events = eventRepository.getEventsSearchFilterSoonest(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 					dto.getEventStart(), dto.getEventEnd(), 1,
 					types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
+		}}catch (Exception e) {
+			// TODO: handle exception
 		}
 		for (EventDistanceDTO event : events) {
 			dtos.add(new EventDTO(event.getE(), event.getDistance()));

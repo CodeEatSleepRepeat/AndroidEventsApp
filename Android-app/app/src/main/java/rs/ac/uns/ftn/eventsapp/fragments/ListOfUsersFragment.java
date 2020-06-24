@@ -154,40 +154,41 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     }
 
     private void getAllUsersFriends() {
-            UserAppApi userAppi;
-            userAppi = getUserApi();
+        UserAppApi userAppi;
+        userAppi = getUserApi();
 
-            User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
+        User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-            Call<List<User>> userFriends =
-                    userAppi.getFriendsOfUser(loggedUser.getId());
-            userFriends.enqueue(new Callback<List<User>>() {
-                @Override
-                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                    if (!response.isSuccessful()) {
-                        Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
-                                Toast.LENGTH_LONG).show();
-                    }
-                    if(response.body() != null) {
-                        userList.clear();
-                        userListAll.clear();
-                        adapter.clear();
-                        userList.addAll(response.body());
-                        userListAll.addAll(response.body());
-
-                        for (User user : userList) {
-                            adapter.add(new UserSimpleItem(user, false, false));
-                        }
-
-                    }
+        Call<List<User>> userFriends =
+                userAppi.getFriendsOfUser(loggedUser.getId());
+        userFriends.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
+                            Toast.LENGTH_LONG).show();
+                    return;
                 }
+                if (response.body() != null) {
+                    userList.clear();
+                    userListAll.clear();
+                    adapter.clear();
+                    userList.addAll(response.body());
+                    userListAll.addAll(response.body());
 
-                @Override
-                public void onFailure(Call<List<User>> call, Throwable t) {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
-                    Log.d("ERROR", t.toString());
+                    for (User user : userList) {
+                        adapter.add(new UserSimpleItem(user, false, false));
+                    }
+
                 }
-            });
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                Log.d("ERROR", t.toString());
+            }
+        });
     }
 
     private void goToAddFriendActivity() {
@@ -250,6 +251,13 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_friends);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        int i = 0;
+        i++;
+    }
+
     private Filter filter = new Filter() {
         //Ovo se pokrece u background niti...
         @Override
@@ -285,7 +293,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         }
     };
 
-    private void getNumberOfFriendRequests(){
+    private void getNumberOfFriendRequests() {
         FriendshipAppAPI friendshipAppAPI = getFriendshipApi();
 
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
@@ -297,16 +305,16 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
-                if(response.body() != null) {
+                if (response.body() != null) {
                     Button goToFriendRequestsBtn =
                             getActivity().findViewById(R.id.button_go_to_friend_requests_list_of_users);
-                    if(response.body()>0){
+                    if (response.body() > 0) {
                         goToFriendRequestsBtn.setVisibility(View.VISIBLE);
                         String friendRequests = getString(R.string.friend_requests);
                         goToFriendRequestsBtn.setText(response.body() + " " + friendRequests);
-                    }
-                    else{
+                    } else {
                         goToFriendRequestsBtn.setVisibility(View.GONE);
                     }
 
@@ -321,6 +329,7 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
             }
         });
     }
+
     private FriendshipAppAPI getFriendshipApi() {
         FriendshipAppAPI friendshipAppAPI;
         Retrofit retrofit = new Retrofit.Builder()

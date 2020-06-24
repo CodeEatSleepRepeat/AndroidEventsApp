@@ -119,6 +119,7 @@ public class AddFriendActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null) {
                     foundUsers.clear();
@@ -156,6 +157,7 @@ public class AddFriendActivity extends AppCompatActivity {
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null){
                     FriendshipDTO friendship = response.body();

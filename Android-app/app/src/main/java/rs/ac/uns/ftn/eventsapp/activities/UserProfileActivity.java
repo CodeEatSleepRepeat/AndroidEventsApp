@@ -521,7 +521,6 @@ public class UserProfileActivity extends AppCompatActivity {
                             loggedUser.getName(),loggedUser.getEmail());
                     if (bitmap != null) {
                         uploadImage(loggedUser.getId());
-
                     } else {
                         //update user in db
                         AppDataSingleton.getInstance().updateUser(response.body());

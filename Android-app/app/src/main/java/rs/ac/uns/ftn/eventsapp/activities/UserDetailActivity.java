@@ -161,6 +161,7 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null)
                     user = response.body();
@@ -188,6 +189,7 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null){
                     friendship = response.body();
@@ -488,6 +490,7 @@ public class UserDetailActivity extends AppCompatActivity {
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 isLoading = false;
                 items.addAll(response.body());

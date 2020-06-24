@@ -617,7 +617,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                             .enqueue(new Callback<rs.ac.uns.ftn.eventsapp.firebase.notification.Response>() {
                                 @Override
                                 public void onResponse(Call<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> call, retrofit2.Response<rs.ac.uns.ftn.eventsapp.firebase.notification.Response> response) {
-
+                                    //TODO: WTF se ovde desava?
                                 }
 
                                 @Override

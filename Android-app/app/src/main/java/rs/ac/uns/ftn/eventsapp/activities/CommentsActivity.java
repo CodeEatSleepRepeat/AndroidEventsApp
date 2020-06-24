@@ -119,6 +119,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 isLoading = false;
                 comments.addAll(response.body());
@@ -148,6 +149,7 @@ public class CommentsActivity extends AppCompatActivity {
                 public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
                     if (!response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                        return;
                     }
                     comments.add(response.body());
                     adapter.notifyDataSetChanged();

@@ -100,7 +100,7 @@ public class FriendshipService {
     }
 
     public FriendshipDTO getFriendship(Long user1, Long user2) {
-        Optional<Friendship> foundFriendship = friendshipRepository.findFriendshipOfTwoUsers(user1, user2);
+        Optional<Friendship> foundFriendship = friendshipRepository.findFriendshipOfTwoUsers(user1, user2, FriendshipStatus.ACCEPTED);
 
         if(foundFriendship.isPresent())
             return new FriendshipDTO(foundFriendship.get());

@@ -105,6 +105,7 @@ public class AuthorsEventsActivity extends AppCompatActivity {
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    return;
                 }
                 isLoading = false;
                 items.addAll(response.body());

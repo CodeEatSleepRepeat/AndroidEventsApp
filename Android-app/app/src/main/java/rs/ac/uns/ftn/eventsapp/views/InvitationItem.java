@@ -34,19 +34,19 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
     private GroupieViewHolder viewHolder;
 
-    public InvitationItem(InvitationDTO invitation){
+    public InvitationItem(InvitationDTO invitation) {
         this.invitation = invitation;
     }
 
     @Override
     public void bind(@NonNull final GroupieViewHolder viewHolder, int position) {
-        ImageView eventImage= viewHolder.itemView.findViewById(R.id.image_event_item_invitation);
+        ImageView eventImage = viewHolder.itemView.findViewById(R.id.image_event_item_invitation);
         TextView eventName = viewHolder.itemView.findViewById(R.id.text_event_name_item_invitation);
         TextView userUsername =
                 viewHolder.itemView.findViewById(R.id.text_invited_user_name_item_invitation);
         TextView eventDate = viewHolder.itemView.findViewById(R.id.text_event_date_item_invitation);
         this.viewHolder = viewHolder;
-        
+
         setOnClickListeners(viewHolder);
 //        // TODO: Ovde postaviti pravi url lol :D
 //        Picasso.get()
@@ -55,14 +55,14 @@ public class InvitationItem extends Item<GroupieViewHolder> {
 //                .error(R.drawable.ic_facebook_logo)
 //                .into(eventImage);
         Picasso.get().setLoggingEnabled(true);
-        if (invitation.getEvent().getImageUri().startsWith("http")){
+        if (invitation.getEvent().getImageUri().startsWith("http")) {
             Picasso.get().load(Uri.parse(invitation.getEvent().getImageUri())).placeholder(R.drawable.ic_user_icon).into(eventImage);
         } else {
             Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + invitation.getEvent().getImageUri())).placeholder(R.drawable.ic_user_icon).into(eventImage);
         }
 
         eventName.setText(invitation.getEvent().getName());
-        userUsername.setText(viewHolder.itemView.getContext().getString(R.string.invited_by)+" " + invitation.getSender().getName());
+        userUsername.setText(viewHolder.itemView.getContext().getString(R.string.invited_by) + " " + invitation.getSender().getName());
         eventDate.setText(formatter.format(invitation.getEvent().getStart_time()));
 
     }
@@ -72,7 +72,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         return R.layout.item_invitation;
     }
 
-    private void setOnClickListeners(@NonNull final GroupieViewHolder viewHolder){
+    private void setOnClickListeners(@NonNull final GroupieViewHolder viewHolder) {
         ImageView imageInterestedAction =
                 viewHolder.itemView.findViewById(R.id.image_interested_item_invitation);
         ImageView imageGoingAction =
@@ -121,7 +121,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         });
     }
 
-    private void userGoingAction(){
+    private void userGoingAction() {
         EventsAppAPI eventsAppAPI = getEventApi();
         Call<EventDTO> eventDTOCall =
                 eventsAppAPI.goingToEvent(invitation.getEvent().getId(),
@@ -130,7 +130,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         eventDTOCall.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     deleteInvitation();
                     hideInvitationView();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
@@ -154,7 +154,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         eventDTOCall.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     deleteInvitation();
                     hideInvitationView();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
@@ -169,7 +169,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         });
     }
 
-    private void userDeclinedInvitationAction(){
+    private void userDeclinedInvitationAction() {
         deleteInvitation();
     }
 
@@ -181,7 +181,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         invitationDeleteCall.enqueue(new Callback<InvitationDTO>() {
             @Override
             public void onResponse(Call<InvitationDTO> call, retrofit2.Response<InvitationDTO> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     hideInvitationView();
                 }
             }
@@ -205,7 +205,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
         imageDeclineAction.setVisibility(View.INVISIBLE);
     }
 
-    private void goToEventDetail(Context context){
+    private void goToEventDetail(Context context) {
         Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
         EventDTO transferObject = invitation.getEvent();
 

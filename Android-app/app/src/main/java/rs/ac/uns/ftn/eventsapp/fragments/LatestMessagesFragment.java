@@ -245,6 +245,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.failed,
                             Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(response.body() != null) {
                     userList.addAll(response.body());
