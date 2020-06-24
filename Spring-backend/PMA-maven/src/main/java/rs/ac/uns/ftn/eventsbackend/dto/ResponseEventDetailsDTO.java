@@ -20,6 +20,7 @@ public class ResponseEventDetailsDTO {
 	private List<String> interestedImages;
 	private String userImage;
 	private String userName;
+	private String userEmail;
 	private Integer organizedEventsNum;
 	private List<SimilarEventDTO> events;
 	

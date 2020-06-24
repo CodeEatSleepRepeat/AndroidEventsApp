@@ -107,7 +107,7 @@ public class UserService {
 		List<UserDTO> dtos = new ArrayList<>();
 		List<User> users = userRepository.findByGoingEventsId(eventId, pageable).getContent();
 		for (User user : users) {
-			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri()));
+			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri(), user.getEmail()));
 		}
 		return dtos;
 	}
@@ -117,7 +117,7 @@ public class UserService {
 		List<UserDTO> dtos = new ArrayList<>();
 		List<User> users = userRepository.findByInterestedEventsId(eventId, pageable).getContent();
 		for (User user : users) {
-			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri()));
+			dtos.add(new UserDTO(user.getId(), user.getName(), user.getImageUri(), user.getEmail()));
 		}
 		return dtos;
 	}

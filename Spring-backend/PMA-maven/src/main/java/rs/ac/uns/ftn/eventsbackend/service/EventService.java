@@ -275,6 +275,7 @@ public class EventService {
 			resDTO.setUserId(event.get().getOwner().getId());
 			resDTO.setUserImage(event.get().getOwner().getImageUri());
 			resDTO.setUserName(event.get().getOwner().getName());
+			resDTO.setUserEmail(event.get().getOwner().getEmail());
 			resDTO.setOrganizedEventsNum(event.get().getOwner().getUserEvents().size());
 
 			List<String> goingImages = new ArrayList<>();

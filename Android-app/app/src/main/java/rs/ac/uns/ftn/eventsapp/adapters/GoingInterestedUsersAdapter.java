@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.eventsapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,14 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import rs.ac.uns.ftn.eventsapp.R;
+import rs.ac.uns.ftn.eventsapp.activities.UserDetailActivity;
 import rs.ac.uns.ftn.eventsapp.dtos.UserDTO;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
+import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class GoingInterestedUsersAdapter extends RecyclerView.Adapter<GoingInterestedUsersAdapter.ViewHolder>{
 
-    private List<UserDTO> users = new ArrayList<>();
+    private List<UserDTO> users;
     private Context mContext;
 
     public GoingInterestedUsersAdapter(Context mContext, List<UserDTO> users) {
@@ -40,7 +43,7 @@ public class GoingInterestedUsersAdapter extends RecyclerView.Adapter<GoingInter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         String imageUri = users.get(position).getImgUri();
         if (!imageUri.equals("")) {
@@ -55,6 +58,13 @@ public class GoingInterestedUsersAdapter extends RecyclerView.Adapter<GoingInter
         }
 
         holder.name.setText(users.get(position).getName());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUserDetails(users.get(position).getName(), users.get(position).getImgUri(), users.get(position).getEmail(), users.get(position).getId());
+            }
+        });
     }
 
     @Override
@@ -74,6 +84,16 @@ public class GoingInterestedUsersAdapter extends RecyclerView.Adapter<GoingInter
             name = itemView.findViewById(R.id.goingInterestedUserName);
             parent = itemView.findViewById(R.id.goingInterestedUserParent);
         }
+    }
+
+    private void goToUserDetails(String name, String imageUri, String email, Long userId) {
+        Intent intent = new Intent(mContext, UserDetailActivity.class);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_NAME, name);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_IMAGE_PATH, imageUri);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_EMAIL, email);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_ID, userId);
+
+        mContext.startActivity(intent);
     }
 
 }

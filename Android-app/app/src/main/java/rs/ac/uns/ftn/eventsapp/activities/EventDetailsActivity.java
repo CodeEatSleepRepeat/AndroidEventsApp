@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.xwray.groupie.GroupieViewHolder;
 
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -65,6 +66,7 @@ import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
+import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -258,7 +260,16 @@ public class EventDetailsActivity extends AppCompatActivity {
             //korisnik vec ide na ovaj event
             interestedBtn.setText(R.string.notInterested);
         }
+    }
 
+    private void goToUserDetails(String name, String imageUri, String email, Long userId) {
+        Intent intent = new Intent(getApplicationContext(), UserDetailActivity.class);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_NAME, name);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_IMAGE_PATH, imageUri);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_EMAIL, email);
+        intent.putExtra(UserSimpleItem.EXTRA_USER_ID, userId);
+
+        startActivity(intent);
     }
 
     public static int getDominantColor(Bitmap bitmap) {
@@ -428,7 +439,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                         "SHARED_FRIENDS_IDS");
                 List<String> userEmails = data.getStringArrayListExtra("SHARED_FRIENDS_EMAILS");
 
-                for(int i=0; i<userIds.size(); i++){
+                for(int i=0; i<userEmails.size(); i++){
                     //sendInvitation
                     sendEventInvitation(userIds.get(i), userEmails.get(i));
                 }
@@ -504,6 +515,13 @@ public class EventDetailsActivity extends AppCompatActivity {
                 initGoingRV(res);
                 initInterestedRV(res);
                 initSimilarRV(res);
+
+                authorImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goToUserDetails(res.getUserName(), res.getUserImage(), res.getUserEmail(), res.getUserId());
+                    }
+                });
             }
 
             @Override
