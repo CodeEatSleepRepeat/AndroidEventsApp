@@ -261,12 +261,6 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_friends);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        //returnFloatActionButtonOfEvents();
-    }
-
     private Filter filter = new Filter() {
         //Ovo se pokrece u background niti...
         @Override

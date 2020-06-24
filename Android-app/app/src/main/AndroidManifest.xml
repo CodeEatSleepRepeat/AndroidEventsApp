@@ -100,10 +100,12 @@
             android:label="@string/authors_events" />
         <activity
             android:name=".activities.InterestedInEventActivity"
-            android:label="@string/nav_item_interested" />
+            android:label="@string/nav_item_interested"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.GoingToEventActivity"
-            android:label="@string/nav_item_going" />
+            android:label="@string/nav_item_going"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

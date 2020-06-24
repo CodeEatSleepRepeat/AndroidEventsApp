@@ -1,14 +1,14 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.xwray.groupie.GroupAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +21,9 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.GoingInterestedUsersAdapter;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.UserDTO;
-import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
-import rs.ac.uns.ftn.eventsapp.utils.TestMockup;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
-import rs.ac.uns.ftn.eventsapp.views.UserSimpleItem;
 
 public class InterestedInEventActivity extends AppCompatActivity {
 
@@ -41,6 +38,11 @@ public class InterestedInEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interested_in_event);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview_list_of_users_interested);
         layoutManager = new LinearLayoutManager(this);
@@ -97,5 +99,11 @@ public class InterestedInEventActivity extends AppCompatActivity {
         items.clear();
         currentPage = PAGE_START;
         getUsers(PAGE_START);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -19,13 +19,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 
-public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDetailsUserRecyclerView.ViewHolder>{
+public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDetailsUserRecyclerView.ViewHolder> {
 
     private List<String> mItems = new ArrayList<>();
     private Context mContext;
 
     public EventDetailsUserRecyclerView(Context mContext, List<String> uris) {
-        this.mItems = uris;
+        try {
+            this.mItems = uris.subList(0, 4);
+        } catch (IndexOutOfBoundsException ex) {
+            this.mItems = uris;
+        }
         this.mContext = mContext;
     }
 
@@ -57,8 +61,9 @@ public class EventDetailsUserRecyclerView extends RecyclerView.Adapter<EventDeta
         return mItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView image;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.userImgEventDetailsRV);

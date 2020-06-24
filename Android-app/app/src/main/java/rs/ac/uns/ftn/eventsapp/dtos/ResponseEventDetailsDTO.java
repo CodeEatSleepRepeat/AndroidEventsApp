@@ -11,13 +11,14 @@ public class ResponseEventDetailsDTO {
 	private List<String> interestedImages;
 	private String userImage;
 	private String userName;
+	private String userEmail;
 	private Integer organizedEventsNum;
 	private List<SimilarEventDTO> events;
 
 	public ResponseEventDetailsDTO() {
 	}
 
-	public ResponseEventDetailsDTO(Long userId, Boolean going, Boolean interested, List<String> goingImages, List<String> interestedImages, String userImage, String userName, Integer organizedEventsNum, List<SimilarEventDTO> events) {
+	public ResponseEventDetailsDTO(Long userId, Boolean going, Boolean interested, List<String> goingImages, List<String> interestedImages, String userImage, String userName, String userEmail, Integer organizedEventsNum, List<SimilarEventDTO> events) {
 		this.userId = userId;
 		this.going = going;
 		this.interested = interested;
@@ -25,6 +26,7 @@ public class ResponseEventDetailsDTO {
 		this.interestedImages = interestedImages;
 		this.userImage = userImage;
 		this.userName = userName;
+		this.userEmail = userEmail;
 		this.organizedEventsNum = organizedEventsNum;
 		this.events = events;
 	}
@@ -99,5 +101,13 @@ public class ResponseEventDetailsDTO {
 
 	public void setEvents(List<SimilarEventDTO> events) {
 		this.events = events;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 }

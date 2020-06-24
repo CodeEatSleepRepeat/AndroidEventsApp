@@ -184,6 +184,11 @@ public class UserDetailActivity extends AppCompatActivity {
 
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
+        if (loggedUser.getId()==userId){
+            //this is me
+            return;
+        }
+
         Call<FriendshipDTO> friendshipRequest =
                 friendshipAppAPI.getFriendshipOfTwoUsers(loggedUser.getId(), userId);
         friendshipRequest.enqueue(new Callback<FriendshipDTO>() {
@@ -245,6 +250,13 @@ public class UserDetailActivity extends AppCompatActivity {
         imageMessage.setVisibility(View.GONE);
     }
 
+    private void setViewAsMyself() {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_of_myself_user_details, menu);
+        ImageView imageMessage = findViewById(R.id.image_message_user_detail);
+        imageMessage.setVisibility(View.GONE);
+    }
+
     private void goToChatLog(){
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
@@ -297,6 +309,12 @@ public class UserDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_of_non_friend_user_details, menu);
+
+        if (AppDataSingleton.getInstance().getLoggedUser().getId()==userId){
+            //this is me
+            setViewAsMyself();
+        }
+
         return true;
     }
 

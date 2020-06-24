@@ -35,7 +35,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -130,20 +129,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         AppDataSingleton.getInstance().setContext(this);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(pref.getString("pref_default_distance2", "100")!=null) {
+        if (pref.getString("pref_default_distance2", "100") != null) {
             distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
-        }else{
+        } else {
             distance = 100;
         }
-        if(pref.getString("pref_default_event_sort", "2")!=null){
-            if(pref.getString("pref_default_event_sort", "2").equals("1")){
+        if (pref.getString("pref_default_event_sort", "2") != null) {
+            if (pref.getString("pref_default_event_sort", "2").equals("1")) {
                 sortType = SortType.FOR_YOU;
-            }else if(pref.getString("pref_default_event_sort", "2").equals("2")){
+            } else if (pref.getString("pref_default_event_sort", "2").equals("2")) {
                 sortType = SortType.RECENT;
-            }else if(pref.getString("pref_default_event_sort", "2").equals("3")){
+            } else if (pref.getString("pref_default_event_sort", "2").equals("3")) {
                 sortType = SortType.POPULAR;
             }
-        }else{
+        } else {
             sortType = SortType.RECENT;
         }
         Log.d("izabranSortCreate", sortType.name());
@@ -428,31 +427,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
         searchView = (SearchView) menuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-              @Override
-              public boolean onQueryTextSubmit(String query) {
-                  Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
-                  if(f instanceof HomeEventListFragment) {
-                      HomeEventListFragment homeEventListFragment = (HomeEventListFragment) f;
-                      homeEventListFragment.afterChipRemoved(setUpSearchFilter());
-                  }else if(f instanceof GoingEventsListFragment){
-                      GoingEventsListFragment goingEventsListFragment = (GoingEventsListFragment) f;
-                      goingEventsListFragment.onSearch(setUpSearchFilter());
-                  }else if(f instanceof InterestedEventsListFragment){
-                      InterestedEventsListFragment interestedEventsListFragment = (InterestedEventsListFragment) f;
-                      interestedEventsListFragment.onSearch(setUpSearchFilter());
-                  }else if(f instanceof MyEventsListFragment){
-                      MyEventsListFragment myEventsListFragment = (MyEventsListFragment) f;
-                      myEventsListFragment.onSearch(setUpSearchFilter());
-                  }
-                  searchView.setQuery("",false);
-                  return false;
-              }
+                                              @Override
+                                              public boolean onQueryTextSubmit(String query) {
+                                                  Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+                                                  if (f instanceof HomeEventListFragment) {
+                                                      HomeEventListFragment homeEventListFragment = (HomeEventListFragment) f;
+                                                      homeEventListFragment.afterChipRemoved(setUpSearchFilter());
+                                                  } else if (f instanceof GoingEventsListFragment) {
+                                                      GoingEventsListFragment goingEventsListFragment = (GoingEventsListFragment) f;
+                                                      goingEventsListFragment.onSearch(setUpSearchFilter());
+                                                  } else if (f instanceof InterestedEventsListFragment) {
+                                                      InterestedEventsListFragment interestedEventsListFragment = (InterestedEventsListFragment) f;
+                                                      interestedEventsListFragment.onSearch(setUpSearchFilter());
+                                                  } else if (f instanceof MyEventsListFragment) {
+                                                      MyEventsListFragment myEventsListFragment = (MyEventsListFragment) f;
+                                                      myEventsListFragment.onSearch(setUpSearchFilter());
+                                                  }
+                                                  searchView.setQuery("", false);
+                                                  return false;
+                                              }
 
-              @Override
-              public boolean onQueryTextChange(String newText) {
-                  return false;
-              }
-          }
+                                              @Override
+                                              public boolean onQueryTextChange(String newText) {
+                                                  return false;
+                                              }
+                                          }
         );
         return true;
     }
@@ -630,9 +629,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     distance = dist;
                 } else {
                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    if(pref.getString("pref_default_distance2", "100")!=null) {
+                    if (pref.getString("pref_default_distance2", "100") != null) {
                         distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
-                    }else{
+                    } else {
                         distance = 100;
                     }
                 }
@@ -693,7 +692,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 try {
                     Bundle bundle = setUpSearchFilter();
                     f.setArguments(bundle);
-                    if (f instanceof HomeEventListFragment) ((HomeEventListFragment)f).setItUp(bundle);
+                    if (f instanceof HomeEventListFragment)
+                        ((HomeEventListFragment) f).setItUp(bundle);
                     FragmentTransition.to(f, this, true);
                 } catch (Exception e) {
                     Log.d(this.getClass().getName(), "onClickNavItem: ");
@@ -785,53 +785,53 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (chip.getText().toString().endsWith("km")) {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            if(pref.getString("pref_default_distance2", "100")!=null) {
+            if (pref.getString("pref_default_distance2", "100") != null) {
                 distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
-            }else {
+            } else {
                 distance = 100;
             }
-        }else{
+        } else {
             List<String> types = new ArrayList<>();
             types.addAll(eventTypes);
             switch (chip.getText().toString()) {
                 case "Charity":
                     for (String type : types) {
-                        if(type.equals("Charity")){
+                        if (type.equals("Charity")) {
                             eventTypes.remove(type);
                         }
                     }
                     break;
                 case "Educational":
                     for (String type : types) {
-                        if(type.equals("Educational")){
+                        if (type.equals("Educational")) {
                             eventTypes.remove(type);
                         }
                     }
                     break;
                 case "Talks":
                     for (String type : types) {
-                        if(type.equals("Talks")){
+                        if (type.equals("Talks")) {
                             eventTypes.remove(type);
                         }
                     }
                     break;
                 case "Music":
                     for (String type : types) {
-                        if(type.equals("Music")){
+                        if (type.equals("Music")) {
                             eventTypes.remove(type);
                         }
                     }
                     break;
                 case "Party":
                     for (String type : types) {
-                        if(type.equals("Party")){
+                        if (type.equals("Party")) {
                             eventTypes.remove(type);
                         }
                     }
                     break;
                 case "Sports":
                     for (String type : types) {
-                        if(type.equals("Sports")){
+                        if (type.equals("Sports")) {
                             eventTypes.remove(type);
                         }
                     }
@@ -1061,7 +1061,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private Bundle setUpSearchFilter() {
         Bundle bundle = new Bundle();
-        if(searchView.getQuery()!=null && !searchView.getQuery().toString().equals("")){
+        if (searchView.getQuery() != null && !searchView.getQuery().toString().equals("")) {
             bundle.putString("SEARCH", searchView.getQuery().toString());
         }
         bundle.putString("SORT", sortType.name());
@@ -1240,11 +1240,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void setupAfterGettingLocation(Bundle savedInstanceState) {
         Log.d("setupAfterLocation", "da");
+
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+        try {
+            if (f != null && !(f instanceof HomeEventListFragment)) {
+                return;
+            }
+        } catch (Exception e) {
+            Log.d("exc:it's fine,no worry ", e.getMessage());
+        }
+
         if (savedInstanceState == null) {
             try {
                 Bundle bundle = setUpSearchFilter();
                 //Fragment f = HomeEventListFragment.class.newInstance();
-                Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
+                //f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
                 if (f == null) {
                     f = HomeEventListFragment.class.newInstance();
                 }
@@ -1273,6 +1283,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             }
         }
+
         FloatingActionButton fab = findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1311,7 +1322,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (isEnteredFromInvitationNotification)
                 onClickNavItem(InvitationsFragment.class);
         }
-
 
 
     }
