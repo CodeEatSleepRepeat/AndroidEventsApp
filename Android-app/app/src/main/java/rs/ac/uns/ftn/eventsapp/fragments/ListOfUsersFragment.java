@@ -113,6 +113,10 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     public void onStart() {
         super.onStart();
 
+        changeFloatActionButtonForFriendsFragment();
+    }
+
+    private void changeFloatActionButtonForFriendsFragment() {
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,10 +143,15 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
         fabMap.hide();
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
 
+        returnFloatActionButtonOfEvents();
+    }
+
+    private void returnFloatActionButtonOfEvents() {
         FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
         fabMap.show();
     }
@@ -248,14 +257,14 @@ public class ListOfUsersFragment extends Fragment implements Filterable {
     @Override
     public void onResume() {
         super.onResume();
+        //changeFloatActionButtonForFriendsFragment();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_friends);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        int i = 0;
-        i++;
+        //returnFloatActionButtonOfEvents();
     }
 
     private Filter filter = new Filter() {

@@ -90,19 +90,6 @@ public class UserDetailActivity extends AppCompatActivity {
         adapter = new EventListRecyclerView(items, this, R.layout.event_list_row);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, null, null) {
-            @Override
-            protected void loadMoreItems() {
-                isLoading = true;
-                currentPage += 1;
-                getEventsPage(currentPage);
-            }
-
-            @Override
-            public boolean isLoading() {
-                return isLoading;
-            }
-        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -148,6 +135,21 @@ public class UserDetailActivity extends AppCompatActivity {
         });
 
         fillUserEvents();
+
+        recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager, null, null) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+                getEventsPage(currentPage);
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
+
     }
 
     private void getUserFromApi() {

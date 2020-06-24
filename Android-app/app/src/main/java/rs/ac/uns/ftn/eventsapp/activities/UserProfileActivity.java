@@ -613,6 +613,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 } else {
                     //update user and return to last screen
                     AppDataSingleton.getInstance().updateUser(response.body());
+                    User loggedUser = response.body();
+                    FirebaseSignIn firebaseSignIn = new FirebaseSignIn(getApplicationContext());
+                    firebaseSignIn.saveOrUpdateUserInFirebase(loggedUser.getImageUri(),
+                            loggedUser.getName(),loggedUser.getEmail());
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
                     finish();

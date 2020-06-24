@@ -65,6 +65,7 @@ public class MessageFromChatPartnerItem extends Item<GroupieViewHolder> {
         String userImageUrl = user.getProfileImageUrl();
         if (userImageUrl != null && !userImageUrl.equals("")) {
             try {
+                Picasso.get().setLoggingEnabled(true);
                 if (userImageUrl.startsWith("http")){
                     Picasso.get().load(Uri.parse(userImageUrl)).placeholder(R.drawable.ic_user_icon).into(imageUser);
                 } else {

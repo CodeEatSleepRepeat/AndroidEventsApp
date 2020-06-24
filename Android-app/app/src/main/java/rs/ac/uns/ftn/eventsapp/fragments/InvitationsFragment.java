@@ -101,39 +101,15 @@ public class InvitationsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        //sakrij map dugme
         FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
         fabMap.hide();
 
         //pretvori add dugme u map dugme
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
-
-        fab.setImageResource(android.R.drawable.ic_dialog_map);
-        fab.hide(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
-        fab.show(); //ovo je zbog baga googla: https://stackoverflow.com/questions/54506295/icon-not-showing-in-floatingactionbutton-after-changed-programmatically
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickMap();
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy < 0 && fab.isShown())
-                    fab.hide();
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    fab.show();
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
+        fab.hide();
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
     }
+
 
     private void onClickCreateEvent() {
         Intent intent = new Intent(getContext(), CreateEventActivity.class);
@@ -151,9 +127,18 @@ public class InvitationsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        //showFloatActionButtonsForEvents();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+        showFloatActionButtonsForEvents();
+    }
 
+    private void showFloatActionButtonsForEvents() {
         //prikazi map dugme
         FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
         fabMap.show();
@@ -236,7 +221,14 @@ public class InvitationsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
+        //sakrij map dugme
+//        FloatingActionButton fabMap = getActivity().findViewById(R.id.floating_map_btn);
+//        fabMap.hide();
+//
+//        //pretvori add dugme u map dugme
+//        final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
+//        fab.hide();
+//        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_invitations);
     }
 
 
