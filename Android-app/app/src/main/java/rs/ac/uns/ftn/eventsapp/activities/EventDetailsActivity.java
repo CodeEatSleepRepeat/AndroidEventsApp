@@ -40,6 +40,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import am.appwise.components.ni.NoInternetDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -100,7 +101,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     private Button goingBtn;
     private Button interestedBtn;
     private Query emailQuery;
-
 
     @Override
     protected void onPostResume() {
@@ -415,8 +415,13 @@ public class EventDetailsActivity extends AppCompatActivity {
             startActivityForResult(intent, LAUNCH_SEND_INVITATIONS_ACTIVITY);
 
         } else if (id == R.id.shareEventDetails) {
-            Toast.makeText(getApplicationContext(), "Share event", Toast.LENGTH_SHORT).show();
-
+            //Toast.makeText(getApplicationContext(), "Share event", Toast.LENGTH_SHORT).show();
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = "Hey! Here is an interested event I found: " + dto.getName();
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Events");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
         } else if (id == R.id.reportEventDetails) {
             Toast.makeText(getApplicationContext(), "Event reported!", Toast.LENGTH_SHORT).show();
 

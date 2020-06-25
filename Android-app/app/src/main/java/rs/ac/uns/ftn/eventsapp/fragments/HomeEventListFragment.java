@@ -2,7 +2,9 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,7 @@ import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class HomeEventListFragment extends Fragment {
 
-    private static final int PAGE_START = 0;
+    public static final int PAGE_START = 0;
     private List<EventDTO> items = new ArrayList<>();
     private SearchFilterEventsDTO dto = new SearchFilterEventsDTO();
     private RecyclerView.Adapter adapter;
@@ -159,12 +161,18 @@ public class HomeEventListFragment extends Fragment {
     }
 
     private void getEventsPage(int num, SearchFilterEventsDTO dto) {
+        SearchFilterEventsDTO tempDto = new SearchFilterEventsDTO(dto.getSearch(), dto.getDistance(), dto.getLat(), dto.getLng(), dto.getSortType(), dto.getEventTypes(), dto.getEventStart(), dto.getEventEnd(), dto.getFacebookPrivacy());
+        if (tempDto.getDistance() == 0){
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+            tempDto.setDistance(Integer.parseInt(sharedPreferences.getString("pref_default_distance2", "100")));
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getInitialEvents(num, dto);
+        Call<List<EventDTO>> events = e.getInitialEvents(num, tempDto);
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
@@ -268,7 +276,7 @@ public class HomeEventListFragment extends Fragment {
         if(bundle.getString("LAT").equals("-300") && bundle.getString("LNG").equals("-300")){
             dto.setLat(null);
             dto.setLng(null);
-            dto.setDistance(100);
+            //dto.setDistance(100);
         }else {
             dto.setLat(Double.parseDouble(bundle.getString("LAT")));
             dto.setLng(Double.parseDouble(bundle.getString("LNG")));
@@ -280,5 +288,9 @@ public class HomeEventListFragment extends Fragment {
         items.clear();
         currentPage = PAGE_START;
         getEventsPage(PAGE_START, dto);
+    }
+
+    public SearchFilterEventsDTO getDto() {
+        return dto;
     }
 }

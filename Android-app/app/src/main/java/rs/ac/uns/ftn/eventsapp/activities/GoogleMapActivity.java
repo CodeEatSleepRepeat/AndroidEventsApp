@@ -1,12 +1,6 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,18 +14,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -42,12 +34,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
@@ -71,7 +60,7 @@ public class GoogleMapActivity extends AppCompatActivity
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
 
-    private static final String MAPVIEW_BUNDLE_KEY="MapViewBundleKey";
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private MapView mMapView;
     private ArrayList<EventForMapDTO> events = new ArrayList<>();
     private ClusterManager mClusterManager;
@@ -79,6 +68,7 @@ public class GoogleMapActivity extends AppCompatActivity
     private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
+    private boolean firstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +97,7 @@ public class GoogleMapActivity extends AppCompatActivity
                 addOnConnectionFailedListener(this).build();
 
         Bundle mapViewBundle = null;
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
         mMapView.onCreate(mapViewBundle);
@@ -115,40 +105,44 @@ public class GoogleMapActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        /*googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
+
         float zoom = 17.0f;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(pref.getString("pref_default_map_zoom", "1")!=null) {
-            if(pref.getString("pref_default_map_zoom", "1").equals("1")){
+        if (pref.getString("pref_default_map_zoom", "1") != null) {
+            if (pref.getString("pref_default_map_zoom", "1").equals("1")) {
                 zoom = 17.0f;
-            }else if(pref.getString("pref_default_map_zoom", "1").equals("2")){
+            } else if (pref.getString("pref_default_map_zoom", "1").equals("2")) {
                 zoom = 13.0f;
-            }else if(pref.getString("pref_default_map_zoom", "1").equals("3")){
+            } else if (pref.getString("pref_default_map_zoom", "1").equals("3")) {
                 zoom = 8.0f;
             }
         }
         Log.d("onMapReady", "called" + location.getLatitude() + " : " + location.getLatitude());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions currentLocationMarker = new MarkerOptions().position(latLng).title("You");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomGesturesEnabled(false);
+        if (firstTime) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+            firstTime = false;
+        }
+        //googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        //googleMap.getUiSettings().setZoomGesturesEnabled(false);
         googleMap.clear();
         googleMap.addMarker(currentLocationMarker);
         addEventsOnMap(googleMap, events);
     }
 
-    private void addEventsOnMap(GoogleMap googleMap, ArrayList<EventForMapDTO> events){
-        if(googleMap!=null){
-            if(mClusterManager == null){
+    private void addEventsOnMap(GoogleMap googleMap, ArrayList<EventForMapDTO> events) {
+        if (googleMap != null) {
+            if (mClusterManager == null) {
                 mClusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), googleMap);
             }
-            if(mClusterManagerRenderer == null){
+            if (mClusterManagerRenderer == null) {
                 mClusterManagerRenderer = new ClusterManagerRenderer(
                         this, googleMap, mClusterManager
                 );
@@ -156,7 +150,7 @@ public class GoogleMapActivity extends AppCompatActivity
             mClusterManager.setRenderer(mClusterManagerRenderer);
         }
 
-        for(EventForMapDTO e : events){
+        for (EventForMapDTO e : events) {
             ClusterMarker newClusterMarker = new ClusterMarker(
                     new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), "", e.getEventImageURI()
             );
@@ -167,7 +161,6 @@ public class GoogleMapActivity extends AppCompatActivity
         mClusterManager.cluster();
 
     }
-
 
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
@@ -215,7 +208,7 @@ public class GoogleMapActivity extends AppCompatActivity
         super.onPause();
 
         // stop location updates
-        if (googleApiClient != null  &&  googleApiClient.isConnected()) {
+        if (googleApiClient != null && googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             googleApiClient.disconnect();
         }
@@ -243,7 +236,7 @@ public class GoogleMapActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
+                && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -267,7 +260,7 @@ public class GoogleMapActivity extends AppCompatActivity
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
+                && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
@@ -293,7 +286,7 @@ public class GoogleMapActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
+        switch (requestCode) {
             case ALL_PERMISSIONS_RESULT:
                 for (String perm : permissionsToRequest) {
                     if (!hasPermission(perm)) {
@@ -334,26 +327,34 @@ public class GoogleMapActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
 
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if(mapViewBundle==null){
+        if (mapViewBundle == null) {
             mapViewBundle = new Bundle();
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+            outState.putBoolean("firstTime", firstTime);
         }
 
         mMapView.onSaveInstanceState(mapViewBundle);
     }
 
-    public boolean isMapsEnabled(){
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        firstTime = savedInstanceState.getBoolean("firstTime", true);
+    }
+
+    public boolean isMapsEnabled() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
             return false;
         }
         return true;
     }
 
-    private void buildAlertMessageNoGps(){
+    private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.gps_dialog).setCancelable(false).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+        builder.setMessage(R.string.gps_dialog).setCancelable(false).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intentMA = new Intent(getApplicationContext(), MainActivity.class);
@@ -371,11 +372,11 @@ public class GoogleMapActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("onActivityResult", "called");
-        switch(requestCode){
-            case PERMISSION_REQUEST_ENABLE_GPS:{
+        switch (requestCode) {
+            case PERMISSION_REQUEST_ENABLE_GPS: {
                 return;
             }
         }

@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Objects;
 
+import am.appwise.components.ni.NoInternetDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -68,6 +69,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private MediaType mediaType;
     private Bundle oldUserState;
+    private NoInternetDialog noInternetDialog;
 
     private final String TAG = this.getClass().getName();
 
@@ -138,6 +140,20 @@ public class UserProfileActivity extends AppCompatActivity {
         password_new2_profile = findViewById(R.id.password_new2_profile);
 
         setParameters(oldUserState);
+
+        addNoInternetListener();
+    }
+
+    /**
+     * Ovo je za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta
+     */
+    private void addNoInternetListener() {
+        noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(true)
+                .build();
     }
 
     private void notifyNoChanges() {
@@ -640,6 +656,13 @@ public class UserProfileActivity extends AppCompatActivity {
             item.setVisible(false);
         }
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (noInternetDialog != null)
+            noInternetDialog.onDestroy();
     }
 
 }

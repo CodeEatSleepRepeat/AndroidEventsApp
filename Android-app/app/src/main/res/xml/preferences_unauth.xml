@@ -13,7 +13,7 @@
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/map">
             <EditTextPreference
-                android:defaultValue="0"
+                android:defaultValue="100"
                 android:key="pref_default_distance2"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"

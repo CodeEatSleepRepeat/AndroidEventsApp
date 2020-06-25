@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import am.appwise.components.ni.NoInternetDialog;
 import rs.ac.uns.ftn.eventsapp.R;
-import rs.ac.uns.ftn.eventsapp.models.SortType;
 
 public class FilterEventsActivity extends AppCompatActivity {
 
@@ -64,6 +62,7 @@ public class FilterEventsActivity extends AppCompatActivity {
     private ImageButton resetEndingDateTime;
 
     private Button saveFilterBtn;
+    private NoInternetDialog noInternetDialog;
 
 
     @Override
@@ -320,7 +319,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 returnIntent.putExtra("CATEGORY", getCategory());
                 returnIntent.putExtra("START_DATE", startingDateEditText.getText().toString());
                 returnIntent.putExtra("START_TIME", startingTimeEditText.getText().toString());
-                if(!startingDateEditText.getText().toString().equals("") && !startingTimeEditText.getText().toString().equals("")) {
+                if (!startingDateEditText.getText().toString().equals("") && !startingTimeEditText.getText().toString().equals("")) {
                     int hour = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[0]);
                     int min = Integer.parseInt(startingTimeEditText.getText().toString().split(":")[1]);
                     int day = Integer.parseInt(startingDateEditText.getText().toString().split("/")[0]);
@@ -335,7 +334,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 }
                 returnIntent.putExtra("END_DATE", endingDateEditText.getText().toString());
                 returnIntent.putExtra("END_TIME", endingTimeEditText.getText().toString());
-                if(!endingDateEditText.getText().toString().equals("") && !endingTimeEditText.getText().toString().equals("")){
+                if (!endingDateEditText.getText().toString().equals("") && !endingTimeEditText.getText().toString().equals("")) {
                     int hour = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[0]);
                     int min = Integer.parseInt(endingTimeEditText.getText().toString().split(":")[1]);
                     int day = Integer.parseInt(endingDateEditText.getText().toString().split("/")[0]);
@@ -350,7 +349,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 }
                 returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
-                if(validationSuccess()) {
+                if (validationSuccess()) {
                     Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
@@ -361,6 +360,7 @@ public class FilterEventsActivity extends AppCompatActivity {
         if (getIntent() != null)
             setStateViaChips(getIntent());
 
+        addNoInternetListener();
     }
 
     /**
@@ -484,10 +484,29 @@ public class FilterEventsActivity extends AppCompatActivity {
             endingTimeEditText.setError(Integer.toString(R.string.blankFieldError));
             return false;
         }
-        if (calendar.getTimeInMillis() >= calendar2.getTimeInMillis()) {
+        if (calendar.getTimeInMillis() >= calendar2.getTimeInMillis() && !endingDateEditText.getText().toString().trim().equals("") && startingDateEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation10, Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
+    }
+
+    /**
+     * Ovo je za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta
+     */
+    private void addNoInternetListener() {
+        noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(true)
+                .build();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (noInternetDialog != null)
+            noInternetDialog.onDestroy();
     }
 }

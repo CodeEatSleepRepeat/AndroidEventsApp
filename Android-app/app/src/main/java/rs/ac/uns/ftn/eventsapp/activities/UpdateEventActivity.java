@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import am.appwise.components.ni.NoInternetDialog;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -104,6 +105,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
     private Bitmap bitmap;
     private MediaType mediaType;
     private Long eventId;
+
+    private NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -494,6 +497,8 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 }
             }
         });
+
+        addNoInternetListener();
     }
 
     private Boolean validationSuccess() {
@@ -737,10 +742,24 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         mMapView.onPause();
     }
 
+    /**
+     * Ovo je za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta
+     */
+    private void addNoInternetListener() {
+        noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(true)
+                .build();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        if (noInternetDialog != null)
+            noInternetDialog.onDestroy();
     }
 
     @Override

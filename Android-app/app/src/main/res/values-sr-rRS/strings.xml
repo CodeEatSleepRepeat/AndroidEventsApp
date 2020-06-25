@@ -172,4 +172,5 @@
     <string name="interested_event_invitations">Ви сте сада заинтересовани за догађај!</string>
     <string name="event_invitation_notification">Имате нову позивницу за догађај!</string>
     <string name="invitations">Позивнице</string>
+    <string name="oops">Упс!</string>
 </resources>

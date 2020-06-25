@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import am.appwise.components.ni.NoInternetDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +34,7 @@ public class InterestedInEventActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
     private boolean isLoading = false;
+    private NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,26 @@ public class InterestedInEventActivity extends AppCompatActivity {
             }
         });
 
+        addNoInternetListener();
+    }
+
+    /**
+     * Ovo je za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta
+     */
+    private void addNoInternetListener() {
+        noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(true)
+                .build();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (noInternetDialog != null)
+            noInternetDialog.onDestroy();
     }
 
     private void getUsers(int num) {

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Boolean mLocationPermissionGranted = true;
     private static final int PERMISSION_REQUEST_ENABLE_GPS = 9002;
 
-    private int distance = 100;
+    private int distance = 0;
     private int settingsDistance;
     private SortType sortType = SortType.RECENT;
     private ArrayList<String> eventTypes = new ArrayList<>();
@@ -129,11 +129,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         AppDataSingleton.getInstance().setContext(this);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (pref.getString("pref_default_distance2", "100") != null) {
-            distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
-        } else {
-            distance = 100;
-        }
+
         if (pref.getString("pref_default_event_sort", "2") != null) {
             if (pref.getString("pref_default_event_sort", "2").equals("1")) {
                 sortType = SortType.FOR_YOU;
@@ -163,18 +159,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // we build google api client
 
-
-        //ovo je super za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta -> etapa 3
-        noInternetDialog = new NoInternetDialog.Builder(this)
-                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
-                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
-                //.setBgGradientEnd(getResources().getColor(R.color.colorBlack)) // End color for background gradient
-                //.setButtonColor(R.color.colorWhite) // Set custom color for dialog buttons
-                //.setButtonTextColor(R.color.colorWhite) // Set custom text color for dialog buttons
-                //.setButtonIconsColor(R.color.colorWhite) // Set custom color for icons of dialog buttons
-                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
-                .setCancelable(true)
-                .build();
+        addNoInternetListener();
 
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
@@ -266,6 +251,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 onClickNavItem(InvitationsFragment.class);
         }
 */
+    }
+
+    /**
+     * Ovo je za proveru konekcije interneta i odmah reaguje na promene, ali ne radi bas ako se vracam iz aktivnosti bez interneta
+     */
+    private void addNoInternetListener() {
+        noInternetDialog = new NoInternetDialog.Builder(this)
+                .setBgGradientStart(getResources().getColor(R.color.colorPrimary)) // Start color for background gradient
+                .setBgGradientCenter(getResources().getColor(R.color.colorPrimaryDark)) // Center color for background gradient
+                .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
+                .setCancelable(true)
+                .build();
     }
 
     public void updateFirebaseToken() {
@@ -612,7 +609,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (resultCode == Activity.RESULT_OK) {
                 //user je podesio neke filtere
 
-                int dist = data.getIntExtra("DISTANCE", 100);
+                int dist = data.getIntExtra("DISTANCE", 0);
                 String sort = data.getStringExtra("SORT");
                 String[] category = data.getStringArrayExtra("CATEGORY");
                 String startDate = data.getStringExtra("START_DATE");
@@ -626,15 +623,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                 if (dist > 0) {
                     chipTexts.add(dist + "km");
-                    distance = dist;
-                } else {
+                }
+                distance = dist;
+                /*+} else {
                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     if (pref.getString("pref_default_distance2", "100") != null) {
                         distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
                     } else {
                         distance = 100;
                     }
-                }
+                }*/
 
                 if (!startDate.equals("") && !startTime.equals("")) {
                     Log.d("DATE", data.getStringExtra("START"));
@@ -784,12 +782,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         });
 
         if (chip.getText().toString().endsWith("km")) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            if (pref.getString("pref_default_distance2", "100") != null) {
-                distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
-            } else {
-                distance = 100;
-            }
+            distance = 0;
         } else {
             List<String> types = new ArrayList<>();
             types.addAll(eventTypes);
@@ -1036,24 +1029,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        /*SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(pref.getString("pref_default_distance2", "100")!=null) {
-            if(settingsDistance != Integer.parseInt(pref.getString("pref_default_distance2", "100"))) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        /*if (pref.getString("pref_default_distance2", "100") != null) {
+            if (settingsDistance != Integer.parseInt(pref.getString("pref_default_distance2", "100"))) {
                 distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
                 settingsDistance = distance;
             }
-        }else{
+        } else {
             distance = 100;
         }
-        if(pref.getString("pref_default_event_sort", "2")!=null){
-            if(pref.getString("pref_default_event_sort", "2").equals("1")){
+        if (pref.getString("pref_default_event_sort", "2") != null) {
+            if (pref.getString("pref_default_event_sort", "2").equals("1")) {
                 sortType = SortType.FOR_YOU;
-            }else if(pref.getString("pref_default_event_sort", "2").equals("2")){
+            } else if (pref.getString("pref_default_event_sort", "2").equals("2")) {
                 sortType = SortType.RECENT;
-            }else if(pref.getString("pref_default_event_sort", "2").equals("3")){
+            } else if (pref.getString("pref_default_event_sort", "2").equals("3")) {
                 sortType = SortType.POPULAR;
             }
-        }else{
+        } else {
             sortType = SortType.RECENT;
         }
         Log.d("izabranSort", sortType.name());*/
@@ -1326,6 +1319,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (noInternetDialog != null)
+            noInternetDialog.onDestroy();
+    }
 }
 
 
