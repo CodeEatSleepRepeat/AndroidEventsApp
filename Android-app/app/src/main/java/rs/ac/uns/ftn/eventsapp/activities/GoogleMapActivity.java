@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.EventForMapDTO;
+import rs.ac.uns.ftn.eventsapp.models.Event;
 import rs.ac.uns.ftn.eventsapp.utils.ClusterManagerRenderer;
 import rs.ac.uns.ftn.eventsapp.utils.ClusterMarker;
 
@@ -105,12 +106,6 @@ public class GoogleMapActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         float zoom = 17.0f;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -130,8 +125,6 @@ public class GoogleMapActivity extends AppCompatActivity
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
             firstTime = false;
         }
-        //googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        //googleMap.getUiSettings().setZoomGesturesEnabled(false);
         googleMap.clear();
         googleMap.addMarker(currentLocationMarker);
         addEventsOnMap(googleMap, events);
@@ -152,15 +145,29 @@ public class GoogleMapActivity extends AppCompatActivity
 
         for (EventForMapDTO e : events) {
             ClusterMarker newClusterMarker = new ClusterMarker(
-                    new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), "", e.getEventImageURI()
-            );
+                    new LatLng(e.getLatitude(), e.getLongitude()), e.getEventName(), e.getLatitude() + " " + e.getLongitude(), e.getEventImageURI()
+            , e.getEventId());
             Log.d("Podaci: ", " " + newClusterMarker.getPosition());
             mClusterManager.addItem(newClusterMarker);
             mClusterMarkers.add(newClusterMarker);
         }
+        mClusterManager.setOnClusterItemClickListener(mClusterItemClickListener);
+        googleMap.setOnMarkerClickListener(mClusterManager);
         mClusterManager.cluster();
 
     }
+
+    private ClusterManager.OnClusterItemClickListener<ClusterMarker> mClusterItemClickListener = new ClusterManager.OnClusterItemClickListener<ClusterMarker>() {
+        @Override
+        public boolean onClusterItemClick(ClusterMarker item) {
+            if(item.getTag()!=null){
+                Intent intent = new Intent(getApplicationContext(), EventDetailsActivity.class);
+                intent.putExtra("EventIdDet", item.getTag().toString());
+                startActivity(intent);
+            }
+            return true;
+        }
+    };
 
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {

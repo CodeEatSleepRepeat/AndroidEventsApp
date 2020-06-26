@@ -9,12 +9,14 @@ public class ClusterMarker implements ClusterItem {
     private String title;
     private String snippet;
     private String imgUri;
+    private Long tag;
 
-    public ClusterMarker(LatLng position, String title, String snippet, String imgUri) {
+    public ClusterMarker(LatLng position, String title, String snippet, String imgUri, Long tag) {
         this.position = position;
         this.title = title;
         this.snippet = snippet;
         this.imgUri = imgUri;
+        this.tag = tag;
     }
 
     @Override
@@ -52,4 +54,11 @@ public class ClusterMarker implements ClusterItem {
         this.imgUri = imgUri;
     }
 
+    public Long getTag() {
+        return tag;
+    }
+
+    public void setTag(Long tag) {
+        this.tag = tag;
+    }
 }

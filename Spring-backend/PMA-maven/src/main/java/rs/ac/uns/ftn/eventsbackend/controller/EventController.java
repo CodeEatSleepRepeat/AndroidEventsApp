@@ -228,6 +228,11 @@ public class EventController {
 	public ResponseEntity<Event> getById(@PathVariable Long id) {
 		return ResponseEntity.ok(eventService.findById(id));
 	}
+	
+	@GetMapping("/details/{id}")
+	public ResponseEntity<EventDTO> getDetailsById(@PathVariable Long id) {
+		return ResponseEntity.ok(eventService.findDetailsById(id));
+	}
 
 	@GetMapping("/going/{eventId}/{userId}")
 	public ResponseEntity<EventDTO> goingToEvent(@PathVariable Long eventId, @PathVariable Long userId)

@@ -52,6 +52,14 @@ public class EventService {
 			return null;
 		}
 	}
+	
+	public EventDTO findDetailsById(Long id) {
+		try {
+			return new EventDTO(eventRepository.findById(id).get());
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public Event findByFacebookId(String fbId) {
 		try {

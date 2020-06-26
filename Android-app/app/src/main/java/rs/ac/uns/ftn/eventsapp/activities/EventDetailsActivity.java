@@ -127,9 +127,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         organizedEvents = findViewById(R.id.organizedEventsEventDetailsTextView);
         collapsingToolbar = findViewById(R.id.collapsing_toolbar_user_detail);
 
-        dto = (EventDTO) getIntent().getSerializableExtra("EVENT");
-        getDetails();
-        setView(dto);
+        if(getIntent().getSerializableExtra("EVENT")!=null) {
+            dto = (EventDTO) getIntent().getSerializableExtra("EVENT");
+            getDetails();
+            setView(dto);
+        }else{
+            Toast.makeText(getApplicationContext(), "NULL JE", Toast.LENGTH_LONG);
+            getDetailsIfNull();
+        }
 
     }
 
@@ -167,7 +172,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         imageView.setAlpha(0.9f);
 
         eventNameEventDetailsTextView.setText(dto.getName());
-        eventStartEventDetailsView.setText(formatter.format(dto.getStart_time()));
+        String start = formatter.format(dto.getStart_time());
+        String end = formatter.format(dto.getEnd_time());
+        eventStartEventDetailsView.setText(start.substring(0, start.length() - 6) + " - " + end.substring(0, end.length() - 6));
         eventDescriptionEventDetailsView.setText(dto.getDescription());
         eventLocationEventDetailsTextView.setText(dto.getPlace());
         final EventForMapDTO mapDto = new EventForMapDTO(dto.getId(), dto.getName(), dto.getLatitude(), dto.getLongitude(), dto.getImageUri());
@@ -535,6 +542,52 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+
+    private void getDetailsIfNull(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
+                .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
+                .build();
+        EventsAppAPI e = retrofit.create(EventsAppAPI.class);
+        Long userId = null;
+        if(AppDataSingleton.getInstance().getLoggedUser()!=null){
+            userId = AppDataSingleton.getInstance().getLoggedUser().getId();
+        }
+        Call<EventDTO> s = e.eventDetails(Long.parseLong(getIntent().getStringExtra("EventIdDet")));
+        s.enqueue(new Callback<EventDTO>() {
+            @Override
+            public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(response.body()!=null) {
+                    dto = response.body();
+                    setView(dto);
+                    getDetails();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDTO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
 
     private void initGoingRV(ResponseEventDetailsDTO res){
         if(!res.getGoingImages().isEmpty()) {

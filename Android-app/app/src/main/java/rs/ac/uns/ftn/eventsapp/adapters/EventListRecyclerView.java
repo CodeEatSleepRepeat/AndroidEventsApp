@@ -66,8 +66,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         } else if (imageUri == null || imageUri.equals("")) {
             imageUri = "image"; //for picasso to not crash if image is empty or null
         }
-        if(item.getDistance()!=null){
-            viewHolder.eventDistance.setText( String.valueOf(item.getDistance()).substring(0, 6)+ " km");
+        if(viewHolder.eventDistance!=null && viewHolder.eventDistanceImg!=null) {
+            if (item.getDistance() != null) {
+                viewHolder.eventDistance.setText(String.valueOf(item.getDistance()).substring(0, 6) + " km");
+            } else {
+                viewHolder.eventDistance.setVisibility(View.INVISIBLE);
+                viewHolder.eventDistanceImg.setVisibility(View.INVISIBLE);
+            }
         }
 
         Picasso.get()
@@ -223,6 +228,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         private final TextView eventStartDate;
         private final TextView eventDistance;
         private final ImageView eventImage;
+        private final ImageView eventDistanceImg;
 
         EventViewHolder(View v) {
             super(v);
@@ -231,6 +237,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             eventStartDate = v.findViewById(R.id.event_list_start_date);
             eventImage = v.findViewById(R.id.event_list_image);
             eventDistance = v.findViewById(R.id.event_distance);
+            eventDistanceImg = v.findViewById(R.id.event_distance_img);
         }
     }
 
