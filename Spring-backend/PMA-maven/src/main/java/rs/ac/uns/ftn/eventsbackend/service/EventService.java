@@ -342,25 +342,19 @@ public class EventService {
 		List<EventDTO> dtos = new ArrayList<>();
 		List<EventDistanceDTO> events = new ArrayList<>();
 		List<EventType> types = dto.getEventTypes();
-		/*EventType charity = null;
-		EventType educational = null;
-		EventType talks = null;
-		EventType sports = null;
-		EventType music = null;
-		EventType party = null;*/
 		try{Pageable pageable = PageRequest.of(num, 10);
 		if(dto.getSortType().equals(SortType.FOR_YOU)) {
 			events = eventRepository.getEventsSearchFilterForYou(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 				dto.getEventStart(), dto.getEventEnd(), 1,
-				types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
+				types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), types.get(6), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
 		}else if(dto.getSortType().equals(SortType.RECENT)) {
 			events = eventRepository.getEventsSearchFilterRecent(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 					dto.getEventStart(), dto.getEventEnd(), 1,
-					types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
+					types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), types.get(6), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
 		}else {
 			events = eventRepository.getEventsSearchFilterSoonest(dto.getSearch(), new Double(dto.getDistance()), dto.getLat(), dto.getLng(),
 					dto.getEventStart(), dto.getEventEnd(), 1,
-					types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
+					types.get(0), types.get(1), types.get(2), types.get(3), types.get(4), types.get(5), types.get(6), ZonedDateTime.now(), SyncStatus.DELETE, pageable).getContent();
 		}}catch (Exception e) {
 			// TODO: handle exception
 		}

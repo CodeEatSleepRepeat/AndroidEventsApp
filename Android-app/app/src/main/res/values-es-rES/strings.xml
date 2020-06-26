@@ -26,18 +26,18 @@
     <string name="sortByFilter">Ordenar por:</string>
     <string name="forYouFilter">Para ti</string>
     <string name="recentFilter">Reciente</string>
-    <string name="popularFilter">Popular</string>
+    <string name="popularFilter">Mas pronto</string>
     <string name="categoryFilter">Categoría:</string>
     <string name="music">Música</string>
     <string name="party">Fiesta</string>
     <string name="sports">Deportes</string>
-    <string name="talks">Negociaciones</string>
+    <string name="talks">Negociale</string>
     <string name="educational">Educativo</string>
     <string name="charity">Caridad</string>
     <string name="startingDateFilter">Fecha de inicio</string>
-    <string name="startingTimeFilter">Tiempo de empezar</string>
-    <string name="endingDateFilter">Fecha de finalización</string>
-    <string name="endingTimeFilter">Tiempo final</string>
+    <string name="startingTimeFilter">Tiempo</string>
+    <string name="endingDateFilter">Fecha de finalе</string>
+    <string name="endingTimeFilter">Tiempo</string>
     <string name="saveFilters">Guardar filtros</string>
     <string name="privateEventFilter">Eventos privados</string>
     <string name="createEvent">Crear evento</string>
@@ -173,4 +173,13 @@
     <string name="event_invitation_notification">¡Tienes nueva invitación al evento!</string>
     <string name="invitations">Invitaciones</string>
     <string name="oops">¡uy!</string>
+    <string name="no_one">Ninguno</string>
+    <string name="at">a</string>
+    <string name="select_a_location">Selecciona una ubicación</string>
+    <string name="events_for_you">Eventos para ti</string>
+    <string name="recent_events">Creado recientemente</string>
+    <string name="popular_events">Eventos recientes</string>
+    <string name="filter_validacija1">¡Tanto la fecha de inicio como la hora de inicio deben completarse!</string>
+    <string name="filter_validacija2">¡Tanto la fecha de finalización como la hora de finalización deben completarse!</string>
+    <string name="add_cover_photo">AGREGAR FOTO DE CUBIERTA</string>
 </resources>

@@ -24,7 +24,7 @@
     <string name="sortByFilter">Sort by: </string>
     <string name="forYouFilter">For you</string>
     <string name="recentFilter">Recent</string>
-    <string name="popularFilter">Popular</string>
+    <string name="popularFilter">Soonest</string>
     <string name="music">Music</string>
     <string name="party">Party</string>
     <string name="sports">Sports</string>
@@ -173,6 +173,15 @@
     <string name="interested_event_invitations">You are now interested in the event!</string>
     <string name="event_invitation_notification">You have new event invitation!</string>
     <string name="invitations">Invitations</string>
+    <string name="no_one">No one</string>
+    <string name="at">at</string>
+    <string name="select_a_location">Select a location</string>
+    <string name="filter_validacija1">Both start date and start time need to be filled in!</string>
+    <string name="filter_validacija2">Both end date and end time need to be filled in!</string>
+    <string name="events_for_you">Events for you</string>
+    <string name="recent_events">Recently created</string>
+    <string name="popular_events">Soonest events</string>
+    <string name="add_cover_photo">ADD COVER PHOTO</string>
 
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>

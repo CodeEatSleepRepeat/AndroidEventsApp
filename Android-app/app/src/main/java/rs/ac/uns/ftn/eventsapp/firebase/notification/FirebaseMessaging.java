@@ -77,9 +77,13 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         //kreiranje razlicitog intenta u zavisnosti tipa notifikacije
         assert notificationType != null;
         if(notificationType.equals(NotificationTypeEnum.INVITATION.toString())){
+            title = getResources().getString(R.string.invitations);
+            body = getResources().getString(R.string.event_invitation_notification);
             makeIntentToInvitationsThenMakeNotification(icon, body, title, defSoundUri, i);
         }
         else if(notificationType.equals(NotificationTypeEnum.FRIEND_REQUEST.toString())){
+            title =  getResources().getString(R.string.friend_requests);
+            body = getResources().getString(R.string.friend_request_notification);
             makeIntentToFriendRequestThenMakeNotification(icon, body, title, defSoundUri, i);
         }
         else if(notificationType.equals(NotificationTypeEnum.MESSAGE.toString())){

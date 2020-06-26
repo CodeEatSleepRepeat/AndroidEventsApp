@@ -26,18 +26,18 @@
     <string name="sortByFilter">Сортирај по:</string>
     <string name="forYouFilter">За тебе</string>
     <string name="recentFilter">Недавно</string>
-    <string name="popularFilter">Популарно</string>
+    <string name="popularFilter">Најскорији</string>
     <string name="categoryFilter">Категорија:</string>
     <string name="music">Музика</string>
     <string name="party">Журка</string>
     <string name="sports">Спорт</string>
     <string name="talks">Разговори</string>
     <string name="educational">Образовни</string>
-    <string name="charity">Добротворна организација</string>
+    <string name="charity">Добротворни</string>
     <string name="startingDateFilter">Датум почетка</string>
-    <string name="startingTimeFilter">Почетно врме</string>
+    <string name="startingTimeFilter">Поч. време</string>
     <string name="endingDateFilter">Датум завршетка</string>
-    <string name="endingTimeFilter">Време завршетка</string>
+    <string name="endingTimeFilter">Зав. време</string>
     <string name="saveFilters">Сачувај филтере</string>
     <string name="privateEventFilter">Приватни догађаји</string>
     <string name="createEvent">Креирајте догађај</string>
@@ -173,4 +173,13 @@
     <string name="event_invitation_notification">Имате нову позивницу за догађај!</string>
     <string name="invitations">Позивнице</string>
     <string name="oops">Упс!</string>
+    <string name="no_one">Нико</string>
+    <string name="at">у</string>
+    <string name="select_a_location">Изаберите локацију</string>
+    <string name="events_for_you">Догађаји за вас</string>
+    <string name="recent_events">Недавно креирани</string>
+    <string name="popular_events">Најскорији догађаји</string>
+    <string name="filter_validacija1">Датум и време почетка потребно је попунити!</string>
+    <string name="filter_validacija2">Потребно је попунити датум и време завршетка!</string>
+    <string name="add_cover_photo">ДОДАТИ НАСЛОВНУ  СЛИКУ</string>
 </resources>

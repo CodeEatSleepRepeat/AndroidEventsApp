@@ -129,18 +129,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         AppDataSingleton.getInstance().setContext(this);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String preferedSortType = pref.getString("pref_default_event_sort", "2");
 
-        if (pref.getString("pref_default_event_sort", "2") != null) {
-            if (pref.getString("pref_default_event_sort", "2").equals("1")) {
-                sortType = SortType.FOR_YOU;
-            } else if (pref.getString("pref_default_event_sort", "2").equals("2")) {
-                sortType = SortType.RECENT;
-            } else if (pref.getString("pref_default_event_sort", "2").equals("3")) {
-                sortType = SortType.POPULAR;
-            }
-        } else {
+        if (preferedSortType.equals("1")) {
+            sortType = SortType.FOR_YOU;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.events_for_you));
+        } else if (preferedSortType.equals("2")) {
             sortType = SortType.RECENT;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.recent_events));
+        } else if (preferedSortType.equals("3")) {
+            sortType = SortType.POPULAR;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.popular_events));
         }
+
         Log.d("izabranSortCreate", sortType.name());
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -181,6 +182,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            Boolean isEnteredFromInvitationNotification = intent.getBooleanExtra(
+                    "INVITATION_NOTIFICATION", false);
+            if (isEnteredFromInvitationNotification)
+                onClickNavItem(InvitationsFragment.class);
+        }
 /*
         if (savedInstanceState == null) {
             try {
@@ -286,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_home:
+                        resetFilterDTO();
                         onClickNavItem(HomeEventListFragment.class);
                         break;
                     case R.id.navigation_item_settings_unauth:
@@ -329,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_home:
+                        resetFilterDTO();
                         onClickNavItem(HomeEventListFragment.class);
                         break;
                     case R.id.navigation_item_create:
@@ -660,20 +670,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
 
                 //setovanje sort by
-                switch (sort) {
-                    case "For you":
-                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Events for you");
-                        sortType = SortType.FOR_YOU;
-                        break;
-                    case "Popular":
-                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Popular events");
-                        sortType = SortType.POPULAR;
-                        break;
-                    default:
-                        ((TextView) findViewById(R.id.sortFilterTextView)).setText("Recent events");
-                        sortType = SortType.RECENT;
-                        break;
+                if (sort.equals(getString(R.string.events_for_you))) {
+                    sortType = SortType.FOR_YOU;
+                } else if (sort.equals(getString(R.string.popular_events))) {
+                    sortType = SortType.POPULAR;
+                } else {
+                    sortType = SortType.RECENT;
                 }
+                ((TextView) findViewById(R.id.sortFilterTextView)).setText(sort);
 
                 //uklanjanje prethodnih chips-a
                 removeFilterChips();
@@ -681,7 +685,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 setFilterChips(chipTexts);
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 //user je kliknuo na brisanje svih filtera
-                removeFilterChips();
+                resetFilterDTO();
             }
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
@@ -708,6 +712,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             startActivity(intentMA);
         }
 
+    }
+
+    private void resetFilterDTO() {
+        //user je kliknuo na brisanje svih filtera
+        removeFilterChips();
+        eventTypes = new ArrayList<>();
+        distance = 0;
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String preferedSortType = pref.getString("pref_default_event_sort", "2");
+
+        if (preferedSortType.equals("1")) {
+            sortType = SortType.FOR_YOU;
+            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.events_for_you));
+        } else if (preferedSortType.equals("2")) {
+            sortType = SortType.RECENT;
+            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.recent_events));
+        } else if (preferedSortType.equals("3")) {
+            sortType = SortType.POPULAR;
+            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.popular_events));
+        }
+
+        start = "min";
+        end = "max";
     }
 
     private void setFilterChips(ArrayList<String> chipTexts) {
@@ -784,10 +812,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (chip.getText().toString().endsWith("km")) {
             distance = 0;
         } else {
-            List<String> types = new ArrayList<>();
+            /*List<String> types = new ArrayList<>();
             types.addAll(eventTypes);
             switch (chip.getText().toString()) {
-                case "Charity":
+                case getString(R.string.charity):
                     for (String type : types) {
                         if (type.equals("Charity")) {
                             eventTypes.remove(type);
@@ -831,6 +859,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     break;
                 default:
                     break;
+            }*/
+            for (String type : eventTypes) {
+                if (type.equals(chip.getText().toString())) {
+                    eventTypes.remove(type);
+                    break;
+                }
             }
         }
         HomeEventListFragment f = (HomeEventListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_view);
@@ -1029,8 +1063,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        /*if (pref.getString("pref_default_distance2", "100") != null) {
+        /*SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (pref.getString("pref_default_distance2", "100") != null) {
             if (settingsDistance != Integer.parseInt(pref.getString("pref_default_distance2", "100"))) {
                 distance = Integer.parseInt(pref.getString("pref_default_distance2", "100"));
                 settingsDistance = distance;

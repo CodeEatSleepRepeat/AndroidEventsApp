@@ -553,10 +553,6 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Long userId = null;
-        if(AppDataSingleton.getInstance().getLoggedUser()!=null){
-            userId = AppDataSingleton.getInstance().getLoggedUser().getId();
-        }
         Call<EventDTO> s = e.eventDetails(Long.parseLong(getIntent().getStringExtra("EventIdDet")));
         s.enqueue(new Callback<EventDTO>() {
             @Override
@@ -597,7 +593,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getGoingImages());
             rv.setAdapter(adapter);
         }else{
-            seeAllGoingEventDetailsTextView.setText("No one");
+            seeAllGoingEventDetailsTextView.setText(R.string.no_one);
             seeAllGoingEventDetailsTextView.setOnClickListener(null);
         }
     }
@@ -610,7 +606,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             EventDetailsUserRecyclerView adapter = new EventDetailsUserRecyclerView(this, res.getInterestedImages());
             rv.setAdapter(adapter);
         }else{
-            seeAllInterestedEventDetailsTextView.setText("No one");
+            seeAllInterestedEventDetailsTextView.setText(R.string.no_one);
             seeAllInterestedEventDetailsTextView.setOnClickListener(null);
         }
     }

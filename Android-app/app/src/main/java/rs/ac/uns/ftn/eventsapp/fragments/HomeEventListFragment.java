@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.eventsapp.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,22 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.core.view.Event;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.activities.CreateEventActivity;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
@@ -59,6 +54,7 @@ public class HomeEventListFragment extends Fragment {
     private SwipeRefreshLayout pullToRefresh;
     private boolean isLoading = false;
     private int currentPage = PAGE_START;
+    private TextView sortTextView;
 
     @Nullable
     @Override
@@ -73,7 +69,7 @@ public class HomeEventListFragment extends Fragment {
 
         Log.d("CREATE_HOME", "da");
         //items = TestMockup.getInstance().events;
-        setItUp(getArguments());
+
         View v = inflater.inflate(R.layout.fragment_list_of_events, container, false);
         layoutManager = new LinearLayoutManager(getActivity());
         adapter = new EventListRecyclerView(items, this.getContext(), R.layout.event_list_row);
@@ -85,6 +81,8 @@ public class HomeEventListFragment extends Fragment {
                 refreshData(); // code for updating list
             }
         });
+
+        sortTextView = pullToRefresh.findViewById(R.id.sortFilterTextView);
 
         final FloatingActionButton fab = getActivity().findViewById(R.id.floating_add_btn);
 
@@ -134,6 +132,8 @@ public class HomeEventListFragment extends Fragment {
             });
         }
 
+        setItUp(getArguments());
+
         return v;
     }
 
@@ -162,7 +162,7 @@ public class HomeEventListFragment extends Fragment {
 
     private void getEventsPage(int num, SearchFilterEventsDTO dto) {
         SearchFilterEventsDTO tempDto = new SearchFilterEventsDTO(dto.getSearch(), dto.getDistance(), dto.getLat(), dto.getLng(), dto.getSortType(), dto.getEventTypes(), dto.getEventStart(), dto.getEventEnd(), dto.getFacebookPrivacy());
-        if (tempDto.getDistance() == 0){
+        if (tempDto.getDistance() == 0) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
             tempDto.setDistance(Integer.parseInt(sharedPreferences.getString("pref_default_distance2", "100")));
         }
@@ -204,7 +204,7 @@ public class HomeEventListFragment extends Fragment {
         return pullToRefresh;
     }
 
-    public void setItUp(Bundle bundle){
+    public void setItUp(Bundle bundle) {
 
         Log.d("SORT", bundle.getString("SORT"));
         ArrayList<String> types = bundle.getStringArrayList("TYPES");
@@ -214,76 +214,80 @@ public class HomeEventListFragment extends Fragment {
         Log.d("LAT", bundle.getString("LAT"));
         Log.d("LNG", bundle.getString("LNG"));
         Log.d("DIST", bundle.getString("DIST"));
-        if(bundle.getString("SEARCH")!=null && !bundle.getString("SEARCH").equals("")){
+        if (bundle.getString("SEARCH") != null && !bundle.getString("SEARCH").equals("")) {
             dto.setSearch(bundle.getString("SEARCH"));
         }
-        if(!types.isEmpty()){
+        if (!types.isEmpty()) {
             for (String categoryItem : types) {
                 Log.d("CATEGORYITEM", categoryItem);
-                if(categoryItem.equals("Charity")){
+                if (categoryItem.equals(getString(R.string.charity))) {
                     eventTypes.add(EventType.CHARITY);
-                }else if(categoryItem.equals("Party")){
+                } else if (categoryItem.equals(getString(R.string.party))) {
                     eventTypes.add(EventType.PARTY);
-                }else if(categoryItem.equals("Music")){
+                } else if (categoryItem.equals(getString(R.string.music))) {
                     eventTypes.add(EventType.MUSIC);
-                }else if(categoryItem.equals("Educational")){
+                } else if (categoryItem.equals(getString(R.string.educational))) {
                     eventTypes.add(EventType.EDUCATIONAL);
-                }else if(categoryItem.equals("Talks")){
+                } else if (categoryItem.equals(getString(R.string.talks))) {
                     eventTypes.add(EventType.TALKS);
-                }else if(categoryItem.equals("Sports")){
+                } else if (categoryItem.equals(getString(R.string.sports))) {
                     eventTypes.add(EventType.SPORTS);
                 }
             }
-            Log.d("TYPE", eventTypes.get(0)+"");
-            while (eventTypes.size() < 6) {
+            Log.d("TYPE", eventTypes.get(0) + "");
+            while (eventTypes.size() < 7) {
                 eventTypes.add(null);
             }
 
-        }else{
+        } else {
             eventTypes.add(EventType.CHARITY);
             eventTypes.add(EventType.SPORTS);
             eventTypes.add(EventType.TALKS);
             eventTypes.add(EventType.EDUCATIONAL);
             eventTypes.add(EventType.MUSIC);
             eventTypes.add(EventType.PARTY);
+            eventTypes.add(EventType.FACEBOOK);
         }
 
         dto.setEventTypes(eventTypes);
 
         String sort = bundle.getString("SORT");
-        if(sort.equals("POPULAR")){
+        if (sort.equals("POPULAR")) {
             dto.setSortType(SortType.POPULAR);
-        }else if(sort.equals("RECENT")){
+            sortTextView.setText(getString(R.string.popular_events));
+        } else if (sort.equals("RECENT")) {
             dto.setSortType(SortType.RECENT);
-        }else{
+            sortTextView.setText(getString(R.string.recent_events));
+        } else {
             dto.setSortType(SortType.FOR_YOU);
+            sortTextView.setText(getString(R.string.events_for_you));
         }
         String start = bundle.getString("START");
         String end = bundle.getString("END");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM d HH:mm:ss z uuuu");
-        if(!start.equals("min")) {
+        if (!start.equals("min")) {
             dto.setEventStart(ZonedDateTime.parse(start, formatter));
-        }else{
+        } else {
             dto.setEventStart(ZonedDateTime.now().minusYears(100));
         }
-        if(!end.equals("max")) {
+        if (!end.equals("max")) {
             dto.setEventEnd(ZonedDateTime.parse(end, formatter));
-        }else{
+        } else {
             dto.setEventEnd(ZonedDateTime.now().plusYears(100));
         }
         dto.setDistance(Integer.parseInt(bundle.getString("DIST")));
         dto.setFacebookPrivacy(FacebookPrivacy.PUBLIC);
-        if(bundle.getString("LAT").equals("-300") && bundle.getString("LNG").equals("-300")){
+        if (bundle.getString("LAT").equals("-300") && bundle.getString("LNG").equals("-300")) {
             dto.setLat(null);
             dto.setLng(null);
             //dto.setDistance(100);
-        }else {
+        } else {
             dto.setLat(Double.parseDouble(bundle.getString("LAT")));
             dto.setLng(Double.parseDouble(bundle.getString("LNG")));
         }
     }
 
-    public void afterChipRemoved(Bundle bundle){
+    public void afterChipRemoved(Bundle bundle) {
         setItUp(bundle);
         items.clear();
         currentPage = PAGE_START;

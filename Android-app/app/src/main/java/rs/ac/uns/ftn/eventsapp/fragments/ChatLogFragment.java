@@ -2,18 +2,17 @@ package rs.ac.uns.ftn.eventsapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,11 +32,11 @@ import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.APIFirebaseNotificationService;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.Client;
-import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.Response;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
+import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Sender;
-import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
 import rs.ac.uns.ftn.eventsapp.models.ChatMessage;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
@@ -52,6 +51,8 @@ public class ChatLogFragment extends Fragment {
     FirebaseUserDTO chatPartner;
     FirebaseUserDTO currentUser;
     DatabaseReference latestMessageOfThisChatLog;
+    DatabaseReference userMessagesRef;
+    ChildEventListener userMessageListener;
 
     APIFirebaseNotificationService apiFirebaseService;
     boolean notify = false;
@@ -84,7 +85,7 @@ public class ChatLogFragment extends Fragment {
         getChatPartnerFromFirebase();
         getCurrentUserAndChatLogMessagesFromFirebase(recyclerView);
         getMessages(recyclerView);
-        setLatestMessageOfUserToSeen();
+        setLatestMessageOfUserToSeenWhenOpenChatLog();
 
         createApiService();
 
@@ -95,6 +96,12 @@ public class ChatLogFragment extends Fragment {
                 sendMessage();
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        userMessagesRef.removeEventListener(userMessageListener);
     }
 
     private void createApiService() {
@@ -120,35 +127,35 @@ public class ChatLogFragment extends Fragment {
         String userImageUrl =
                 chatPartnerInfoInIntent.getStringExtra(UserSimpleItem.EXTRA_USER_IMAGE_PATH);
         chatPartner = new FirebaseUserDTO(uidOfUser, userUsername, userImageUrl, userEmail);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(chatPartner.getUsername());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(chatPartner.getUsername());
     }
 
-    private void getMessages(final RecyclerView recyclerView){
+    private void getMessages(final RecyclerView recyclerView) {
         final String uidOfLoggedUser = FirebaseAuth.getInstance().getUid();
         String uidOfChatPartner = chatPartner.getUid();
 
-        DatabaseReference userMessagesRef = FirebaseDatabase.getInstance().getReference("/user-messages/"
+        userMessagesRef = FirebaseDatabase.getInstance().getReference("/user-messages/"
                 + uidOfLoggedUser + "/" + uidOfChatPartner);
 
-        userMessagesRef.addChildEventListener(new ChildEventListener() {
+        userMessageListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
 
-                if(chatMessage != null){
-                    if(chatMessage.getFromId().equals(FirebaseAuth.getInstance().getUid())){
+                if (chatMessage != null) {
+                    if (chatMessage.getFromId().equals(FirebaseAuth.getInstance().getUid())) {
                         adapter.add(new MessageToChatPartnerItem(chatMessage, currentUser));
-                    }
-                    else{
+                    } else {
                         adapter.add(new MessageFromChatPartnerItem(chatMessage, chatPartner));
                     }
 
                     // ako je poruka namenjena meni stavi da je procitana
-                    if(chatMessage.getToId() == uidOfLoggedUser)
-                        setLatestMessageOfUserToSeen();
+                    Boolean shouldISetMessageToSeen = chatMessage.getToId().equals(uidOfLoggedUser) && !chatMessage.getSeen();
+                    if (shouldISetMessageToSeen)
+                        setLatestMessageOfUserToSeen(chatMessage);
                 }
 
-                recyclerView.scrollToPosition(adapter.getItemCount()-1);
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
 
             @Override
@@ -170,7 +177,9 @@ public class ChatLogFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        userMessagesRef.addChildEventListener(userMessageListener);
     }
 
 
@@ -185,7 +194,7 @@ public class ChatLogFragment extends Fragment {
         String toId = chatPartner.getUid();
         Long date = System.currentTimeMillis();
 
-        if(fromId == null) return;
+        if (fromId == null) return;
 
         //pravimo cvorove u firebase za current usera i chatpartnera
         DatabaseReference messageReferenceCurrentUser = FirebaseDatabase.getInstance().getReference(
@@ -209,13 +218,13 @@ public class ChatLogFragment extends Fragment {
         messageReferenceChatPartner.setValue(chatMessage);
 
         /*
-        * Sada azuriramo poslednju poruku koja je razmenjena izmedju korisnika
-        * */
-        FirebaseDatabase.getInstance().getReference("/latest-messages/"+fromId+"/"+toId)
-        .setValue(chatMessage);
-        FirebaseDatabase.getInstance().getReference("/latest-messages/"+toId+"/"+fromId)
+         * Sada azuriramo poslednju poruku koja je razmenjena izmedju korisnika
+         * */
+        FirebaseDatabase.getInstance().getReference("/latest-messages/" + fromId + "/" + toId)
                 .setValue(chatMessage);
-        if(notify){
+        FirebaseDatabase.getInstance().getReference("/latest-messages/" + toId + "/" + fromId)
+                .setValue(chatMessage);
+        if (notify) {
             sendMessageNotification(fromId, toId, chatMessage);
         }
         notify = false;
@@ -229,13 +238,13 @@ public class ChatLogFragment extends Fragment {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Token chatPartnerToken = ds.getValue(Token.class);
                     String notificationBody = chatMessage.getText();
                     String notificationTitle =
                             loggedUser.getName() + " " + getResources().getString(R.string.says_notification_message);
                     Data data = new Data(fromId, notificationBody, notificationTitle,
-                             toId, R.drawable.logo, NotificationTypeEnum.MESSAGE);
+                            toId, R.drawable.logo, NotificationTypeEnum.MESSAGE);
 
                     Sender sender = new Sender(data, chatPartnerToken.getToken());
                     apiFirebaseService.sendNotification(sender)
@@ -260,21 +269,28 @@ public class ChatLogFragment extends Fragment {
         });
     }
 
-    private void setLatestMessageOfUserToSeen(){
-        latestMessageOfThisChatLog= FirebaseDatabase.getInstance().getReference(
+    private void setLatestMessageOfUserToSeen(ChatMessage chatMessage) {
+        latestMessageOfThisChatLog = FirebaseDatabase.getInstance().getReference(
                 "/latest" +
-                "-messages/"+currentUser.getUid()+"/"+chatPartner.getUid());
-        latestMessageOfThisChatLog.addValueEventListener(new ValueEventListener(){
+                        "-messages/" + currentUser.getUid() + "/" + chatPartner.getUid());
+        chatMessage.setSeen(true);
+        latestMessageOfThisChatLog.setValue(chatMessage);
+    }
+
+    private void setLatestMessageOfUserToSeenWhenOpenChatLog() {
+        latestMessageOfThisChatLog = FirebaseDatabase.getInstance().getReference(
+                "/latest" +
+                        "-messages/" + currentUser.getUid() + "/" + chatPartner.getUid());
+        latestMessageOfThisChatLog.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 latestMessageOfThisChatLog.removeEventListener(this);
                 ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
-                if(chatMessage != null){
+                if (chatMessage != null) {
                     chatMessage.setSeen(true);
                     latestMessageOfThisChatLog.setValue(chatMessage);
                 }
-
             }
 
             @Override
@@ -282,6 +298,5 @@ public class ChatLogFragment extends Fragment {
 
             }
         });
-
     }
 }

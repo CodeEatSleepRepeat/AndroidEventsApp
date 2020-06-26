@@ -124,7 +124,7 @@
                 android:layout_height="35dp"
                 android:layout_below="@+id/toolbarCreateEvent"
                 android:layout_marginTop="2dp"
-                android:text="Select a location"
+                android:text="@string/selectALocation"
                 android:textAlignment="center"
                 android:textSize="25dp" />
 
@@ -174,19 +174,19 @@
             <RadioGroup
                 android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_below="@id/categoryCreateEventTextView"
                 android:layout_marginStart="95dp"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="40dp">
 
                     <CheckBox
                         android:id="@+id/educationalCreateEventRB"
                         android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="-2dp"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
@@ -197,7 +197,7 @@
                     <CheckBox
                         android:id="@+id/talksCreateEventRB"
                         android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="-2dp"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
@@ -208,7 +208,7 @@
                     <CheckBox
                         android:id="@+id/sportsCreateEventRB"
                         android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="-2dp"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
@@ -219,7 +219,7 @@
                     <CheckBox
                         android:id="@+id/musicCreateEventRB"
                         android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="-2dp"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
@@ -230,7 +230,7 @@
                     <CheckBox
                         android:id="@+id/partyCreateEventRB"
                         android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="-2dp"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
@@ -240,8 +240,8 @@
 
                     <CheckBox
                         android:id="@+id/charityCreateEventRB"
-                        android:layout_width="90dp"
-                        android:layout_height="40dp"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/filter_radio_btn"
                         android:button="@null"
                         android:gravity="center"
@@ -303,7 +303,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:text="ADD COVER PHOTO" />
+                    android:text="@string/add_cover_photo" />
 
 
             </FrameLayout>

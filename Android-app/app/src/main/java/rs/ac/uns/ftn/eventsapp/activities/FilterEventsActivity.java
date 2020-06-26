@@ -391,46 +391,30 @@ public class FilterEventsActivity extends AppCompatActivity {
             } else if (chipText.startsWith("Ends")) {
                 endingDateEditText.setText(chipText.split(" ")[1]);
                 endingTimeEditText.setText(chipText.split(" ")[2]);
-            } else {
-                switch (chipText) {
-                    case "Events for you":
-                        forYouFilterBtn.setChecked(true);
-                        recentFilterBtn.setChecked(false);
-                        popularFilterBtn.setChecked(false);
-                        break;
-                    case "Recent events":
-                        forYouFilterBtn.setChecked(false);
-                        recentFilterBtn.setChecked(true);
-                        popularFilterBtn.setChecked(false);
-                        break;
-                    case "Popular events":
-                        forYouFilterBtn.setChecked(false);
-                        recentFilterBtn.setChecked(false);
-                        popularFilterBtn.setChecked(true);
-                        break;
-                    case "Charity":
-                        charityFilterRB.setChecked(true);
-                        break;
-                    case "Educational":
-                        educationalFilterRB.setChecked(true);
-                        break;
-                    case "Talks":
-                        talksFilterRB.setChecked(true);
-                        break;
-                    case "Music":
-                        musicFilterRB.setChecked(true);
-                        break;
-                    case "Party":
-                        partyFilterRB.setChecked(true);
-                        break;
-                    case "Sports":
-                        sportsFilterRB.setChecked(true);
-                        break;
-                    case "Private events":
-                        privateEventFilterCheckBox.setChecked(true);
-                    default:
-                        break;
-                }//switch-case
+            } else if (chipText.equals(getString(R.string.charity))) {
+                charityFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.educational))) {
+                educationalFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.talks))) {
+                talksFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.music))) {
+                musicFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.party))) {
+                partyFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.sports))) {
+                sportsFilterRB.setChecked(true);
+            } else if (chipText.equals(getString(R.string.events_for_you))) {
+                forYouFilterBtn.setChecked(true);
+                recentFilterBtn.setChecked(false);
+                popularFilterBtn.setChecked(false);
+            } else if (chipText.equals(getString(R.string.recent_events))) {
+                forYouFilterBtn.setChecked(false);
+                recentFilterBtn.setChecked(true);
+                popularFilterBtn.setChecked(false);
+            } else if (chipText.equals(getString(R.string.popular_events))) {
+                forYouFilterBtn.setChecked(false);
+                recentFilterBtn.setChecked(false);
+                popularFilterBtn.setChecked(true);
             }//if-else
         }//for
 
@@ -438,23 +422,23 @@ public class FilterEventsActivity extends AppCompatActivity {
 
     private String getSortValue() {
         if (forYouFilterBtn.isChecked()) {
-            return "For you";
+            return getString(R.string.events_for_you);
         }
         if (recentFilterBtn.isChecked()) {
-            return "Recent";
+            return getString(R.string.recent_events);
         }
-        return "Popular";
+        return getString(R.string.popular_events);
     }
 
     private String[] getCategory() {
         ArrayList<String> array = new ArrayList<>();
 
-        if (charityFilterRB.isChecked()) array.add("Charity");
-        if (educationalFilterRB.isChecked()) array.add("Educational");
-        if (talksFilterRB.isChecked()) array.add("Talks");
-        if (musicFilterRB.isChecked()) array.add("Music");
-        if (partyFilterRB.isChecked()) array.add("Party");
-        if (sportsFilterRB.isChecked()) array.add("Sports");
+        if (charityFilterRB.isChecked()) array.add(getString(R.string.charity));
+        if (educationalFilterRB.isChecked()) array.add(getString(R.string.educational));
+        if (talksFilterRB.isChecked()) array.add(getString(R.string.talks));
+        if (musicFilterRB.isChecked()) array.add(getString(R.string.music));
+        if (partyFilterRB.isChecked()) array.add(getString(R.string.party));
+        if (sportsFilterRB.isChecked()) array.add(getString(R.string.sports));
 
         String[] list = new String[array.size()];
         for (int i = 0; i < array.size(); i++) {
@@ -465,22 +449,22 @@ public class FilterEventsActivity extends AppCompatActivity {
 
     private Boolean validationSuccess() {
         if (startingDateEditText.getText().toString().trim().equals("") && !startingTimeEditText.getText().toString().trim().equals("")) {
-            Toast.makeText(getApplicationContext(), "Both start date and start time need to be filled in!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.filter_validacija1, Toast.LENGTH_LONG).show();
             startingDateEditText.setError(Integer.toString(R.string.blankFieldError));
             return false;
         }
         if (!startingDateEditText.getText().toString().trim().equals("") && startingTimeEditText.getText().toString().trim().equals("")) {
-            Toast.makeText(getApplicationContext(), "Both start date and start time need to be filled in!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.filter_validacija1, Toast.LENGTH_LONG).show();
             startingTimeEditText.setError(Integer.toString(R.string.blankFieldError));
             return false;
         }
         if (endingDateEditText.getText().toString().trim().equals("") && !endingTimeEditText.getText().toString().trim().equals("")) {
-            Toast.makeText(getApplicationContext(), "Both end date and end time need to be filled in!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.filter_validacija2, Toast.LENGTH_LONG).show();
             endingDateEditText.setError(Integer.toString(R.string.blankFieldError));
             return false;
         }
         if (!endingDateEditText.getText().toString().trim().equals("") && endingTimeEditText.getText().toString().trim().equals("")) {
-            Toast.makeText(getApplicationContext(), "Both end date and end time need to be filled in!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.filter_validacija2, Toast.LENGTH_LONG).show();
             endingTimeEditText.setError(Integer.toString(R.string.blankFieldError));
             return false;
         }
