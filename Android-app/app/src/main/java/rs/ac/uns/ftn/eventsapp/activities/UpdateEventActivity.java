@@ -5,10 +5,8 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +29,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,12 +50,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.StringDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.UpdateEventDTO;
 import rs.ac.uns.ftn.eventsapp.models.EventType;
 import rs.ac.uns.ftn.eventsapp.models.FacebookPrivacy;
@@ -142,7 +133,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
 
         if (imgUri != null && savedInstanceState == null) {
             Picasso.get().setLoggingEnabled(true);
-            if (imgUri.startsWith("http")){
+            if (imgUri.startsWith("http")) {
                 Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
             } else {
                 Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
@@ -252,7 +243,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 } catch (Exception e) {
                     //not local image
                     Picasso.get().setLoggingEnabled(true);
-                    if (imgUri.startsWith("http")){
+                    if (imgUri.startsWith("http")) {
                         Picasso.get().load(Uri.parse(imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
                     } else {
                         Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + imgUri)).placeholder(R.drawable.ic_missing_event_icon_white).into(imgView);
@@ -462,7 +453,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select an image"), GALLERY_REQUEST);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), GALLERY_REQUEST);
             }
         });
 
@@ -508,17 +499,17 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         }
         if (placeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation2, Toast.LENGTH_LONG).show();
-            placeEditText.setError("This field cannot be blank.");
+            placeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (nameEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation3, Toast.LENGTH_LONG).show();
-            nameEditText.setError("This field cannot be blank.");
+            nameEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (descriptionEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation4, Toast.LENGTH_LONG).show();
-            descriptionEditText.setError("This field cannot be blank.");
+            descriptionEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (!charityCB.isChecked() && !educationalCB.isChecked() && !musicCB.isChecked() && !partyCB.isChecked()
@@ -528,22 +519,22 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         }
         if (startingDateEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation6, Toast.LENGTH_LONG).show();
-            startingDateEditText.setError("This field cannot be blank.");
+            startingDateEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (startingTimeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation7, Toast.LENGTH_LONG).show();
-            startingTimeEditText.setError("This field cannot be blank.");
+            startingTimeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (endingDateEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation8, Toast.LENGTH_LONG).show();
-            endingDateEditText.setError("This field cannot be blank.");
+            endingDateEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (endingTimeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation9, Toast.LENGTH_LONG).show();
-            endingTimeEditText.setError("This field cannot be blank.");
+            endingTimeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (calendar.getTimeInMillis() >= calendar2.getTimeInMillis()) {
@@ -582,7 +573,7 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
         Call<EventDTO> s = e.updateEvent(AppDataSingleton.getInstance().getLoggedUser().getId(),
                 new UpdateEventDTO(eventId, lat, lng, nameEditText.getText().toString(), placeEditText.getText().toString(), descriptionEditText.getText().toString(),
-                        eventType, calendar.getTime(), calendar2.getTime(), facebookPrivacy, SyncStatus.UPDATE, ZonedDateTime.now()));
+                        eventType, calendar.getTime(), calendar2.getTime(), facebookPrivacy, SyncStatus.UPDATE, ZonedDateTime.now(), imgUri));
         s.enqueue(new Callback<EventDTO>() {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
@@ -594,8 +585,10 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                 if (imgUri != null) {
                     uploadImage(response.body().getId());
                 } else {
-                    Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), R.string.eventUpdated, Toast.LENGTH_LONG).show();
+                    /*Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
+                    startActivity(intent);*/
+                    onBackPressed();
                 }
             }
 
@@ -627,8 +620,9 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                         return;
                     }
                     Toast.makeText(getApplicationContext(), R.string.eventUpdated, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(UpdateEventActivity.this, MainActivity.class);
+                    startActivity(intent);*/
+                    onBackPressed();
                 }
 
                 @Override
@@ -636,7 +630,11 @@ public class UpdateEventActivity extends AppCompatActivity implements OnMapReady
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                 }
             });
+        } else {
+
         }
+
+        onBackPressed();
     }
 
     @Override

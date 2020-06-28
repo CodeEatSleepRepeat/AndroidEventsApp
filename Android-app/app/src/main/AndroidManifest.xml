@@ -57,7 +57,8 @@
         <activity android:name=".activities.SettingsUnAuthUserActivity" />
         <activity
             android:name=".activities.GoogleMapActivity"
-            android:label="@string/map" />
+            android:label="@string/map"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CommentsActivity"
             android:label="@string/comments" />
@@ -94,10 +95,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SimilarEventsActivity"
-            android:label="@string/similar_posts" />
+            android:label="@string/similar_posts"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AuthorsEventsActivity"
-            android:label="@string/authors_events" />
+            android:label="@string/authors_events"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.InterestedInEventActivity"
             android:label="@string/nav_item_interested"

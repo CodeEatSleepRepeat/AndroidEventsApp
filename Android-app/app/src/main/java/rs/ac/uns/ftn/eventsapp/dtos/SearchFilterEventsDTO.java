@@ -16,8 +16,8 @@ public class SearchFilterEventsDTO {
     private Double lng;
     private SortType sortType;
     private List<EventType> eventTypes;
-    private ZonedDateTime eventStart = ZonedDateTime.now();
-    private ZonedDateTime eventEnd = ZonedDateTime.now();
+    private ZonedDateTime eventStart;// = ZonedDateTime.now();
+    private ZonedDateTime eventEnd;// = ZonedDateTime.now();
     private FacebookPrivacy facebookPrivacy;
 
     public SearchFilterEventsDTO() {

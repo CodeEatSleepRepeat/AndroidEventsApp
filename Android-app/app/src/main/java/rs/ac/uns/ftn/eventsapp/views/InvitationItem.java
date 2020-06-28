@@ -26,6 +26,7 @@ import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
+import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -33,9 +34,11 @@ public class InvitationItem extends Item<GroupieViewHolder> {
     private InvitationDTO invitation;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
     private GroupieViewHolder viewHolder;
+    private InvitationsFragment fragment;
 
-    public InvitationItem(InvitationDTO invitation) {
+    public InvitationItem(InvitationDTO invitation, InvitationsFragment fragment) {
         this.invitation = invitation;
+        this.fragment = fragment;
     }
 
     @Override
@@ -131,8 +134,8 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
                 if (response.isSuccessful()) {
-                    deleteInvitation();
                     hideInvitationView();
+                    fragment.getAllInvitations();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
                             R.string.joined_event_invitations, Toast.LENGTH_SHORT).show();
                 }
@@ -155,8 +158,8 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
                 if (response.isSuccessful()) {
-                    deleteInvitation();
                     hideInvitationView();
+                    fragment.getAllInvitations();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
                             R.string.interested_event_invitations, Toast.LENGTH_SHORT).show();
                 }
@@ -182,7 +185,10 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             @Override
             public void onResponse(Call<InvitationDTO> call, retrofit2.Response<InvitationDTO> response) {
                 if (response.isSuccessful()) {
-                    hideInvitationView();
+                    //hideInvitationView();
+                    fragment.getAllInvitations();
+                    Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
+                            R.string.declined_event_invitations, Toast.LENGTH_SHORT).show();
                 }
             }
 

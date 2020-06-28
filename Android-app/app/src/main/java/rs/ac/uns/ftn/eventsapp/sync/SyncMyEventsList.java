@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.eventsapp.sync;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,12 +36,16 @@ public class SyncMyEventsList extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
+        SearchFilterEventsDTO dto = new SearchFilterEventsDTO();
+        dto.setEventStart(ZonedDateTime.now());
+        dto.setEventEnd(ZonedDateTime.now());
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getMyEvents(AppDataSingleton.getInstance().getLoggedUser().getId(), 0, new SearchFilterEventsDTO());
+        Call<List<EventDTO>> events = e.getMyEvents(AppDataSingleton.getInstance().getLoggedUser().getId(), 0, dto);
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {

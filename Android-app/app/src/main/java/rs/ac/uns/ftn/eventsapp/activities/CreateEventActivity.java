@@ -45,7 +45,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
@@ -308,7 +307,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select an image"), GALLERY_REQUEST);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), GALLERY_REQUEST);
             }
         });
 
@@ -365,17 +364,17 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
         if (placeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation2, Toast.LENGTH_LONG).show();
-            placeEditText.setError("This field cannot be blank.");
+            placeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (nameEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation3, Toast.LENGTH_LONG).show();
-            nameEditText.setError("This field cannot be blank.");
+            nameEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (descriptionEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation4, Toast.LENGTH_LONG).show();
-            descriptionEditText.setError("This field cannot be blank.");
+            descriptionEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (!charityCB.isChecked() && !educationalCB.isChecked() && !musicCB.isChecked() && !partyCB.isChecked()
@@ -385,22 +384,22 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
         if (startingDateEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation6, Toast.LENGTH_LONG).show();
-            startingDateEditText.setError("This field cannot be blank.");
+            startingDateEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (startingTimeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation7, Toast.LENGTH_LONG).show();
-            startingTimeEditText.setError("This field cannot be blank.");
+            startingTimeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (endingDateEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation8, Toast.LENGTH_LONG).show();
-            endingDateEditText.setError("This field cannot be blank.");
+            endingDateEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (endingTimeEditText.getText().toString().trim().equals("")) {
             Toast.makeText(getApplicationContext(), R.string.createEventValidation9, Toast.LENGTH_LONG).show();
-            endingTimeEditText.setError("This field cannot be blank.");
+            endingTimeEditText.setError(getString(R.string.blankFieldError));
             return false;
         }
         if (calendar.getTimeInMillis() >= calendar2.getTimeInMillis()) {
@@ -448,16 +447,17 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     return;
                 }
                 Log.d("TAG", response.body().getId().toString());
-                if(imgUri!=null) {
+                if (imgUri != null) {
                     try {
 
                         uploadImage(response.body().getId());
                     } catch (URISyntaxException ex) {
                         ex.printStackTrace();
                     }
-                }else{
-                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-                    startActivity(intent);
+                } else {
+                    /*Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    startActivity(intent);*/
+                    onBackPressed();
                 }
             }
 
@@ -469,7 +469,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void uploadImage(Long id) throws URISyntaxException {
-        if(bitmap!=null) {
+        if (bitmap != null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                     .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
@@ -489,8 +489,9 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                         return;
                     }
                     Toast.makeText(getApplicationContext(), R.string.eventCreated, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    startActivity(intent);*/
+                    onBackPressed();
                 }
 
                 @Override

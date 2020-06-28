@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:gravity="center_horizontal"
-        android:text="Please enter servers IP address."
+        android:text="@string/please_enter_servers_ip_address"
         android:textStyle="bold" />
 
     <EditText
@@ -28,6 +28,6 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="5dp"
-        android:hint="Server IP Address"
+        android:hint="@string/server_ip_address"
         android:inputType="textUri" />
 </LinearLayout>

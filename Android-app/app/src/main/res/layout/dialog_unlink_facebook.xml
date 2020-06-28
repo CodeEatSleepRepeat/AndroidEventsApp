@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="This will disconnect the Facebook account from the Events account! This action can be undone by logging into the Events application with Facebook.\nYou are going to be logged out of app after this!\n\nPlease type your password to confirm."
+        android:text="@string/disconnect_fb"
         android:textStyle="bold"
         android:layout_margin="15dp"/>
 

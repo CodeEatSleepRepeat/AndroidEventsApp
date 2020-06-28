@@ -46,5 +46,7 @@ public class UpdateEventDTO {
 	private SyncStatus syncStatus;
 	@NotNull
 	private ZonedDateTime updated_time;
+	
+	private String imgUri;
 
 }

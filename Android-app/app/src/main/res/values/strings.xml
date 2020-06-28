@@ -185,4 +185,52 @@
 
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
+    <string name="invitations_sent">Invitations sent!</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="event_reported">Event reported!</string>
+    <string name="send_invite_to_event">\"Hey! Here is an interested event I found: \"</string>
+    <string name="display_location_permission">You need to enable permissions to display location !</string>
+    <string name="already_interested">You are already interested in this event</string>
+    <string name="added_to_inteerested">Added to interested Events!</string>
+    <string name="already_going">You are already going to this event</string>
+    <string name="added_to_going">Added to going  Events!</string>
+    <string name="event_not_found">Event not found</string>
+    <string name="removed_from_interested">Removed from interested!</string>
+    <string name="removed_from_going">Removed from going!</string>
+    <string name="event_deleted">Event deleted!</string>
+    <string name="declined_event_invitations">Invitation declined</string>
+    <string name="psw_not_ok_profile">Password is not correct! Action canceled.</string>
+    <string name="unsaved_changes_profile">You have made changes to your account. Do you want to save them?</string>
+    <string name="save">Save</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="psw_not_ok_reenter_profile">Passwords are not valid! Please reenter passwords</string>
+    <string name="account_succ_changed_profile">Account changes are successfully applied!</string>
+    <string name="old_psw_not_ok_profile">Old password is not correct!</string>
+    <string name="select_image_profile">Select an image</string>
+    <string name="no_changes_profile">No changes were made to the account</string>
+    <string name="server_ip_is">\"Server IP is: \"</string>
+    <string name="server_ip_not_correct">Server IP is not correct! Action canceled.</string>
+    <string name="update">Update</string>
+    <string name="please_enter_servers_ip_address">Please enter servers IP address.</string>
+    <string name="server_ip_address">Server IP Address</string>
+    <string name="disconnect_fb">This will disconnect the Facebook account from the Events account! This action can be undone by logging into the Events application with Facebook. You are going to be logged out of app after this!  Please type your password to confirm.</string>
+    <string name="disconnect_account">This action cannot be undone. This will permanently delete the account!  Please type your password to confirm.</string>
+    <string name="reset_password">Reset password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="we_just_need_your_registered_email_address">We just need your registered email address</string>
+    <string name="to_send_you_a_brand_new_password">to send you a brand new password</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="john_doe">John Doe</string>
+    <string name="value_must_be">"Value must be between "</string>
+    <string name="and">" and "</string>
+    <string name="firebase_failed">Message system is not available at the moment.</string>
+    <string name="firebase_auth_failed">Message system authentication failed.</string>
+    <string name="firebase_register_failed">Register into message system failed.</string>
+    <string name="please_enter_all_fields">Please enter all fields</string>
+    <string name="reset_all_filters">Reset all filters</string>
+    <string name="share_via">Share via</string>
+    <string name="no_similar_events">No similar events</string>
+    <string name="select_image">Select an image</string>
+
 </resources>

@@ -93,7 +93,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
                 returnIntent.putExtra("SHARED_FRIENDS_EMAILS", checkedUsersEmails);
                 setResult(Activity.RESULT_OK, returnIntent);
 
-                Toast.makeText(getApplicationContext(), "Invitations send!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.invitations_sent), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -147,7 +147,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         adapter.notifyDataSetChanged();
 
         selectionCheckbox.setChecked(false);
-        selectionText.setText("Select all");
+        selectionText.setText(R.string.select_all);
         sendBtn.hide();
     }
 
@@ -160,7 +160,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
         adapter.notifyDataSetChanged();
 
         selectionCheckbox.setChecked(true);
-        selectionText.setText("Deselect all");
+        selectionText.setText(R.string.deselect_all);
         sendBtn.show();
     }
 
@@ -171,12 +171,12 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
 
             if (checkedUsersIds.size() == userListAll.size()) {
                 selectionCheckbox.setChecked(true);
-                selectionText.setText("Deselect all");
+                selectionText.setText(R.string.deselect_all);
             }
         } else {
             checkedUsersIds.remove(userId);
             selectionCheckbox.setChecked(false);
-            selectionText.setText("Select all");
+            selectionText.setText(R.string.select_all);
 
             if (checkedUsersIds.size() == 0) {
                 sendBtn.hide();
@@ -297,7 +297,7 @@ public class SendInvitationsActivity extends AppCompatActivity implements Filter
     public void onBackPressed() {
         super.onBackPressed();
 
-        Toast.makeText(getApplicationContext(), "Invitation canceled!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Invitation canceled!", Toast.LENGTH_SHORT).show();
         setResult(Activity.RESULT_CANCELED);
         finish();
     }

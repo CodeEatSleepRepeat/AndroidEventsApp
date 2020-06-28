@@ -23,8 +23,9 @@ public class UpdateEventDTO {
     private double longitude;
     private SyncStatus syncStatus;
     private ZonedDateTime updated_time;
+    private String imgUri;
 
-    public UpdateEventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, SyncStatus syncStatus, ZonedDateTime updated_time) {
+    public UpdateEventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, Date start_time, Date end_time, FacebookPrivacy privacy, SyncStatus syncStatus, ZonedDateTime updated_time, String imgUri) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -37,9 +38,10 @@ public class UpdateEventDTO {
         this.privacy = privacy;
         this.syncStatus = syncStatus;
         this.updated_time = updated_time;
+        this.imgUri = imgUri;
     }
 
-    public UpdateEventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, ZonedDateTime start_time, ZonedDateTime end_time, FacebookPrivacy privacy, SyncStatus syncStatus, ZonedDateTime updated_time) {
+    public UpdateEventDTO(Long id, double latitude, double longitude, String name, String place, String description, EventType type, ZonedDateTime start_time, ZonedDateTime end_time, FacebookPrivacy privacy, SyncStatus syncStatus, ZonedDateTime updated_time, String imgUri) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -52,6 +54,7 @@ public class UpdateEventDTO {
         this.privacy = privacy;
         this.syncStatus = syncStatus;
         this.updated_time = updated_time;
+        this.imgUri = imgUri;
     }
 
     private ZonedDateTime getZonedTime(Date updated_time) {

@@ -63,6 +63,9 @@ public class AddFriendActivity extends AppCompatActivity {
         btnSearchUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPage = 0;
+                foundUsers.clear();
+                adapter.clear();
                 searchUsersByUsername();
             }
         });

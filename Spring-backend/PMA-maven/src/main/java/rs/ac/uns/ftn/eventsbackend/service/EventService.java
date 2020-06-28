@@ -254,6 +254,14 @@ public class EventService {
 			event.get().setPrivacy(dto.getPrivacy());
 			event.get().setSyncStatus(SyncStatus.UPDATE);
 			event.get().setUpdated_time(ZonedDateTime.now());
+			
+			if (dto.getImgUri() == null || dto.getImgUri().equals("")) {
+				if (event.get().getCover() != null) {
+					removeImage(event.get().getCover().getSource());
+					event.get().setCover(null);
+				}
+			}
+			
 			return eventRepository.save(event.get());
 		}
 		throw new Exception("Event does not exist!");

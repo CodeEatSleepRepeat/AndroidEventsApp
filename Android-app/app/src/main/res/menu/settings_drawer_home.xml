@@ -11,14 +11,14 @@
         android:id="@+id/filterEventsBtn"
         android:icon="@drawable/ic_filter"
         android:orderInCategory="110"
-        android:title="FilterEvents"
+        android:title="@string/filter_events"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/searchEventsBtn"
         android:icon="@drawable/ic_mysearch"
         android:orderInCategory="10"
-        android:title="SearchEvents"
+        android:title="@string/action_serach"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
 </menu>

@@ -38,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/cardview_shadow_start_color"
+        android:background="@color/cardview_shadow_start_color_events"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/text_input_message_chat_log"
         app:layout_constraintEnd_toEndOf="parent"

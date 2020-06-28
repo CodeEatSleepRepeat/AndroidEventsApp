@@ -268,6 +268,9 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
 
     private void sendFriendRequestNotification(final APIFirebaseNotificationService apiFirebaseService,
                                                final String toId) {
+        if(FirebaseAuth.getInstance().getUid() == null)
+            return;
+
         final String loggedUserUid = FirebaseAuth.getInstance().getUid();
         DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = allTokens.orderByKey().equalTo(toId);

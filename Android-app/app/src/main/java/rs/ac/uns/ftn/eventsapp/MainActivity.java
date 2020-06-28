@@ -296,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     case R.id.navigation_item_home:
                         resetFilterDTO();
                         onClickNavItem(HomeEventListFragment.class);
+                        postResetFilterDTO();
                         break;
                     case R.id.navigation_item_settings_unauth:
                         openSettingsUnauth();
@@ -330,6 +331,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         });
     }
 
+    private void postResetFilterDTO() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String preferedSortType = pref.getString("pref_default_event_sort", "2");
+
+        if (preferedSortType.equals("1")) {
+            sortType = SortType.FOR_YOU;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.events_for_you));
+        } else if (preferedSortType.equals("2")) {
+            sortType = SortType.RECENT;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.recent_events));
+        } else if (preferedSortType.equals("3")) {
+            sortType = SortType.POPULAR;
+            //((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.popular_events));
+        }
+    }
+
     private void setNavigationListenerAuthorizedUser(final NavigationView navigationView, final Toolbar toolbar) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -340,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     case R.id.navigation_item_home:
                         resetFilterDTO();
                         onClickNavItem(HomeEventListFragment.class);
+                        postResetFilterDTO();
                         break;
                     case R.id.navigation_item_create:
                         onClickCreateEvent();
@@ -362,8 +380,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         if (isUserLoggedToFirebaseMessageService)
                             onClickNavItem(LatestMessagesFragment.class);
                         else
-                            Toast.makeText(MainActivity.this, "Message system is not avaible at the " +
-                                            "moment",
+                            Toast.makeText(MainActivity.this, R.string.firebase_failed,
                                     Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_item_logout:
@@ -686,6 +703,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 //user je kliknuo na brisanje svih filtera
                 resetFilterDTO();
+                postResetFilterDTO();
             }
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
@@ -719,21 +737,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         removeFilterChips();
         eventTypes = new ArrayList<>();
         distance = 0;
-
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String preferedSortType = pref.getString("pref_default_event_sort", "2");
-
-        if (preferedSortType.equals("1")) {
-            sortType = SortType.FOR_YOU;
-            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.events_for_you));
-        } else if (preferedSortType.equals("2")) {
-            sortType = SortType.RECENT;
-            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.recent_events));
-        } else if (preferedSortType.equals("3")) {
-            sortType = SortType.POPULAR;
-            ((TextView) findViewById(R.id.sortFilterTextView)).setText(getString(R.string.popular_events));
-        }
-
         start = "min";
         end = "max";
     }

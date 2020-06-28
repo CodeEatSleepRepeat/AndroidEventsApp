@@ -132,7 +132,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             getDetails();
             setView(dto);
         }else{
-            Toast.makeText(getApplicationContext(), "NULL JE", Toast.LENGTH_LONG);
+            //Toast.makeText(getApplicationContext(), "NULL JE", Toast.LENGTH_LONG);
             getDetailsIfNull();
         }
 
@@ -279,7 +279,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static int getDominantColor(Bitmap bitmap) {
+    /*public static int getDominantColor(Bitmap bitmap) {
         try {
             Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
             final int color = newBitmap.getPixel(0, 0);
@@ -289,7 +289,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         } catch (Exception e) {
             return Color.WHITE;
         }
-    }
+    }*/
 
     public void goingToEvent() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -302,14 +302,14 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "You are already going to this event", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.already_going, Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     AppDataSingleton.getInstance().deleteInterestedEventPhysical(dto.getId());
                     AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(dto, GoingInterestedStatus.GOING));
                     goingBtn.setText(R.string.notGoing);
                     interestedBtn.setText(R.string.nav_item_interested);
-                    Toast.makeText(getApplicationContext(), "Added to Going Events!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.added_to_going, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -331,14 +331,14 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "You are already interested in this event", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.already_interested, Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     AppDataSingleton.getInstance().deleteGoingEventPhysical(dto.getId());
                     AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(dto, GoingInterestedStatus.INTERESTED));
                     interestedBtn.setText(R.string.notInterested);
                     goingBtn.setText(R.string.nav_item_going);
-                    Toast.makeText(getApplicationContext(), "Added to Interested Events!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.added_to_inteerested, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -360,10 +360,10 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "Event not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.event_not_found, Toast.LENGTH_LONG).show();
                 } else {
                     AppDataSingleton.getInstance().deleteInterestedEventPhysical(dto.getId());
-                    Toast.makeText(getApplicationContext(), "Removed from interested!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.removed_from_interested, Toast.LENGTH_LONG).show();
                     interestedBtn.setText(R.string.nav_item_interested);
                 }
             }
@@ -386,10 +386,10 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "Event not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.event_not_found, Toast.LENGTH_LONG).show();
                 } else {
                     AppDataSingleton.getInstance().deleteGoingEventPhysical(dto.getId());
-                    Toast.makeText(getApplicationContext(), "Removed from going!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.removed_from_going, Toast.LENGTH_LONG).show();
                     goingBtn.setText(R.string.nav_item_going);
                 }
             }
@@ -425,12 +425,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Share event", Toast.LENGTH_SHORT).show();
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
-            String shareBody = "Hey! Here is an interested event I found: " + dto.getName();
+            String shareBody = getString(R.string.send_invite_to_event) + dto.getName();
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Events");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
         } else if (id == R.id.reportEventDetails) {
-            Toast.makeText(getApplicationContext(), "Event reported!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.event_reported, Toast.LENGTH_SHORT).show();
 
         } else {
             //it's go home button, what else
@@ -619,7 +619,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             EventDetailsSimilarEventsRecyclerView adapter = new EventDetailsSimilarEventsRecyclerView(this, res.getEvents());
             rv.setAdapter(adapter);
         }else{
-            seeAllSimilarPostsEventDetailsTextView.setText("No similar events");
+            seeAllSimilarPostsEventDetailsTextView.setText(R.string.no_similar_events);
             seeAllSimilarPostsEventDetailsTextView.setOnClickListener(null);
         }
     }
@@ -668,6 +668,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void sendEventInvitationNotification(final APIFirebaseNotificationService apiFirebaseService, final String toId) {
+        if(FirebaseAuth.getInstance().getUid() == null)
+            return;
+
         final String loggedUserUid = FirebaseAuth.getInstance().getUid();
         DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = allTokens.orderByKey().equalTo(toId);

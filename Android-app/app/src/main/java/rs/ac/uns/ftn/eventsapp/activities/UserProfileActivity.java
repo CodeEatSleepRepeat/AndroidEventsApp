@@ -157,7 +157,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void notifyNoChanges() {
-        Toast.makeText(this, "No changes were made to the account", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.no_changes_profile, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -232,7 +232,7 @@ public class UserProfileActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select an image"), GALLERY_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image_profile)), GALLERY_REQUEST);
     }
 
     private void removeImage() {
@@ -320,7 +320,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             sendUnlinkFBRequest(email_profile.getText().toString(), psw.getText().toString());
                         } else {
                             //wrong password
-                            Toast.makeText(UserProfileActivity.this, "Password is not correct! Action canceled.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserProfileActivity.this, R.string.psw_not_ok_profile, Toast.LENGTH_SHORT).show();
                             dialog.cancel();
                         }
                     }
@@ -395,7 +395,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             removeAccount(email_profile.getText().toString(), psw.getText().toString());
                         } else {
                             //wrong password
-                            Toast.makeText(UserProfileActivity.this, "Password is not correct! Action canceled.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserProfileActivity.this, R.string.psw_not_ok_profile, Toast.LENGTH_SHORT).show();
                             dialog.cancel();
                         }
                     }
@@ -463,8 +463,8 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void notifyUserSaveChanges() {
         AlertDialog.Builder notifyDialogBuilder = new AlertDialog.Builder(this);
-        notifyDialogBuilder.setMessage("You have made changes to your account. Do you want to save them?");
-        notifyDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        notifyDialogBuilder.setMessage(R.string.unsaved_changes_profile);
+        notifyDialogBuilder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //user wants to save account
@@ -475,7 +475,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
         });
-        notifyDialogBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+        notifyDialogBuilder.setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //user wants to dismiss
@@ -523,7 +523,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
                         return;
                     } else if (response.code() == 400) {
-                        Toast.makeText(getApplicationContext(), "Passwords are not valid! Please reenter passwords", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.psw_not_ok_reenter_profile, Toast.LENGTH_LONG).show();
                         return;
                     } else {
                         Log.d(TAG, "onErrorResponse: Server didn't receive FB token!");
@@ -555,7 +555,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(this, "Account changes are successfully applied!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.account_succ_changed_profile, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -576,7 +576,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
             //old password not same
             if (!password_current_profile.getText().toString().equals(oldUserState.getString("password"))) {
-                password_current_profile.setError("Old password is not correct!");
+                password_current_profile.setError(getString(R.string.old_psw_not_ok_profile));
                 return false;
             }
             //new password not valid

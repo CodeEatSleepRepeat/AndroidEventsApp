@@ -346,7 +346,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 break;
             case R.id.menu_cancel_request:
                 deleteFriendship();
-                Toast.makeText(this, R.string.cancel_request, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.request_declined, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 onBackPressed();
@@ -474,6 +474,9 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private void sendFriendRequestNotification(final APIFirebaseNotificationService apiFirebaseService,
                                                final String toId) {
+        if(FirebaseAuth.getInstance().getUid() == null)
+            return;
+
         final String loggedUserUid = FirebaseAuth.getInstance().getUid();
         DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = allTokens.orderByKey().equalTo(toId);

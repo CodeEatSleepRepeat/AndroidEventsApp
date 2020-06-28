@@ -14,10 +14,11 @@
             android:id="@+id/button_go_to_friend_requests_list_of_users"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="3 friend requests"
+            android:text=""
             android:background="@drawable/rounded_btn_white"
             android:layout_gravity="right"
-            android:layout_marginVertical="10dp"/>
+            android:layout_marginVertical="10dp"
+            android:visibility="gone"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"

@@ -60,7 +60,7 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
         String startDate = formatter.format(item.getStart_time());
         viewHolder.eventStartDate.setText(startDate.substring(0, startDate.length() - 6));
         String imageUri = item.getImageUri();
-        Log.d("LINK", imageUri);
+
         if (imageUri != null && !imageUri.equals("") && !imageUri.startsWith("http")) {
             imageUri = AppDataSingleton.IMAGE_URI + imageUri;
         } else if (imageUri == null || imageUri.equals("")) {
@@ -252,13 +252,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "You are already interested in this event", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.already_interested, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(item);
                     notifyDataSetChanged();
                     AppDataSingleton.getInstance().setEventToInterested(item);
-                    Toast.makeText(viewHolder.itemView.getContext(), "Added to Interested Events!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.added_to_inteerested, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -280,13 +280,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "You are already going to this event", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.already_going, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
                     AppDataSingleton.getInstance().setEventToGoing(event);
-                    Toast.makeText(viewHolder.itemView.getContext(), "Added to Going Events!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.added_to_going, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -308,13 +308,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.event_not_found, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
                     AppDataSingleton.getInstance().deleteInterestedEventPhysical(event.getId());
-                    Toast.makeText(viewHolder.itemView.getContext(), "Removed from interested!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.removed_from_interested, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -336,13 +336,13 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.event_not_found, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
                     AppDataSingleton.getInstance().deleteGoingEventPhysical(event.getId());
-                    Toast.makeText(viewHolder.itemView.getContext(), "Removed from going!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.removed_from_going, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -364,12 +364,12 @@ public class EventListRecyclerView extends RecyclerView.Adapter<EventListRecycle
             @Override
             public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                 if (response.code() != 200) {
-                    Toast.makeText(viewHolder.itemView.getContext(), "Event not found", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.event_not_found, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("TAG", response.body().getId().toString());
                     mItems.remove(event);
                     notifyDataSetChanged();
-                    Toast.makeText(viewHolder.itemView.getContext(), "Event deleted!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.event_deleted, Toast.LENGTH_LONG).show();
                 }
             }
 

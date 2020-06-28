@@ -25,6 +25,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -264,8 +265,9 @@ public class HomeEventListFragment extends Fragment {
         }
         String start = bundle.getString("START");
         String end = bundle.getString("END");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM d HH:mm:ss z uuuu");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM d HH:mm:ss z uuuu").withLocale(new Locale("en", "US"));
         if (!start.equals("min")) {
+            //TODO: change language to engl
             dto.setEventStart(ZonedDateTime.parse(start, formatter));
         } else {
             dto.setEventStart(ZonedDateTime.now().minusYears(100));

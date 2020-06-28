@@ -130,6 +130,9 @@ public class InterestedEventsListFragment extends Fragment {
     }
 
     private void getEventsPage(int num, SearchFilterEventsDTO dto) {
+        dto.setEventStart(ZonedDateTime.now());
+        dto.setEventEnd(ZonedDateTime.now());
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())

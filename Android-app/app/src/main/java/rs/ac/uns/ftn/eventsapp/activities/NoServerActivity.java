@@ -78,17 +78,17 @@ public class NoServerActivity extends Activity {
         final View view = inflater.inflate(R.layout.dialog_update_ip_address, null);
         notifyDialogBuilder.setView(view)
                 // Add action buttons
-                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         EditText ipAddress = view.findViewById(R.id.server_ip_address);
                         if (!ipAddress.getText().toString().trim().equals("")) {
                             // set new ip
                             setNewIp(ipAddress.getText().toString().trim());
-                            Toast.makeText(NoServerActivity.this, "Server IP is: " + AppDataSingleton.getInstance().SERVER_IP, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NoServerActivity.this, getString(R.string.server_ip_is) + AppDataSingleton.getInstance().SERVER_IP, Toast.LENGTH_SHORT).show();
                         } else {
                             //wrong ip
-                            Toast.makeText(NoServerActivity.this, "Server IP is not correct! Action canceled.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NoServerActivity.this, R.string.server_ip_not_correct, Toast.LENGTH_SHORT).show();
                             dialog.cancel();
                         }
                     }

@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/drawer_left_margin"
         android:layout_marginTop="15dp"
-        android:text="John Doe"
+        android:text="@string/john_doe"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/drawer_name_height" />

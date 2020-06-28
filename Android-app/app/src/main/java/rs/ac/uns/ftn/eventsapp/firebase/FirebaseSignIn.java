@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.dtos.firebase.FirebaseUserDTO;
 import rs.ac.uns.ftn.eventsapp.sync.SyncGoingInterestedEventsTask;
 import rs.ac.uns.ftn.eventsapp.sync.SyncMyEventsTask;
@@ -55,7 +56,7 @@ public class FirebaseSignIn {
                 email.isEmpty() || password.isEmpty() || username.isEmpty();
 
         if (isEmptyDataContainedInParameters) {
-            Toast.makeText(activityContext, "Please enter all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activityContext, R.string.please_enter_all_fields, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -161,7 +162,7 @@ public class FirebaseSignIn {
         }
         Log.w(FIREBASE_REGISTER_TAG, "createUserWithEmail:failure",
                 task);
-        Toast.makeText(activityContext, "Register into message system failed.",
+        Toast.makeText(activityContext, R.string.firebase_register_failed,
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -184,7 +185,7 @@ public class FirebaseSignIn {
 
     private void InformAboutLoginFailure(@NonNull Task<AuthResult> task) {
         Log.w(FIREBASE_REGISTER_TAG, "signInWithEmail:failure", task.getException());
-        Toast.makeText(activityContext, "Message system authentication failed.",
+        Toast.makeText(activityContext, R.string.firebase_auth_failed,
                 Toast.LENGTH_SHORT).show();
     }
 

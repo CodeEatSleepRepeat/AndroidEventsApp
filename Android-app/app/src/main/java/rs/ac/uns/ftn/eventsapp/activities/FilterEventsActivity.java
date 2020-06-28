@@ -85,7 +85,7 @@ public class FilterEventsActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.resetFilter) {
                     //TODO: ovde resetuj filtere na pocetne vrednosti
-                    Toast.makeText(getApplicationContext(), "Reset All Filters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.reset_all_filters, Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_FIRST_USER);
                     finish();
                 }

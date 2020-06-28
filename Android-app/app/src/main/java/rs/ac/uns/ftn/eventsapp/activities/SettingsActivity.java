@@ -90,8 +90,8 @@ public class SettingsActivity extends AppCompatActivity {
                                     return null;
                             } catch (NumberFormatException nfe) {
                             }
-                            Toast.makeText(getActivity(), "Value must be between " +
-                                            +MIN_DISTANCE + " and " + MAX_DISTANCE + " !",
+                            Toast.makeText(getActivity(), getString(R.string.value_must_be) +
+                                            +MIN_DISTANCE + getString(R.string.and) + MAX_DISTANCE + " !",
                                     Toast.LENGTH_SHORT).show();
                             return "";
                         }

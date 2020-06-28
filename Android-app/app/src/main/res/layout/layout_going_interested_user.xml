@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/goingInterestedUserName"
-        android:text="Veljko Petrovic"
+        android:text=""
         android:layout_toRightOf="@id/goingInterestedUser"
         android:layout_centerVertical="true"
         android:layout_marginStart="30dp"

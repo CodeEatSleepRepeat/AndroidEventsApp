@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_edittext_field"
         android:maxWidth="240dp"
-        android:text="BlablablabalablablablablaBlablablabalablablablablaBlablablabalablablablabla"
+        android:text=""
         app:layout_constraintStart_toEndOf="@+id/image_message_from_user_item"
         app:layout_constraintTop_toTopOf="@+id/image_message_from_user_item"
         android:layout_marginStart="8dp"
@@ -35,7 +35,7 @@
         android:id="@+id/text_view_message_date_time_item_message_from_chat_partner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="15/05/20 20:20"
+        android:text=""
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/text_message_from_user_item"
         app:layout_constraintTop_toBottomOf="@+id/text_message_from_user_item" />

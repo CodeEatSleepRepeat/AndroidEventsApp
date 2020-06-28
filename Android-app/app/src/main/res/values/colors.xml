@@ -10,4 +10,5 @@
     <color name="colorGray">#cccccc</color>
     <color name="colorEditTextFieldWhite">#E2FFFFFF</color>
     <color name="newMessageBackgroundColor">#D3D3D3</color>
+    <color name="cardview_shadow_start_color_events">#37000000</color>
 </resources>

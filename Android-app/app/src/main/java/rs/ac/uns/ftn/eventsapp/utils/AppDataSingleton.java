@@ -367,7 +367,9 @@ public class AppDataSingleton {
         for (EventDTO e : getUserEvents()) {
             if (e.getUpdated_time().toInstant().toEpochMilli() > lastSyncTime && e.getSyncStatus() != SyncStatus.ADD) {
                 //needs sync
-                forUpdate.add(new UpdateEventDTO(e.getId(), e.getLatitude(), e.getLongitude(), e.getName(), e.getPlace(), e.getDescription(), e.getType(), e.getStart_time(), e.getEnd_time(), e.getPrivacy(), e.getSyncStatus(), e.getUpdated_time()));
+                forUpdate.add(new UpdateEventDTO(e.getId(), e.getLatitude(), e.getLongitude(), e.getName(),
+                        e.getPlace(), e.getDescription(), e.getType(), e.getStart_time(), e.getEnd_time(),
+                        e.getPrivacy(), e.getSyncStatus(), e.getUpdated_time(), e.getImageUri()));
             }
         }
         return forUpdate;

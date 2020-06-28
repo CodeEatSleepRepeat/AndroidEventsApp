@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.apiCalls.UserAppApi;
 import rs.ac.uns.ftn.eventsapp.models.User;
+import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
 public class ForgottenPasswordActivity extends Activity {
@@ -59,7 +60,7 @@ public class ForgottenPasswordActivity extends Activity {
     private void resetPassword(CharSequence text) {
         // Instantiate the backend request
         retrofit = new Retrofit.Builder()
-                .baseUrl("://10.0.2.2:8080")
+                .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         UserAppApi api = retrofit.create(UserAppApi.class);

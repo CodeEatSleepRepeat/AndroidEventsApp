@@ -86,7 +86,7 @@
                 android:layout_toStartOf="@+id/endingTimeUpdateEventEditText"
                 android:layout_toEndOf="@+id/endingDateUpdateEventEditText"
                 android:gravity="center"
-                android:text="at" />
+                android:text="@string/at" />
 
             <EditText
                 android:id="@+id/endingTimeUpdateEventEditText"
@@ -128,7 +128,7 @@
                 android:layout_toStartOf="@+id/startingTimeUpdateEventEditText"
                 android:layout_toEndOf="@+id/startingDateUpdateEventEditText"
                 android:gravity="center"
-                android:text="at" />
+                android:text="@string/at" />
 
             <ImageView
                 android:id="@+id/startingDateUpdateEventImgView"
@@ -145,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@+id/toolbarUpdateEvent"
-                android:text="Select a location"
+                android:text="@string/selectALocation"
                 android:textAlignment="center"
                 android:textSize="25dp"
                 app:layout_constraintEnd_toEndOf="@+id/toolbarUpdateEvent"
@@ -351,7 +351,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:text="ADD COVER PHOTO" />
+                    android:text="@string/add_cover_photo" />
 
 
             </FrameLayout>

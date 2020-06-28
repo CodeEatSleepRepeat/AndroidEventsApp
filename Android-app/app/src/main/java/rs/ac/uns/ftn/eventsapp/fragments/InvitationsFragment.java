@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.Query;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 
@@ -157,7 +156,7 @@ public class InvitationsFragment extends Fragment {
         });
     }
 
-    private void getAllInvitations() {
+    public void getAllInvitations() {
         adapter.clear();
 
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
@@ -169,10 +168,10 @@ public class InvitationsFragment extends Fragment {
         invitationCall.enqueue(new Callback<List<InvitationDTO>>() {
             @Override
             public void onResponse(Call<List<InvitationDTO>> call, retrofit2.Response<List<InvitationDTO>> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     adapter.clear();
                     for (InvitationDTO invitationDTO : response.body()) {
-                        adapter.add(new InvitationItem(invitationDTO));
+                        adapter.add(new InvitationItem(invitationDTO, InvitationsFragment.this));
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -197,7 +196,7 @@ public class InvitationsFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_settings_only_menu_item) {
-            if (AppDataSingleton.getInstance().isLoggedInFBUser()){
+            if (AppDataSingleton.getInstance().isLoggedInFBUser()) {
                 openFBSettings();
             } else {
                 openSettings();
