@@ -1255,7 +1255,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                     });
                             mLocationPermissionGranted = false;
                             finish();
-                            startActivity(getIntent());
+                            //startActivity(getIntent());
                         }
                     }
                 } else {

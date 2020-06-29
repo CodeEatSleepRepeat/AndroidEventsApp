@@ -51,7 +51,7 @@
     <string name="login_registration_password_hint">Лозинка</string>
     <string name="login_forgot_password">Заборавили сте лозинку?</string>
     <string name="login_continue_with_social_media">Наставите са друштвеним медијима</string>
-    <string name="login_back_to_register">Назад у регистар</string>
+    <string name="login_back_to_register">Назад на регистрацију</string>
     <string name="register_select_photo">одаберите фотографију</string>
     <string name="register_repeat_password">Поновите лозинку</string>
     <string name="login_registration_email_hint">Е-пошта</string>
