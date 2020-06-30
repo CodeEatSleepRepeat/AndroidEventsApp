@@ -156,6 +156,7 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     @Override
     public void onResume() {
         super.onResume();
+        refreshData();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.nav_item_messages);
     }
 
@@ -382,7 +383,8 @@ public class LatestMessagesFragment extends Fragment implements Filterable {
     private void addLatestMessagesItemViewToView() {
         adapter.clear();
         for(Map.Entry<String, FirebaseUserDTO> entry : latestMessageToChatPartner.entrySet()){
-            adapter.add(new LatestMessageItem(latestMessagesMap.get(entry.getKey()), entry.getValue()));
+            if(entry.getValue() != null)
+                adapter.add(new LatestMessageItem(latestMessagesMap.get(entry.getKey()), entry.getValue()));
         }
         adapter.notifyDataSetChanged();
     }

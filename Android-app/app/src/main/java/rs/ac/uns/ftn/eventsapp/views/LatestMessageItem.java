@@ -72,6 +72,8 @@ public class LatestMessageItem extends Item<GroupieViewHolder> {
 
     @NotNull
     private Boolean setPresentedText(@NonNull GroupieViewHolder viewHolder, TextView textUserUsername, TextView textMessage) {
+        if(chatMessage == null)
+            return false;
         textUserUsername.setText(chatPartnerUser.getUsername());
         int lenghtOfChatMessage = chatMessage.getText().length();
         String chatMessageText = getFirstNCharactersFromString(20, lenghtOfChatMessage);

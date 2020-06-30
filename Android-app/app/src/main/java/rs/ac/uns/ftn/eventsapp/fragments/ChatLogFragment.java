@@ -149,10 +149,8 @@ public class ChatLogFragment extends Fragment {
                         adapter.add(new MessageFromChatPartnerItem(chatMessage, chatPartner));
                     }
 
-                    // ako je poruka namenjena meni stavi da je procitana
-                    Boolean shouldISetMessageToSeen = chatMessage.getToId().equals(uidOfLoggedUser) && !chatMessage.getSeen();
-                    if (shouldISetMessageToSeen)
-                        setLatestMessageOfUserToSeen(chatMessage);
+
+                    setLatestMessageOfUserToSeen(chatMessage);
                 }
 
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
