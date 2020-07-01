@@ -61,7 +61,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CommentsActivity"
-            android:label="@string/comments" />
+            android:label="@string/comments"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.SettingsFBUserActivity" />
         <activity android:name=".activities.AddFriendActivity" />

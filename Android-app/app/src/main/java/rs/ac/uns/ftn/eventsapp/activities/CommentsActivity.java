@@ -1,22 +1,18 @@
 package rs.ac.uns.ftn.eventsapp.activities;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,18 +21,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.CommentsArrayAdapter;
-import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.dtos.CommentDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.CreateCommentDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.CreateEventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
-import rs.ac.uns.ftn.eventsapp.dtos.SearchFilterEventsDTO;
-import rs.ac.uns.ftn.eventsapp.models.Comment;
-import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
@@ -60,6 +49,11 @@ public class CommentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         newComment = findViewById(R.id.commentEditText);
         button = findViewById(R.id.commentBtn);
         RecyclerView recyclerView = findViewById(R.id.commentsListView);
@@ -68,7 +62,7 @@ public class CommentsActivity extends AppCompatActivity {
         adapter = new CommentsArrayAdapter(comments, this);
         recyclerView.setAdapter(adapter);
 
-        if(AppDataSingleton.getInstance().getLoggedUser()==null){
+        if (AppDataSingleton.getInstance().getLoggedUser() == null) {
             button.setAlpha(.5f);
             button.setClickable(false);
             button.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +71,7 @@ public class CommentsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), R.string.notLoggedInComment, Toast.LENGTH_LONG).show();
                 }
             });
-        }else {
+        } else {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -113,6 +107,12 @@ public class CommentsActivity extends AppCompatActivity {
                 .setWifiLoaderColor(R.color.colorBlack) // Set custom color for wifi loader
                 .setCancelable(true)
                 .build();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -158,10 +158,10 @@ public class CommentsActivity extends AppCompatActivity {
         });
     }
 
-    private void addComment(){
-        if(newComment.getText().toString().isEmpty()){
+    private void addComment() {
+        if (newComment.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(), R.string.blankFieldError, Toast.LENGTH_LONG).show();
-        }else {
+        } else {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                     .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())

@@ -165,7 +165,11 @@ public class HomeEventListFragment extends Fragment {
         SearchFilterEventsDTO tempDto = new SearchFilterEventsDTO(dto.getSearch(), dto.getDistance(), dto.getLat(), dto.getLng(), dto.getSortType(), dto.getEventTypes(), dto.getEventStart(), dto.getEventEnd(), dto.getFacebookPrivacy());
         if (tempDto.getDistance() == 0) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-            tempDto.setDistance(Integer.parseInt(sharedPreferences.getString("pref_default_distance2", "100")));
+            String distString = sharedPreferences.getString("pref_default_distance2", "100");
+            if (distString == null || distString.equals("0")) {
+                distString = "100";
+            }
+            tempDto.setDistance(Integer.parseInt(distString));
         }
 
         Retrofit retrofit = new Retrofit.Builder()

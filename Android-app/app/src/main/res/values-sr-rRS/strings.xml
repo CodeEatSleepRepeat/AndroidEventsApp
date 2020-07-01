@@ -229,4 +229,5 @@
     <string name="share_via">Подели са</string>
     <string name="no_similar_events">Нема сличних догађаја</string>
     <string name="select_image">Изаберите слику</string>
+    <string name="apply_filters">Примени филтере</string>
 </resources>

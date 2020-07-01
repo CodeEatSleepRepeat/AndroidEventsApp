@@ -350,7 +350,7 @@ public class FilterEventsActivity extends AppCompatActivity {
                 returnIntent.putExtra("PRIVATE", privateEventFilterCheckBox.isChecked());
 
                 if (validationSuccess()) {
-                    Toast.makeText(getApplicationContext(), "Apply Filters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.apply_filters, Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }

@@ -74,7 +74,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "ShowEventDetailsAct";
     private static final int LAUNCH_SEND_INVITATIONS_ACTIVITY = 2001;
-    private static Long idEvent;
+    private Long idEvent;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMM yyy HH:mm z");
 
@@ -166,8 +166,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         Picasso.get().setLoggingEnabled(true);
         if (dto.getImageUri() == null || dto.getImageUri().equals("")) {
             Picasso.get().load(R.drawable.ic_missing_event_icon_white).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView); //for picasso to not crash if image is empty or null
+        } else if (dto.getImageUri().startsWith("http")) {
+            Picasso.get().load(Uri.parse(dto.getImageUri())).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView);
         } else {
-            Picasso.get().load(dto.getImageUri()).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView);
+            Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + dto.getImageUri())).placeholder(R.drawable.ic_missing_event_icon_white).into(imageView);
         }
         imageView.setAlpha(0.9f);
 

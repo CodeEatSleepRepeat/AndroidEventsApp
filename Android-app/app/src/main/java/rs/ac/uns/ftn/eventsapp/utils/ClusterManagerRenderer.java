@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.eventsapp.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -39,8 +40,18 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
 
     @Override
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {
+        //Picasso.get().load(item.getImgUri()).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
+        if (item.getImgUri() != null && !item.getImgUri().equals("")) {
+            Picasso.get().setLoggingEnabled(true);
+            if (item.getImgUri().startsWith("http")) {
+                Picasso.get().load(Uri.parse(item.getImgUri())).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
+            } else {
+                Picasso.get().load(Uri.parse(AppDataSingleton.IMAGE_URI + item.getImgUri())).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
+            }
+        } else {
+            imageView.setImageResource(R.drawable.ic_missing_event_icon);
+        }
 
-        Picasso.get().load(item.getImgUri()).placeholder(R.drawable.ic_missing_event_icon).into(imageView);
         Bitmap icon = iconGenerator.makeIcon();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle());
 

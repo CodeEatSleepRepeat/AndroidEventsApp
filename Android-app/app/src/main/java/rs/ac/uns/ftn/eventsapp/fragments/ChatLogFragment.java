@@ -53,6 +53,7 @@ public class ChatLogFragment extends Fragment {
     DatabaseReference latestMessageOfThisChatLog;
     DatabaseReference userMessagesRef;
     ChildEventListener userMessageListener;
+    RecyclerView recyclerView;
 
     APIFirebaseNotificationService apiFirebaseService;
     boolean notify = false;
@@ -79,12 +80,12 @@ public class ChatLogFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerview_chat_log);
+        recyclerView = getActivity().findViewById(R.id.recyclerview_chat_log);
         recyclerView.setAdapter(adapter);
 
         getChatPartnerFromFirebase();
         getCurrentUserAndChatLogMessagesFromFirebase(recyclerView);
-        getMessages(recyclerView);
+        //getMessages(recyclerView);
         setLatestMessageOfUserToSeenWhenOpenChatLog();
 
         createApiService();
@@ -296,5 +297,12 @@ public class ChatLogFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getMessages(recyclerView);
     }
 }

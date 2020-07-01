@@ -182,9 +182,6 @@
     <string name="recent_events">Recently created</string>
     <string name="popular_events">Soonest events</string>
     <string name="add_cover_photo">ADD COVER PHOTO</string>
-
-    <string name="facebook_app_id" translatable="false">xxx</string>
-    <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
     <string name="invitations_sent">Invitations sent!</string>
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
@@ -232,5 +229,8 @@
     <string name="share_via">Share via</string>
     <string name="no_similar_events">No similar events</string>
     <string name="select_image">Select an image</string>
+    <string name="apply_filters">Apply filters</string>
 
+    <string name="facebook_app_id" translatable="false">xxx</string>
+    <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
 </resources>

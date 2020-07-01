@@ -229,4 +229,5 @@
     <string name="share_via">Compartir via</string>
     <string name="no_similar_events">No hay eventos similares</string>
     <string name="select_image">Selecciona una imagen</string>
+    <string name="apply_filters">Aplicar filtros</string>
 </resources>

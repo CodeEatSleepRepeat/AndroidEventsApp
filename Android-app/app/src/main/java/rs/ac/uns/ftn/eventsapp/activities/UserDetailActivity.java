@@ -29,6 +29,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -517,12 +519,16 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void getEventsPage(int num) {
+        SearchFilterEventsDTO dto = new SearchFilterEventsDTO();
+        dto.setEventStart(ZonedDateTime.now());
+        dto.setEventEnd(ZonedDateTime.now());
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppDataSingleton.getInstance().SERVER_IP)
                 .addConverterFactory(ZonedGsonBuilder.getZonedGsonFactory())
                 .build();
         EventsAppAPI e = retrofit.create(EventsAppAPI.class);
-        Call<List<EventDTO>> events = e.getMyEvents(userId, num, new SearchFilterEventsDTO());
+        Call<List<EventDTO>> events = e.getMyEvents(userId, num, dto);
         events.enqueue(new Callback<List<EventDTO>>() {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {

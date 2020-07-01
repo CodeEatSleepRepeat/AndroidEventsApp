@@ -25,8 +25,10 @@ import rs.ac.uns.ftn.eventsapp.activities.EventDetailsActivity;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
 import rs.ac.uns.ftn.eventsapp.apiCalls.InvitationAppApi;
 import rs.ac.uns.ftn.eventsapp.dtos.EventDTO;
+import rs.ac.uns.ftn.eventsapp.dtos.GoingInterestedEventsDTO;
 import rs.ac.uns.ftn.eventsapp.dtos.InvitationDTO;
 import rs.ac.uns.ftn.eventsapp.fragments.InvitationsFragment;
+import rs.ac.uns.ftn.eventsapp.models.GoingInterestedStatus;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.ZonedGsonBuilder;
 
@@ -134,6 +136,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
                 if (response.isSuccessful()) {
+                    AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(response.body(), GoingInterestedStatus.GOING));
                     hideInvitationView();
                     fragment.getAllInvitations();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
@@ -158,6 +161,7 @@ public class InvitationItem extends Item<GroupieViewHolder> {
             @Override
             public void onResponse(Call<EventDTO> call, retrofit2.Response<EventDTO> response) {
                 if (response.isSuccessful()) {
+                    AppDataSingleton.getInstance().addGIEvent(new GoingInterestedEventsDTO(response.body(), GoingInterestedStatus.INTERESTED));
                     hideInvitationView();
                     fragment.getAllInvitations();
                     Toast.makeText(viewHolder.itemView.getContext().getApplicationContext(),
