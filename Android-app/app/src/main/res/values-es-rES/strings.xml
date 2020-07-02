@@ -106,7 +106,7 @@
     <string name="createEventValidation9">Ingrese una hora de finalización para su evento.</string>
     <string name="createEventValidation10">Asegúrese de que su fecha y hora de inicio sean anteriores a la fecha y hora de finalización.</string>
     <string name="blankFieldError">Este campo no puede estar vacío.</string>
-    <string name="failed">Ha fallado :(</string>
+    <string name="failed">Problema de conexión!</string>
     <string name="eventCreated">Evento creado!</string>
     <string name="hello_blank_fragment">Hola fragmento en blanco</string>
     <string name="check_your_internet">Por favor revise su conexion a internet</string>
@@ -230,4 +230,6 @@
     <string name="no_similar_events">No hay eventos similares</string>
     <string name="select_image">Selecciona una imagen</string>
     <string name="apply_filters">Aplicar filtros</string>
+    <string name="already_friends">¡Asegúrate de que ya eres amigo de esta persona!</string>
+    <string name="comment_not_added">El comentario no se agrega, intente más tarde.</string>
 </resources>

@@ -106,7 +106,7 @@
     <string name="createEventValidation9">Унесите крајњег времена за свој догађај.</string>
     <string name="createEventValidation10">Проверите да су датум и време почетка пре датума и времена завршетка.</string>
     <string name="blankFieldError">Поље не може бити празно.</string>
-    <string name="failed">Неће :(</string>
+    <string name="failed">Проблем са конекцијом!</string>
     <string name="eventCreated">Догађај је креиран!</string>
     <string name="hello_blank_fragment">Поздрав празном фрагменту</string>
     <string name="check_your_internet">Проверите интернет везу</string>
@@ -230,4 +230,6 @@
     <string name="no_similar_events">Нема сличних догађаја</string>
     <string name="select_image">Изаберите слику</string>
     <string name="apply_filters">Примени филтере</string>
+    <string name="already_friends">Проверите да ли сте већ пријатељи са овом особом!</string>
+    <string name="comment_not_added">Коментар није додат, покушајте касније!</string>
 </resources>

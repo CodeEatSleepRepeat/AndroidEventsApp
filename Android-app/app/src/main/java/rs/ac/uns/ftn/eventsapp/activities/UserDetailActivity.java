@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -100,15 +98,15 @@ public class UserDetailActivity extends AppCompatActivity {
 
         //setting username
         String intentExtraUsername = getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_NAME);
-        if(intentExtraUsername != null){
+        if (intentExtraUsername != null) {
             TextView textUserEvents = findViewById(R.id.text_user_events_user_detail);
-            textUserEvents.setText(intentExtraUsername+ " " +getString(R.string.app_name));
+            textUserEvents.setText(intentExtraUsername + " " + getString(R.string.app_name));
             getSupportActionBar().setTitle(intentExtraUsername);
         }
 
         //setting user email
         String userEmail = getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_EMAIL);
-        if(userEmail != null){
+        if (userEmail != null) {
             TextView textUserEmail = findViewById(R.id.text_user_email_user_detail);
             textUserEmail.setText(userEmail);
         }
@@ -116,10 +114,10 @@ public class UserDetailActivity extends AppCompatActivity {
         //setting user image
         String intentExtraProfilePicUrl =
                 getIntent().getStringExtra(UserSimpleItem.EXTRA_USER_IMAGE_PATH);
-        if(intentExtraProfilePicUrl != null){
+        if (intentExtraProfilePicUrl != null) {
             ImageView userProfilePicUrl = findViewById(R.id.image_user_user_detail);
             Picasso.get().setLoggingEnabled(true);
-            if (intentExtraProfilePicUrl.startsWith("http")){
+            if (intentExtraProfilePicUrl.startsWith("http")) {
                 Picasso.get().load(Uri.parse(intentExtraProfilePicUrl)).placeholder(R.drawable.ic_user_icon).into(userProfilePicUrl);
             } else {
                 Picasso.get().load(Uri.parse(AppDataSingleton.PROFILE_IMAGE_URI + intentExtraProfilePicUrl)).placeholder(R.drawable.ic_user_icon).into(userProfilePicUrl);
@@ -182,9 +180,9 @@ public class UserDetailActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(response.body() != null)
+                if (response.body() != null)
                     user = response.body();
-                    getFriendshipStatus();
+                getFriendshipStatus();
             }
 
             @Override
@@ -201,7 +199,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
         User loggedUser = AppDataSingleton.getInstance().getLoggedUser();
 
-        if (loggedUser.getId()==userId){
+        if (loggedUser.getId() == userId) {
             //this is me
             return;
         }
@@ -212,10 +210,10 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(response.body() != null){
+                if (response.body() != null) {
                     friendship = response.body();
                     setViewByFriendshipStatus(response.body());
                 }
@@ -235,13 +233,11 @@ public class UserDetailActivity extends AppCompatActivity {
         boolean isAccepted = friendship.getStatus().equals("ACCEPTED");
         boolean isNonExisting = friendship.getStatus().equals("NOT EXISTS");
 
-        if(isNonExisting){
+        if (isNonExisting) {
             setViewAsNonFriend();
-        }
-        else if(isPending){
+        } else if (isPending) {
             setViewAsStillInPendingRequest();
-        }
-        else if(isAccepted){
+        } else if (isAccepted) {
             setViewAsFriend();
         }
     }
@@ -274,7 +270,7 @@ public class UserDetailActivity extends AppCompatActivity {
         imageMessage.setVisibility(View.GONE);
     }
 
-    private void goToChatLog(){
+    private void goToChatLog() {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         emailQuery = usersRef.orderByChild("email").equalTo(user.getEmail());
@@ -314,11 +310,11 @@ public class UserDetailActivity extends AppCompatActivity {
                 intent.putExtra(EXTRA_USER_IMAGE_PATH, foundRequestReciever.getProfileImageUrl());
                 intent.putExtra(EXTRA_USER_EMAIL, foundRequestReciever.getEmail());
                 startActivity(intent);
-        }
+            }
         });
     }
 
-    private void fillUserEvents(){
+    private void fillUserEvents() {
 
     }
 
@@ -327,7 +323,7 @@ public class UserDetailActivity extends AppCompatActivity {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_of_non_friend_user_details, menu);
 
-        if (AppDataSingleton.getInstance().getLoggedUser().getId()==userId){
+        if (AppDataSingleton.getInstance().getLoggedUser().getId() == userId) {
             //this is me
             setViewAsMyself();
         }
@@ -337,18 +333,15 @@ public class UserDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_remove_friend:
-                deleteFriendship();
-                Toast.makeText(this, R.string.friend_removed, Toast.LENGTH_SHORT).show();
+                deleteFriendship(getString(R.string.menu_remove_friend));
                 break;
             case R.id.add_friend_user_details:
                 addFriendRequest();
-                Toast.makeText(this, R.string.friend_request_send, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_cancel_request:
-                deleteFriendship();
-                Toast.makeText(this, R.string.request_declined, Toast.LENGTH_SHORT).show();
+                deleteFriendship(getString(R.string.request_declined));
                 break;
             default:
                 onBackPressed();
@@ -371,17 +364,18 @@ public class UserDetailActivity extends AppCompatActivity {
         friendshipCall.enqueue(new Callback<FriendshipDTO>() {
             @Override
             public void onResponse(Call<FriendshipDTO> call, retrofit2.Response<FriendshipDTO> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     setViewAsStillInPendingRequest();
                     friendship = response.body();
                     findFirebaseReceiverUserThenSendNotification();
+                    Toast.makeText(UserDetailActivity.this, R.string.friend_request_send, Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<FriendshipDTO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "loool",
+                Toast.makeText(getApplicationContext(), R.string.failed,
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -389,7 +383,7 @@ public class UserDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteFriendship() {
+    private void deleteFriendship(final String toast) {
         FriendshipAppAPI friendshipAppAPI = getFriendshipApi();
 
         Call<FriendshipDTO> friendshipRequests =
@@ -398,8 +392,10 @@ public class UserDetailActivity extends AppCompatActivity {
         friendshipRequests.enqueue(new Callback<FriendshipDTO>() {
             @Override
             public void onResponse(Call<FriendshipDTO> call, Response<FriendshipDTO> response) {
-                if (response.isSuccessful())
+                if (response.isSuccessful()) {
                     setViewAsNonFriend();
+                    Toast.makeText(UserDetailActivity.this, toast, Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -466,7 +462,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 FirebaseUserDTO foundRequestReciever = dataSnapshot.getValue(FirebaseUserDTO.class);
 
                 APIFirebaseNotificationService apiFirebaseService =
-                        Client.getRetrofit("https://fcm.googleapis.com/").create(APIFirebaseNotificationService .class);
+                        Client.getRetrofit("https://fcm.googleapis.com/").create(APIFirebaseNotificationService.class);
 
                 sendFriendRequestNotification(apiFirebaseService, foundRequestReciever.getUid());
             }
@@ -476,7 +472,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private void sendFriendRequestNotification(final APIFirebaseNotificationService apiFirebaseService,
                                                final String toId) {
-        if(FirebaseAuth.getInstance().getUid() == null)
+        if (FirebaseAuth.getInstance().getUid() == null)
             return;
 
         final String loggedUserUid = FirebaseAuth.getInstance().getUid();
@@ -485,7 +481,7 @@ public class UserDetailActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Token chatPartnerToken = ds.getValue(Token.class);
                     String notificationBody =
                             getResources().getString(R.string.friend_request_notification);
@@ -533,7 +529,7 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                     return;
                 }
                 isLoading = false;

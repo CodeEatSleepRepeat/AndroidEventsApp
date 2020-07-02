@@ -142,7 +142,8 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    isLoading = false;
+                    //Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                     return;
                 }
                 isLoading = false;
@@ -172,7 +173,7 @@ public class CommentsActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
                     if (!response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), response.code() + " " + response.body(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.comment_not_added, Toast.LENGTH_LONG).show();
                         return;
                     }
                     comments.add(response.body());

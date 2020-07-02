@@ -99,7 +99,7 @@ public class GoingToEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<UserDTO>> call, Response<List<UserDTO>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_LONG).show();
                     return;
                 }
                 isLoading = false;

@@ -105,7 +105,7 @@
     <string name="createEventValidation9">Please enter a ending time for your event.</string>
     <string name="createEventValidation10">Please make sure that your starting date and time is before ending date and time.</string>
     <string name="blankFieldError">This field cannot be blank.</string>
-    <string name="failed">Failed :(</string>
+    <string name="failed">Connection problem!</string>
     <string name="eventCreated">Event created!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="oops">Oops!</string>
@@ -233,4 +233,6 @@
 
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
+    <string name="comment_not_added">Comment is not added, try later!</string>
+    <string name="already_friends">Check if you are already friends with this person!</string>
 </resources>

@@ -204,7 +204,7 @@ public class UserSimpleItem extends Item<GroupieViewHolder>{
             @Override
             public void onResponse(Call<FriendshipDTO> call, retrofit2.Response<FriendshipDTO> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(viewHolder.itemView.getContext(), R.string.failed,
+                    Toast.makeText(viewHolder.itemView.getContext(), R.string.already_friends,
                             Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(viewHolder.itemView.getContext(), R.string.friend_request_send,
