@@ -230,9 +230,9 @@
     <string name="no_similar_events">No similar events</string>
     <string name="select_image">Select an image</string>
     <string name="apply_filters">Apply filters</string>
+    <string name="comment_not_added">Comment is not added, try later!</string>
+    <string name="already_friends">Check if you are already friends with this person!</string>
 
     <string name="facebook_app_id" translatable="false">xxx</string>
     <string name="fb_login_protocol_scheme" translatable="false">xxx</string>
-    <string name="comment_not_added">Comment is not added, try later!</string>
-    <string name="already_friends">Check if you are already friends with this person!</string>
 </resources>

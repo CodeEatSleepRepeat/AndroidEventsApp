@@ -116,7 +116,7 @@
     <string name="invite_friends">Позовите пријатеље на догађај</string>
     <string name="delete_account">Обришите налог</string>
     <string name="unlink_account">Прекини везу с Фејсбуком</string>
-    <string name="cancel">Поништити</string>
+    <string name="cancel">Поништи</string>
     <string name="update_profile">Ажурирај профил</string>
     <string name="profile_name">Име профила</string>
     <string name="current_password">Тренутна лозинка</string>
@@ -200,7 +200,7 @@
     <string name="psw_not_ok_profile">Лозинка није тачна! Акција је отказана.</string>
     <string name="unsaved_changes_profile">Направили сте измене на свом налогу. Да ли их желите сачувати?</string>
     <string name="save">Сачувај</string>
-    <string name="dismiss">Поништи</string>
+    <string name="dismiss">Откажи</string>
     <string name="psw_not_ok_reenter_profile">Лозинке нису валидне! Поново унесите лозинке</string>
     <string name="account_succ_changed_profile">Измене налога су успешно примењене!</string>
     <string name="old_psw_not_ok_profile">Стара лозинка није тачна!</string>
@@ -211,8 +211,8 @@
     <string name="update">Ажурирај</string>
     <string name="please_enter_servers_ip_address">Молимо унесите ИП адресу сервера.</string>
     <string name="server_ip_address">Серверова ИП адреса</string>
-    <string name="disconnect_fb">Ово ће раздвојити Фејсбук налог са налога догађаја! Ову радњу можете поништити пријављивањем у апликацију Евентс путем Фацебоока. Након овога одјавит ћете се из апликације! Унесите лозинку да бисте је потврдили.</string>
-    <string name="disconnect_account">Ова акција се не може поништити. Ово ће трајно избрисати налог!  Унесите лозинку да бисте је потврдили.</string>
+    <string name="disconnect_fb">Ово ће раздвојити Фејсбук налог са налога догађаја! Ову радњу можете поништити пријављивањем у апликацију Евентс путем Фејсбука. Након овога одјавит ћете се из апликације! Унесите лозинку да бисте потврдили.</string>
+    <string name="disconnect_account">Ова акција се не може поништити. Ово ће трајно избрисати налог!  Унесите лозинку да бисте потврдили.</string>
     <string name="reset_password">Ресетуј шифру</string>
     <string name="forgot_password">Заборавили сте лозинку?</string>
     <string name="we_just_need_your_registered_email_address">Треба нам само ваша регистрована адреса е-поште</string>
@@ -221,7 +221,7 @@
     <string name="john_doe">Никола Срна</string>
     <string name="and">" и "</string>
     <string name="value_must_be">"Вредност мора бити између "</string>
-    <string name="reset_all_filters">Ресетујте све филтере</string>
+    <string name="reset_all_filters">Филтери су ресетовани</string>
     <string name="please_enter_all_fields">Молимо унесите сва поља</string>
     <string name="firebase_auth_failed">Аутентификација система порука није успела.</string>
     <string name="firebase_register_failed">Регистрација у систем порука није успела.</string>

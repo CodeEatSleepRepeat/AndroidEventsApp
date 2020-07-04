@@ -230,7 +230,7 @@
 
             <EditText
                 android:id="@+id/startingDateFilterEditText"
-                android:layout_width="130dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
@@ -270,7 +270,7 @@
 
             <EditText
                 android:id="@+id/endingDateFilterEditText"
-                android:layout_width="130dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"

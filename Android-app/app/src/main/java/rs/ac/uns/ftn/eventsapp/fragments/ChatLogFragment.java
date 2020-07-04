@@ -303,6 +303,7 @@ public class ChatLogFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        adapter.clear();
         getMessages(recyclerView);
     }
 }

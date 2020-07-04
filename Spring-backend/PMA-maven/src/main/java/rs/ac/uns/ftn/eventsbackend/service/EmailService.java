@@ -1,12 +1,16 @@
 package rs.ac.uns.ftn.eventsbackend.service;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Enumeration;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -26,6 +30,44 @@ import rs.ac.uns.ftn.eventsbackend.model.User;
 
 @Service
 public class EmailService {
+	
+	private String ip;
+	
+	public EmailService() {
+			InetAddress inetAddress;
+	    	
+		    try {
+		    	
+		        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+		        while (interfaces.hasMoreElements()) {
+		            NetworkInterface iface = interfaces.nextElement();
+		            // filters out 127.0.0.1 and inactive interfaces
+		            if (iface.isLoopback() || !iface.isUp())
+		                continue;
+		            
+		            if (iface.getDisplayName().contains("Wireless-AC")) {
+			            Enumeration<InetAddress> addresses = iface.getInetAddresses();
+			            while(addresses.hasMoreElements()) {
+			                InetAddress addr = addresses.nextElement();
+			                ip = addr.getHostAddress();
+			                System.out.println("Email IP address is: " + ip);
+			    			return;
+			            }
+		            }
+		        }
+		    } catch (SocketException e) {
+		        //throw new RuntimeException(e);
+		    }
+		    
+		    try {
+		    	inetAddress = InetAddress.getLocalHost();
+		    	ip = inetAddress.getHostAddress();
+		    	System.out.println("Email IP address is: " + ip);
+			} catch (Exception e) {
+				ip = "localhost";
+				System.out.println("Email IP address is: " + ip);
+			}
+	}
 
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -49,7 +91,7 @@ public class EmailService {
 	@Async
 	public void sendActivationEmail(final User user) throws MailException, InterruptedException, UnsupportedEncodingException {
 
-		String link = "http://localhost:8080/user/activate?id=" + URLEncoder.encode(encript(user.getId().toString()), StandardCharsets.UTF_8.name());
+		String link = "http://" + ip + ":8080/user/activate?id=" + URLEncoder.encode(encript(user.getId().toString()), StandardCharsets.UTF_8.name());
 
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getEmail());

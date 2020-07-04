@@ -37,6 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import rs.ac.uns.ftn.eventsapp.MainActivity;
 import rs.ac.uns.ftn.eventsapp.R;
 import rs.ac.uns.ftn.eventsapp.adapters.EventListRecyclerView;
 import rs.ac.uns.ftn.eventsapp.apiCalls.EventsAppAPI;
@@ -52,6 +53,7 @@ import rs.ac.uns.ftn.eventsapp.firebase.notification.Token;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Data;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.NotificationTypeEnum;
 import rs.ac.uns.ftn.eventsapp.firebase.notification.message.Sender;
+import rs.ac.uns.ftn.eventsapp.fragments.LatestMessagesFragment;
 import rs.ac.uns.ftn.eventsapp.models.User;
 import rs.ac.uns.ftn.eventsapp.utils.AppDataSingleton;
 import rs.ac.uns.ftn.eventsapp.utils.PaginationScrollListener;
@@ -132,7 +134,14 @@ public class UserDetailActivity extends AppCompatActivity {
         imageMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToChatLog();
+                Boolean isUserLoggedToFirebaseMessageService = FirebaseAuth.getInstance().getCurrentUser() != null;
+                if (isUserLoggedToFirebaseMessageService)
+                    goToChatLog();
+                else
+                    Toast.makeText(UserDetailActivity.this, R.string.firebase_failed,
+                            Toast.LENGTH_SHORT).show();
+
+
             }
         });
 

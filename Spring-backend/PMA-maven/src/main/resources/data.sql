@@ -317,13 +317,13 @@ INSERT INTO friendship(id,status,request_receiver_id,request_sender_id) VALUES (
 -- Inserting data into table user
 --
 INSERT INTO user(id, activated_account, email, facebook_id, image_uri, name, password, sync_facebook_events, sync_facebook_profile, sync_status, updated_time, facebook_token) VALUES
-(1,True,'test1@example.com','','1589079312837','Larry892','Test12345',False,False,0,'2020-01-01 00:00:01',''),
-(2,True,'test2@example.com','','1589642898537','User2','Test12345',False,False,0,'2020-01-01 00:00:01',''),
-(3,True,'test3@example.com','','1589800708774','User3','Test12345',False,False,0,'2020-01-01 00:00:01',''),
-(4,True,'test4@example.com','','1589100212607','User4','Test12345',False,False,0,'2020-01-01 00:00:01',''),
-(5, True,'test9@example.com','','1589356999678','Userizmena','Test12345',False,False,1,'2020-06-19 08:14:28',''),
-(6, True, 'Jamey_Ledesma247@nowhere.com', '', '1589031455623', 'Jamie2012', 'q6GYa4cZ25I', False, False, 0, '2020-01-01 00:00:01', ''),
-(7, True, 'Julian@example.com', '', '1589891466605', 'Branden2000', 'ATe7vDO+16+i7QJ6!4', False, False, 0, '2020-01-01 00:00:01', ''),
-(8, False, 'KatriceYounger@example.com', '', '1589960113173', 'Cleopatra2003', '49!e6DeaXX#UN7Sz5', False, False, 0, '2020-01-01 00:00:01', ''),
+(1,True,'test1@example.com','','1589079312837','Bane','Test12345',False,False,0,'2020-01-01 00:00:01',''),
+(2,True,'test2@example.com','','1589642898537','Sale','Test12345',False,False,0,'2020-01-01 00:00:01',''),
+(3,True,'test3@example.com','','1589800708774','Katela','Test12345',False,False,0,'2020-01-01 00:00:01',''),
+(4,True,'test4@example.com','','1589100212607','Boris','Test12345',False,False,0,'2020-01-01 00:00:01',''),
+(5, True,'test9@example.com','','1589356999678','Lovre','Test12345',False,False,1,'2020-06-19 08:14:28',''),
+(6, True, 'Jamie.Ledesma247@nowhere.com', '', '1589031455623', 'Jamie', 'q6GYa4cZ25I', False, False, 0, '2020-01-01 00:00:01', ''),
+(7, True, 'Julian@example.com', '', '1589891466605', 'Julian', 'ATe7vDO+16+i7QJ6!4', False, False, 0, '2020-01-01 00:00:01', ''),
+(8, False, 'KatriceYounger@example.com', '', '1589960113173', 'Cleopatra', '49!e6DeaXX#UN7Sz5', False, False, 0, '2020-01-01 00:00:01', ''),
 (9, True, 'henley@example.com', '', '1589693264893', 'Henley Mc\'Claren', 'asdfASDF1234', False, False, 0, '2020-01-01 00:00:01', ''),
-(10, True, 'Addie.AOrozco829@nowhere.com', '', '1589171110569', 'John58', '63B@=m%l5^5a0j508dWAm92bs0', False, False, 0, '2020-01-01 00:00:01', '');
+(10, True, 'Addie.AOrozco829@nowhere.com', '', '1589171110569', 'Addie', '63B@=m%l5^5a0j508dWAm92bs0', False, False, 0, '2020-01-01 00:00:01', '');

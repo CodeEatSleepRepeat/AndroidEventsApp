@@ -263,9 +263,9 @@
 
         <EditText
             android:id="@+id/startingDateFilterEditText"
-            android:layout_width="140dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
@@ -316,9 +316,9 @@
 
         <EditText
             android:id="@+id/endingDateFilterEditText"
-            android:layout_width="140dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
@@ -370,7 +370,7 @@
             android:id="@+id/resetStartDateTimeFilterImgBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             android:backgroundTint="@color/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/startingTimeFilterEditText"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
