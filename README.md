@@ -60,4 +60,3 @@ podele ih sa svojim prijateljima.
 ### Demo video aplikacije:
 https://www.youtube.com/watch?v=LiGVFyjZZCA
 
-https://www.youtube.com/watch?v=xCtVdALgdh0 (backup ako gorenavedeni video padne zbog copyright-a)
